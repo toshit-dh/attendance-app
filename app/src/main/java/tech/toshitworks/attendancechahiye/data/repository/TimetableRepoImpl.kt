@@ -52,7 +52,7 @@ class TimetableRepoImpl @Inject constructor(
     }
 
     private suspend fun fetchAndCacheDayId(dayName: String): Long {
-        val dayId = dayDao.getDayByName(dayName).id
+        val dayId = dayDao.getDayByName(dayName)?.id?:0
             dayCache = dayCache?.plus(dayName to dayId) ?: mapOf(dayName to dayId)
             return dayId
     }
