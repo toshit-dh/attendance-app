@@ -12,7 +12,7 @@ interface DayDao {
     suspend fun insertDays(days: List<DayEntity>)
 
     @Query("SELECT * FROM days WHERE name = :name LIMIT 1")
-    suspend fun getDayByName(name: String): DayEntity
+    suspend fun getDayByName(name: String): DayEntity?
 
     @Query("SELECT * FROM days")
     suspend fun getDays(): List<DayEntity>
