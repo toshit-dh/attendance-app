@@ -39,4 +39,8 @@ class PeriodRepositoryImpl @Inject constructor(
             it.toModel()
         }
     }
+
+    override suspend fun getPeriodByStartTime(startTime: String): PeriodModel {
+        return periodDao.getPeriodByStartTime(startTime).toModel()
+    }
 }

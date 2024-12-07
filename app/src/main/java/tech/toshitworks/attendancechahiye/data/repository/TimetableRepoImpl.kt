@@ -3,21 +3,21 @@ package tech.toshitworks.attendancechahiye.data.repository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import tech.toshitworks.attendancechahiye.data.entity.TimetableEntity
-import tech.toshitworks.attendancechahiye.data.local.DayDao
-import tech.toshitworks.attendancechahiye.data.local.PeriodDao
-import tech.toshitworks.attendancechahiye.data.local.SubjectDao
 import tech.toshitworks.attendancechahiye.data.local.TimetableDao
 import tech.toshitworks.attendancechahiye.domain.model.DayModel
 import tech.toshitworks.attendancechahiye.domain.model.SubjectModel
 import tech.toshitworks.attendancechahiye.domain.model.TimetableModel
+import tech.toshitworks.attendancechahiye.domain.repository.DayRepository
+import tech.toshitworks.attendancechahiye.domain.repository.PeriodRepository
+import tech.toshitworks.attendancechahiye.domain.repository.SubjectRepository
 import tech.toshitworks.attendancechahiye.domain.repository.TimetableRepository
 import tech.toshitworks.attendancechahiye.mapper.toModel
 import javax.inject.Inject
 
 class TimetableRepoImpl @Inject constructor(
-    private val subjectDao: SubjectDao,
-    private val periodDao: PeriodDao,
-    private val dayDao: DayDao,
+    private val subjectRepository: SubjectRepository,
+    private val periodRepository: PeriodRepository,
+    private val dayRepository: DayRepository,
     private val timetableDao: TimetableDao
 ): TimetableRepository {
 
@@ -34,7 +34,7 @@ class TimetableRepoImpl @Inject constructor(
     }
 
     private suspend fun fetchAndCacheSubjectId(subjectName: String): Long {
-        val subjectId = subjectDao.getSubjectByName(subjectName)?.id
+        val subjectId = subjectRepository.getSubjectByName(subjectName)?.id
         if (subjectId != null) {
             subjectCache = subjectCache?.plus(subjectName to subjectId) ?: mapOf(subjectName to subjectId)
             return subjectId
@@ -52,7 +52,7 @@ class TimetableRepoImpl @Inject constructor(
     }
 
     private suspend fun fetchAndCacheDayId(dayName: String): Long {
-        val dayId = dayDao.getDayByName(dayName)?.id?:0
+        val dayId = dayRepository.getDayByName(dayName)?.id?:0
             dayCache = dayCache?.plus(dayName to dayId) ?: mapOf(dayName to dayId)
             return dayId
     }
@@ -66,7 +66,7 @@ class TimetableRepoImpl @Inject constructor(
     }
 
     private suspend fun fetchAndCachePeriodId(startTime: String): Long {
-        val periodId = periodDao.getPeriodByStartTime(startTime).id
+        val periodId = periodRepository.getPeriodByStartTime(startTime).id
             periodCache = periodCache?.plus(startTime to periodId) ?: mapOf(startTime to periodId)
             return periodId
     }
@@ -100,9 +100,9 @@ class TimetableRepoImpl @Inject constructor(
         val dayId = getDayIdByName(dayModel.name)
         timetableDao.getTimetableForDay(dayId).map {
             TimetableModel(
-                subject = subjectDao.getSubjectById(it.subjectId).toModel(),
-                day = dayDao.getDayById(it.dayId).toModel(),
-                period = periodDao.getPeriodById(it.periodId).toModel()
+                subject = subjectRepository.getSubjectById(it.subjectId)!!,
+                day = dayRepository.getDayById(it.dayId),
+                period = periodRepository.getPeriodById(it.periodId)
             )
         }
     }
@@ -138,8 +138,8 @@ class TimetableRepoImpl @Inject constructor(
         return timetableDao.getPeriodsBySubject(subjectId).map {
             TimetableModel(
                 subject = subject,
-                day = dayDao.getDayById(it.dayId).toModel(),
-                period = periodDao.getPeriodById(it.periodId).toModel()
+                day = dayRepository.getDayById(it.dayId),
+                period = periodRepository.getPeriodById(it.periodId)
             )
         }
     }
@@ -147,9 +147,9 @@ class TimetableRepoImpl @Inject constructor(
     override suspend fun getAllPeriods(): List<TimetableModel> {
         return timetableDao.getAllPeriods().map {
             TimetableModel(
-                subject = subjectDao.getSubjectById(it.subjectId).toModel(),
-                day = dayDao.getDayById(it.dayId).toModel(),
-                period = periodDao.getPeriodById(it.periodId).toModel()
+                subject = subjectRepository.getSubjectById(it.subjectId)!!,
+                day = dayRepository.getDayById(it.dayId),
+                period = periodRepository.getPeriodById(it.periodId)
             )
         }
     }

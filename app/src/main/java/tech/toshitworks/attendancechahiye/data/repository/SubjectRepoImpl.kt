@@ -34,4 +34,8 @@ class SubjectRepoImpl @Inject constructor(
         }
     }
 
+    override fun getSubjectById(subjectId: Long): SubjectModel? {
+        return subjectDao.getSubjectById(subjectId).toModel()
+    }
+
 }

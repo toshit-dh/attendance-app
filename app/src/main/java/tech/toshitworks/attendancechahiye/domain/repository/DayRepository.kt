@@ -8,4 +8,8 @@ interface DayRepository {
 
     suspend fun getDays(): List<DayModel>
 
+    suspend fun getDayByName(dayName: String): DayModel
+
+    suspend fun getDayById(dayId: Long): DayModel
+
 }

@@ -20,4 +20,14 @@ class DayRepositoryImpl @Inject constructor(
             it.toModel()
         }
     }
+
+    override suspend fun getDayByName(dayName: String): DayModel {
+        return dayDao.getDayByName(name = dayName)?.toModel() ?: DayModel(
+            0,""
+        )
+    }
+
+    override suspend fun getDayById(dayId: Long): DayModel {
+        return dayDao.getDayById(dayId).toModel()
+    }
 }

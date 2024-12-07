@@ -3,6 +3,7 @@ package tech.toshitworks.attendancechahiye.presentation.components.bars
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.Composable
@@ -18,7 +19,7 @@ fun BottomBar(
 
 ) {
     val selectedItem = remember {
-        mutableStateOf(BottomScreens.TodaysAttendance)
+        mutableStateOf(BottomScreens.TodayAttendance)
     }
     BottomAppBar(
         modifier = Modifier
@@ -40,7 +41,11 @@ fun BottomBar(
                     selectedItem.value = it
                 },
                 icon = {
-
+                    Icon(
+                        tint = if (it == selectedItem.value) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.background,
+                        imageVector = if (it == selectedItem.value) it.iconFilled else it.iconOutlined,
+                        contentDescription = it.description
+                    )
                 },
             )
         }

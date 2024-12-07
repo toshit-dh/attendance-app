@@ -15,4 +15,6 @@ interface PeriodRepository {
     suspend fun updatePeriod(period: PeriodModel)
 
     suspend fun getPeriods(): List<PeriodModel>
+
+    suspend fun getPeriodByStartTime(startTime: String): PeriodModel
 }
