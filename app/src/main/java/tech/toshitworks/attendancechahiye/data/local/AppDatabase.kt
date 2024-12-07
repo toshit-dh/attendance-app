@@ -5,6 +5,7 @@ import androidx.room.RoomDatabase
 import tech.toshitworks.attendancechahiye.data.entity.AttendanceBySubject
 import tech.toshitworks.attendancechahiye.data.entity.AttendanceEntity
 import tech.toshitworks.attendancechahiye.data.entity.DayEntity
+import tech.toshitworks.attendancechahiye.data.entity.NoteEntity
 import tech.toshitworks.attendancechahiye.data.entity.PeriodEntity
 import tech.toshitworks.attendancechahiye.data.entity.SubjectEntity
 import tech.toshitworks.attendancechahiye.data.entity.TimetableEntity
@@ -19,8 +20,9 @@ import javax.inject.Singleton
         SubjectEntity::class,
         TimetableEntity::class,
         SemesterEntity::class,
+        NoteEntity::class
     ],
-    version = 5,
+    version = 6,
     exportSchema = false
 )
 
@@ -33,6 +35,7 @@ abstract class AttendanceDatabase : RoomDatabase() {
     abstract fun subjectDao(): SubjectDao
     abstract fun timetableDao(): TimetableDao
     abstract fun semesterDao(): SemesterDao
+    abstract fun noteDao(): NoteDao
 
     companion object {
         const val DATABASE_NAME = "attendance_database"

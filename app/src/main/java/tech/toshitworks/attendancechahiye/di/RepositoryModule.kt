@@ -8,6 +8,7 @@ import tech.toshitworks.attendancechahiye.data.repository.AttendanceRepoImpl
 import tech.toshitworks.attendancechahiye.data.repository.DataStoreRepoImpl
 import tech.toshitworks.attendancechahiye.data.repository.DayRepositoryImpl
 import tech.toshitworks.attendancechahiye.data.repository.MarkAttendanceImpl
+import tech.toshitworks.attendancechahiye.data.repository.NoteRepositoryImpl
 import tech.toshitworks.attendancechahiye.data.repository.PeriodRepositoryImpl
 import tech.toshitworks.attendancechahiye.data.repository.SemesterRepoImpl
 import tech.toshitworks.attendancechahiye.data.repository.SubjectRepoImpl
@@ -16,6 +17,7 @@ import tech.toshitworks.attendancechahiye.domain.repository.AttendanceRepository
 import tech.toshitworks.attendancechahiye.domain.repository.DataStoreRepository
 import tech.toshitworks.attendancechahiye.domain.repository.DayRepository
 import tech.toshitworks.attendancechahiye.domain.repository.MarkAttendance
+import tech.toshitworks.attendancechahiye.domain.repository.NoteRepository
 import tech.toshitworks.attendancechahiye.domain.repository.PeriodRepository
 import tech.toshitworks.attendancechahiye.domain.repository.SemesterRepository
 import tech.toshitworks.attendancechahiye.domain.repository.SubjectRepository
@@ -67,6 +69,12 @@ abstract class RepositoryModule {
     abstract fun bindSemesterRepository(
         semesterRepoImpl: SemesterRepoImpl
     ): SemesterRepository
+
+    @Singleton
+    @Binds
+    abstract fun bindNoteRepository(
+        noteRepositoryImpl: NoteRepositoryImpl
+    ): NoteRepository
 
     @Singleton
     @Binds

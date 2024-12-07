@@ -9,7 +9,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
-import tech.toshitworks.attendancechahiye.navigation.NavGraph
+import tech.toshitworks.attendancechahiye.presentation.components.bars.NavigationDrawer
 import tech.toshitworks.attendancechahiye.presentation.screen.splash_screen.SplashScreenViewModel
 import tech.toshitworks.attendancechahiye.ui.theme.AttendanceChahiyeTheme
 
@@ -25,7 +25,7 @@ class MainActivity : ComponentActivity() {
                 val screenRoute by splashScreenViewModel.screenRoute.collectAsState()
                 splashScreen.setKeepOnScreenCondition { isLoading }
                 val navController = rememberNavController()
-                NavGraph(
+                NavigationDrawer(
                     navController = navController,
                     startDestination = screenRoute
                 )

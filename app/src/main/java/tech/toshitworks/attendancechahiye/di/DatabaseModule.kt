@@ -74,6 +74,26 @@ val MIGRATION_4_5 = object : Migration(4,5) {
         database.execSQL("CREATE INDEX IF NOT EXISTS index_attendance_subject_id ON attendance(subject_id)")
     }
 }
+val MIGRATION_5_6 = object : Migration(5, 6) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        // Creating the new table for `note` entity
+        database.execSQL(
+            """
+            CREATE TABLE IF NOT EXISTS `note` (
+                `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
+                `content` TEXT NOT NULL, 
+                `attendance_id` INTEGER NOT NULL, 
+                FOREIGN KEY(`attendance_id`) REFERENCES `attendance`(`id`) ON DELETE CASCADE
+            );
+            """
+        )
+
+        // Creating the index for `attendance_id` in the `note` table
+        database.execSQL(
+            "CREATE UNIQUE INDEX IF NOT EXISTS `index_note_attendance_id` ON `note` (`attendance_id`)"
+        )
+    }
+}
 
 
 
@@ -94,6 +114,7 @@ object DatabaseModule {
         .addMigrations(MIGRATION_2_3)
         .addMigrations(MIGRATION_3_4)
         .addMigrations(MIGRATION_4_5)
+        .addMigrations(MIGRATION_5_6)
         .build()
 
     @Provides
@@ -113,6 +134,10 @@ object DatabaseModule {
 
     @Provides
     fun provideTimetableDao(database: AttendanceDatabase) = database.timetableDao()
+
+    @Provides
+    fun provideNoteDao(database: AttendanceDatabase) = database.noteDao()
+
 
 
 }
