@@ -13,12 +13,13 @@ import tech.toshitworks.attendancechahiye.domain.model.AttendanceStats
 import tech.toshitworks.attendancechahiye.domain.model.SubjectModel
 import tech.toshitworks.attendancechahiye.domain.repository.AttendanceRepository
 import tech.toshitworks.attendancechahiye.domain.repository.PeriodRepository
+import tech.toshitworks.attendancechahiye.domain.repository.SubjectRepository
 import tech.toshitworks.attendancechahiye.mapper.toModel
 import javax.inject.Inject
 
 class AttendanceRepoImpl @Inject constructor(
     private val attendanceDao: AttendanceDao,
-    private val subjectDao: SubjectDao,
+    private val subjectRepository: SubjectRepository,
     private val periodRepository: PeriodRepository
 ) : AttendanceRepository {
     override suspend fun insertAttendance(attendance: AttendanceModel) {
@@ -34,7 +35,7 @@ class AttendanceRepoImpl @Inject constructor(
     }
 
     override suspend fun updateAttendance(attendance: AttendanceModel) {
-        val subjectId = subjectDao.getSubjectByName(attendance.subject!!.name)!!.id
+        val subjectId = subjectRepository.getSubjectByName(attendance.subject!!.name)!!.id
         attendanceDao.updateAttendance(
             AttendanceEntity(
                 subjectId = subjectId,
@@ -65,7 +66,7 @@ class AttendanceRepoImpl @Inject constructor(
     }
 
     override suspend fun deleteAttendance(attendance: AttendanceModel) {
-        val subjectId = subjectDao.getSubjectByName(attendance.subject!!.name)!!.id
+        val subjectId = subjectRepository.getSubjectByName(attendance.subject!!.name)!!.id
         attendanceDao.deleteAttendance(
             AttendanceEntity(
                 subjectId = subjectId,
@@ -80,7 +81,7 @@ class AttendanceRepoImpl @Inject constructor(
         return attendanceDao.getAttendanceByDate(date).map {
             it.map { ae ->
                 val subject = withContext(Dispatchers.IO){
-                    subjectDao.getSubjectById(ae.subjectId).toModel()
+                    subjectRepository.getSubjectById(ae.subjectId)
                 }
                 val period = withContext(Dispatchers.IO){
                     periodRepository.getPeriodById(ae.periodId)
@@ -116,7 +117,7 @@ class AttendanceRepoImpl @Inject constructor(
         return attendanceDao.getAttendanceByDateRange(startDate, endDate).map {
             it.map { ae ->
                 AttendanceModel(
-                    subject = subjectDao.getSubjectById(ae.subjectId).toModel(),
+                    subject = subjectRepository.getSubjectById(ae.subjectId),
                     date = ae.date,
                     isPresent = ae.isPresent,
                     period = periodRepository.getPeriodById(ae.periodId)
