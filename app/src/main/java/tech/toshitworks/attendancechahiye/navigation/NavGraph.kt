@@ -1,5 +1,6 @@
 package tech.toshitworks.attendancechahiye.navigation
 
+import androidx.compose.material3.DrawerState
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -17,6 +18,7 @@ import tech.toshitworks.attendancechahiye.presentation.screen.timetable_screen.T
 
 @Composable
 fun NavGraph(
+    drawerState: DrawerState,
     navController: NavHostController,
     startDestination: String
 ){
@@ -38,7 +40,7 @@ fun NavGraph(
         }
         composable(route = ScreenRoutes.HomeScreen.route){
             val viewModel: HomeScreenViewModel = hiltViewModel()
-            HomeScreen(viewModel)
+            HomeScreen(drawerState,viewModel)
         }
     }
 }
