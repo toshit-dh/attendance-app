@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -122,8 +123,19 @@ fun TimetableForDay(
                                 if (subject == null || !subject.isPresent)
                                     AttendanceButton("P", subject, onEvent, tt, date)
                                 Spacer(modifier = Modifier.height(3.dp))
-                                if (subject == null || subject.isPresent)
+                                if (subject == null || subject.isPresent){
                                     AttendanceButton("A", subject, onEvent, tt, date)
+                                    IconButton(
+                                        onClick = {
+
+                                        }
+                                    ) {
+                                        Icon(imageVector = Icons.Default.Email,
+                                            contentDescription = "note"
+                                        )
+                                    }
+                                }
+
 
                             }
                         }
