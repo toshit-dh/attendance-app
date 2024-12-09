@@ -22,7 +22,7 @@ import javax.inject.Singleton
         SemesterEntity::class,
         NoteEntity::class
     ],
-    version = 6,
+    version = 7,
     exportSchema = false
 )
 
@@ -36,6 +36,7 @@ abstract class AttendanceDatabase : RoomDatabase() {
     abstract fun timetableDao(): TimetableDao
     abstract fun semesterDao(): SemesterDao
     abstract fun noteDao(): NoteDao
+    abstract fun analyticsDao(): AnalyticsDao
 
     companion object {
         const val DATABASE_NAME = "attendance_database"
