@@ -95,6 +95,42 @@ val MIGRATION_5_6 = object : Migration(5, 6) {
     }
 }
 
+val MIGRATION_6_7 = object : Migration(6, 7) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        // Rename the old table
+        database.execSQL("ALTER TABLE attendance RENAME TO attendance_temp")
+
+        // Create the new table with correct schema
+        database.execSQL(
+            """
+            CREATE TABLE attendance (
+                id INTEGER NOT NULL PRIMARY KEY,
+                subject_id INTEGER NOT NULL,
+                period_id INTEGER NOT NULL,
+                date TEXT NOT NULL,
+                is_present INTEGER NOT NULL,
+                day_id INTEGER NOT NULL,
+                FOREIGN KEY(day_id) REFERENCES days(id) ON DELETE CASCADE ON UPDATE NO ACTION,
+                FOREIGN KEY(period_id) REFERENCES periods(id) ON DELETE CASCADE ON UPDATE NO ACTION,
+                FOREIGN KEY(subject_id) REFERENCES subjects(id) ON DELETE CASCADE ON UPDATE NO ACTION
+            )
+            """
+        )
+
+        // Migrate data from old table to new table
+
+
+        // Drop the old table
+        database.execSQL("DROP TABLE attendance_temp")
+
+        // Recreate indices with the correct properties
+        database.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS index_attendance_period_id_date ON attendance(period_id, date)")
+        database.execSQL("CREATE INDEX IF NOT EXISTS index_attendance_subject_id ON attendance(subject_id)")
+        database.execSQL("CREATE INDEX IF NOT EXISTS index_attendance_day_id ON attendance(day_id)")
+    }
+}
+
+
 
 
 @Module
@@ -115,6 +151,7 @@ object DatabaseModule {
         .addMigrations(MIGRATION_3_4)
         .addMigrations(MIGRATION_4_5)
         .addMigrations(MIGRATION_5_6)
+        .addMigrations(MIGRATION_6_7)
         .build()
 
     @Provides
@@ -138,6 +175,8 @@ object DatabaseModule {
     @Provides
     fun provideNoteDao(database: AttendanceDatabase) = database.noteDao()
 
+    @Provides
+    fun provideAnalyticsDao(database: AttendanceDatabase) = database.analyticsDao()
 
 
 }
