@@ -10,7 +10,8 @@ import androidx.room.PrimaryKey
     tableName = "attendance",
     indices = [
         Index(value = ["period_id", "date"], unique = true),
-        Index(value = ["subject_id"])
+        Index(value = ["subject_id"]),
+        Index(value = ["day_id"])
     ],
     foreignKeys = [
         ForeignKey(
@@ -24,11 +25,18 @@ import androidx.room.PrimaryKey
             parentColumns = ["id"],
             childColumns = ["period_id"],
             onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = DayEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["day_id"],
+            onDelete = ForeignKey.CASCADE
         )
     ]
 )
 data class AttendanceEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    @ColumnInfo(name = "day_id") val dayId: Long,
     @ColumnInfo(name = "subject_id") val subjectId: Long,
     @ColumnInfo(name = "period_id") val periodId: Long,
     @ColumnInfo(name = "date") val date: String,

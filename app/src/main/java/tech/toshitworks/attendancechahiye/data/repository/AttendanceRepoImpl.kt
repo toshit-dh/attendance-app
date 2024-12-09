@@ -6,26 +6,27 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import tech.toshitworks.attendancechahiye.data.entity.AttendanceEntity
 import tech.toshitworks.attendancechahiye.data.local.AttendanceDao
-import tech.toshitworks.attendancechahiye.data.local.SubjectDao
 import tech.toshitworks.attendancechahiye.domain.model.AttendanceBySubject
 import tech.toshitworks.attendancechahiye.domain.model.AttendanceModel
 import tech.toshitworks.attendancechahiye.domain.model.AttendanceStats
 import tech.toshitworks.attendancechahiye.domain.model.SubjectModel
 import tech.toshitworks.attendancechahiye.domain.repository.AttendanceRepository
+import tech.toshitworks.attendancechahiye.domain.repository.DayRepository
 import tech.toshitworks.attendancechahiye.domain.repository.PeriodRepository
 import tech.toshitworks.attendancechahiye.domain.repository.SubjectRepository
-import tech.toshitworks.attendancechahiye.mapper.toModel
 import javax.inject.Inject
 
 class AttendanceRepoImpl @Inject constructor(
     private val attendanceDao: AttendanceDao,
     private val subjectRepository: SubjectRepository,
-    private val periodRepository: PeriodRepository
+    private val periodRepository: PeriodRepository,
+    private val dayRepository: DayRepository
 ) : AttendanceRepository {
     override suspend fun insertAttendance(attendance: AttendanceModel) {
         attendanceDao.insertAttendance(
             AttendanceEntity(
                 id = attendance.id,
+                dayId = attendance.day!!.id!!,
                 subjectId = attendance.subject!!.id,
                 periodId = attendance.period.id,
                 date = attendance.date,
@@ -38,6 +39,7 @@ class AttendanceRepoImpl @Inject constructor(
         val subjectId = subjectRepository.getSubjectByName(attendance.subject!!.name)!!.id
         attendanceDao.updateAttendance(
             AttendanceEntity(
+                dayId = attendance.day!!.id!!,
                 subjectId = subjectId,
                 periodId = attendance.period.id,
                 date = attendance.date,
@@ -69,6 +71,7 @@ class AttendanceRepoImpl @Inject constructor(
         val subjectId = subjectRepository.getSubjectByName(attendance.subject!!.name)!!.id
         attendanceDao.deleteAttendance(
             AttendanceEntity(
+                dayId = attendance.day!!.id!!,
                 subjectId = subjectId,
                 date = attendance.date,
                 periodId = attendance.period.id,
@@ -101,6 +104,7 @@ class AttendanceRepoImpl @Inject constructor(
         return attendanceDao.getAttendanceBySubject(subjectName).map {
             it.map { ae ->
                 AttendanceModel(
+
                     subject = null,
                     date = ae.date,
                     isPresent = ae.isPresent,

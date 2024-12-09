@@ -1,4 +1,4 @@
-package tech.toshitworks.attendancechahiye.presentation.screen.home_screen
+package tech.toshitworks.attendancechahiye.presentation.screen.today_attendance_screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import tech.toshitworks.attendancechahiye.domain.model.AttendanceBySubject
 import tech.toshitworks.attendancechahiye.domain.model.DayModel
 import tech.toshitworks.attendancechahiye.domain.model.TimetableModel
 import tech.toshitworks.attendancechahiye.domain.repository.AttendanceRepository
@@ -24,7 +23,7 @@ import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeScreenViewModel @Inject constructor(
+class TodayAttendanceScreenViewModel @Inject constructor(
     private val timetableRepository: TimetableRepository,
     private val attendanceRepository: AttendanceRepository,
     private val subjectRepository: SubjectRepository,
@@ -34,8 +33,11 @@ class HomeScreenViewModel @Inject constructor(
     private val today: LocalDate = LocalDate.now()
     private val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
     private val date = today.format(formatter)
-
     init {
+        val today: LocalDate = LocalDate.now()
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        val date = today.format(formatter)
+        val day = today.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault())
         markAttendance.markAttendance()
         val dayOfWeek = today.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault())
         viewModelScope.launch {
@@ -44,9 +46,11 @@ class HomeScreenViewModel @Inject constructor(
             val timetable = timetableRepository.getTimetableForDay(DayModel(name = dayOfWeek))
             _state.update {
                 it.copy(
-                    dayList = dayList.map {dm->
-                        dm.name
+                    dayList = dayList,
+                    day = dayList.find {dmn->
+                        dmn.name == day
                     },
+                    date = date,
                     timetableForDay = mergeConsecutivePeriods(timetable),
                     subjectList = subjectList,
                     isLoading = false
@@ -55,13 +59,15 @@ class HomeScreenViewModel @Inject constructor(
         }
     }
 
-    private val _state = MutableStateFlow(HomeScreenStates())
+    private val _state = MutableStateFlow(TodayAttendanceScreenStates())
     val state = combine(
         _state,
         attendanceRepository.getOverallAttendance(),
         attendanceRepository.getAttendanceByDate(date),
         attendanceRepository.getAttendancePercentage()
     ) { state, attendanceBySubject, attendanceByDate, attendanceStats ->
+        println("view")
+        println(attendanceByDate)
         state.copy(
             attendanceList = attendanceBySubject,
             attendanceByDate = attendanceByDate,
@@ -70,24 +76,24 @@ class HomeScreenViewModel @Inject constructor(
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
-        initialValue = HomeScreenStates()
+        initialValue = TodayAttendanceScreenStates()
     )
 
-    fun onEvent(event: HomeScreenEvents) {
+    fun onEvent(event: TodayAttendanceScreenEvents) {
         when (event) {
-            is HomeScreenEvents.OnAddAttendance -> {
+            is TodayAttendanceScreenEvents.OnAddAttendance -> {
                 viewModelScope.launch {
                     attendanceRepository.insertAttendance(event.attendanceModel)
                 }
             }
 
-            is HomeScreenEvents.OnUpdateAttendance -> {
+            is TodayAttendanceScreenEvents.OnUpdateAttendance -> {
                 viewModelScope.launch {
                     attendanceRepository.updateAttendanceByDate(event.attendanceModel)
                 }
             }
 
-            is HomeScreenEvents.OnUpdateSubject -> {
+            is TodayAttendanceScreenEvents.OnUpdateSubject -> {
                 _state.update {
                     val list = it.timetableForDay
                     val mlist = list.toMutableList()

@@ -1,14 +1,17 @@
-package tech.toshitworks.attendancechahiye.presentation.screen.home_screen
+package tech.toshitworks.attendancechahiye.presentation.screen.today_attendance_screen
 
 import tech.toshitworks.attendancechahiye.domain.model.AttendanceBySubject
 import tech.toshitworks.attendancechahiye.domain.model.AttendanceModel
 import tech.toshitworks.attendancechahiye.domain.model.AttendanceStats
+import tech.toshitworks.attendancechahiye.domain.model.DayModel
 import tech.toshitworks.attendancechahiye.domain.model.SubjectModel
 import tech.toshitworks.attendancechahiye.domain.model.TimetableModel
 
-data class HomeScreenStates(
+data class TodayAttendanceScreenStates(
     val isLoading: Boolean = true,
-    val dayList: List<String> = listOf(),
+    val day: DayModel? = null,
+    val date: String = "",
+    val dayList: List<DayModel> = listOf(),
     val subjectList: List<SubjectModel> = listOf(),
     val attendanceByDate: List<AttendanceModel> = listOf(),
     val attendanceList: List<AttendanceBySubject> = listOf(),
