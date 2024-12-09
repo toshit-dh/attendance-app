@@ -3,6 +3,7 @@ package tech.toshitworks.attendancechahiye.presentation.screen.splash_screen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -31,6 +32,7 @@ class SplashScreenViewModel @Inject constructor(
                 3 -> ScreenRoutes.HomeScreen.route
                 else -> ScreenRoutes.OnBoardingScreen.route
             }
+            delay(1000)
             _isLoading.value = false
         }
     }
