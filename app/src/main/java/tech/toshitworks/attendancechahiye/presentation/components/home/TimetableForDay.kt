@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -33,21 +34,22 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import tech.toshitworks.attendancechahiye.domain.model.AttendanceModel
+import tech.toshitworks.attendancechahiye.domain.model.DayModel
 import tech.toshitworks.attendancechahiye.domain.model.TimetableModel
-import tech.toshitworks.attendancechahiye.presentation.screen.home_screen.HomeScreenEvents
-import tech.toshitworks.attendancechahiye.presentation.screen.home_screen.HomeScreenStates
+import tech.toshitworks.attendancechahiye.presentation.screen.today_attendance_screen.TodayAttendanceScreenEvents
+import tech.toshitworks.attendancechahiye.presentation.screen.today_attendance_screen.TodayAttendanceScreenStates
 
 @Composable
 fun TimetableForDay(
-    state: HomeScreenStates,
-    onEvent: (HomeScreenEvents) -> Unit,
+    state: TodayAttendanceScreenStates,
+    onEvent: (TodayAttendanceScreenEvents) -> Unit,
     onEditIconClick: () -> Unit,
     date: String,
-    day: String
+    day: DayModel
 ) {
     Column {
         Text(
-            text = "Add Attendance: $day",
+            text = "Add Attendance: ${day.name}",
             modifier = Modifier.padding(24.dp, 3.dp),
             style = MaterialTheme.typography.titleLarge.copy(
                 fontSize = 24.sp,
@@ -69,6 +71,8 @@ fun TimetableForDay(
                 val subject = state.attendanceByDate.find { am ->
                     am.subject == tt.subject && tt.period.id == tt.period.id
                 }
+                println(state.attendanceByDate)
+                println(subject)
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -121,21 +125,27 @@ fun TimetableForDay(
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 if (subject == null || !subject.isPresent)
-                                    AttendanceButton("P", subject, onEvent, tt, date)
+                                    AttendanceButton("P", subject, onEvent, tt, date,day)
                                 Spacer(modifier = Modifier.height(3.dp))
-                                if (subject == null || subject.isPresent){
-                                    AttendanceButton("A", subject, onEvent, tt, date)
-                                    IconButton(
-                                        onClick = {
+                                if (subject == null || subject.isPresent)
+                                    AttendanceButton("A", subject, onEvent, tt, date,day)
+                                Spacer(modifier = Modifier.height(3.dp))
+                                if (subject!=null)
+                                    Box (
+                                        modifier = Modifier
+                                            .clip(RoundedCornerShape(16.dp))
+                                    ){
+                                        IconButton(
+                                            onClick = {
 
+                                            }
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Default.Email,
+                                                contentDescription = "note"
+                                            )
                                         }
-                                    ) {
-                                        Icon(imageVector = Icons.Default.Email,
-                                            contentDescription = "note"
-                                        )
                                     }
-                                }
-
 
                             }
                         }
@@ -150,9 +160,10 @@ fun TimetableForDay(
 private fun AttendanceButton(
     type: String,
     subject: AttendanceModel?,
-    onEvent: (HomeScreenEvents) -> Unit,
+    onEvent: (TodayAttendanceScreenEvents) -> Unit,
     tt: TimetableModel,
-    date: String
+    date: String,
+    day: DayModel
 ) {
     Box(
         modifier = Modifier
@@ -169,8 +180,9 @@ private fun AttendanceButton(
             onClick = {
                 if (subject == null)
                     onEvent(
-                        HomeScreenEvents.OnAddAttendance(
+                        TodayAttendanceScreenEvents.OnAddAttendance(
                             AttendanceModel(
+                                day = day,
                                 subject = tt.subject,
                                 date = date,
                                 isPresent = type == "P",
@@ -180,8 +192,9 @@ private fun AttendanceButton(
                     )
                 else
                     onEvent(
-                        HomeScreenEvents.OnUpdateAttendance(
+                        TodayAttendanceScreenEvents.OnUpdateAttendance(
                             AttendanceModel(
+                                day = day,
                                 subject = tt.subject,
                                 date = date,
                                 isPresent = type == "P",
