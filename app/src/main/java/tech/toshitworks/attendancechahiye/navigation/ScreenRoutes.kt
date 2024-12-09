@@ -14,14 +14,19 @@ sealed class ScreenRoutes(val route: String)  {
     data object HomeScreen: ScreenRoutes("home_screen")
     data object FormScreen: ScreenRoutes("form_screen")
     data object TimetableScreen: ScreenRoutes("attendance_screen")
+    data object TodayAttendance: ScreenRoutes("today_attendance_screen")
+    data object AnalyticsScreen: ScreenRoutes("analytics_screen")
 }
+enum class DrawerScreens{
 
+}
 enum class BottomScreens(
+    val route: String,
     val description: String,
     val iconOutlined: ImageVector,
     val iconFilled: ImageVector
 ) {
-    TodayAttendance("today-attendance",Icons.Outlined.Today,Icons.Filled.Today),
-    AttendanceAnalysis("attendance-analysis",Icons.Outlined.Analytics,Icons.Filled.Analytics),
-    EditAttendance("edit-attendance",Icons.Outlined.EditNote,Icons.Filled.EditNote)
+    TodayAttendance(ScreenRoutes.TodayAttendance.route,"today-attendance",Icons.Outlined.Today,Icons.Filled.Today),
+    AttendanceAnalysis(ScreenRoutes.AnalyticsScreen.route,"attendance-analysis",Icons.Outlined.Analytics,Icons.Filled.Analytics),
+    EditAttendance("","edit-attendance",Icons.Outlined.EditNote,Icons.Filled.EditNote)
 }

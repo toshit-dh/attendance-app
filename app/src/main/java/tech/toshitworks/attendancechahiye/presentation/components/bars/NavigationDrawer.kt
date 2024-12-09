@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import tech.toshitworks.attendancechahiye.R
 import tech.toshitworks.attendancechahiye.navigation.NavGraph
+import tech.toshitworks.attendancechahiye.navigation.NavHomeGraph
 
 @Composable
 fun NavigationDrawer(
@@ -121,7 +122,7 @@ fun NavigationDrawer(
         drawerState = drawerState,
         gesturesEnabled = true
     ) {
-        NavGraph(
+        NavHomeGraph(
             drawerState = drawerState,
             navController = navController,
             startDestination = startDestination

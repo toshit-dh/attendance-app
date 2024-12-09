@@ -12,11 +12,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import tech.toshitworks.attendancechahiye.navigation.BottomScreens
 
 @Composable
 fun BottomBar(
-
+    navController: NavHostController
 ) {
     val selectedItem = remember {
         mutableStateOf(BottomScreens.TodayAttendance)
@@ -39,6 +40,7 @@ fun BottomBar(
                 selected = selectedItem.value == it,
                 onClick = {
                     selectedItem.value = it
+                    navController.navigate(it.route)
                 },
                 icon = {
                     Icon(

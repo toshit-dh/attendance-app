@@ -1,15 +1,13 @@
 package tech.toshitworks.attendancechahiye.navigation
 
-import androidx.compose.material3.DrawerState
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import tech.toshitworks.attendancechahiye.presentation.home_screen.HomeScreen
 import tech.toshitworks.attendancechahiye.presentation.screen.form_screen.FormScreen
 import tech.toshitworks.attendancechahiye.presentation.screen.form_screen.FormScreenViewModel
-import tech.toshitworks.attendancechahiye.presentation.screen.home_screen.HomeScreen
-import tech.toshitworks.attendancechahiye.presentation.screen.home_screen.HomeScreenViewModel
 import tech.toshitworks.attendancechahiye.presentation.screen.onboarding_screen.OnBoardingScreen
 import tech.toshitworks.attendancechahiye.presentation.screen.onboarding_screen.OnBoardingScreenViewModel
 import tech.toshitworks.attendancechahiye.presentation.screen.timetable_screen.TimeTableViewModel
@@ -18,7 +16,6 @@ import tech.toshitworks.attendancechahiye.presentation.screen.timetable_screen.T
 
 @Composable
 fun NavGraph(
-    drawerState: DrawerState,
     navController: NavHostController,
     startDestination: String
 ){
@@ -39,8 +36,8 @@ fun NavGraph(
             TimetableScreen(viewModel,navController)
         }
         composable(route = ScreenRoutes.HomeScreen.route){
-            val viewModel: HomeScreenViewModel = hiltViewModel()
-            HomeScreen(drawerState,viewModel)
+            HomeScreen()
         }
+
     }
 }
