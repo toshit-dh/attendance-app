@@ -4,6 +4,7 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import tech.toshitworks.attendancechahiye.data.repository.AnalyticsRepoImpl
 import tech.toshitworks.attendancechahiye.data.repository.AttendanceRepoImpl
 import tech.toshitworks.attendancechahiye.data.repository.DataStoreRepoImpl
 import tech.toshitworks.attendancechahiye.data.repository.DayRepositoryImpl
@@ -13,6 +14,7 @@ import tech.toshitworks.attendancechahiye.data.repository.PeriodRepositoryImpl
 import tech.toshitworks.attendancechahiye.data.repository.SemesterRepoImpl
 import tech.toshitworks.attendancechahiye.data.repository.SubjectRepoImpl
 import tech.toshitworks.attendancechahiye.data.repository.TimetableRepoImpl
+import tech.toshitworks.attendancechahiye.domain.repository.AnalyticsRepository
 import tech.toshitworks.attendancechahiye.domain.repository.AttendanceRepository
 import tech.toshitworks.attendancechahiye.domain.repository.DataStoreRepository
 import tech.toshitworks.attendancechahiye.domain.repository.DayRepository
@@ -75,6 +77,12 @@ abstract class RepositoryModule {
     abstract fun bindNoteRepository(
         noteRepositoryImpl: NoteRepositoryImpl
     ): NoteRepository
+
+    @Singleton
+    @Binds
+    abstract fun bindAnalyticsRepository(
+        analyticsRepoImpl: AnalyticsRepoImpl
+    ): AnalyticsRepository
 
     @Singleton
     @Binds
