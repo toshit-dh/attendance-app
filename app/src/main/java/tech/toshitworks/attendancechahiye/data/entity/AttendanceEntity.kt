@@ -24,7 +24,7 @@ import androidx.room.PrimaryKey
             entity = PeriodEntity::class,
             parentColumns = ["id"],
             childColumns = ["period_id"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = DayEntity::class,

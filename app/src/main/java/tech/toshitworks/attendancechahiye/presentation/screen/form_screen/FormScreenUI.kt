@@ -49,7 +49,8 @@ fun FormScreen(
     navController: NavHostController
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val onEvent = viewModel::onEvent
+    val onEvent1 = viewModel::onFormScreen1Events
+    val onEvent234 = viewModel::onFormScreen234Event
     val pages = listOf("page1", "page2", "page3", "page4")
     val pagerState = rememberPagerState { pages.size }
     val coroutineScope = rememberCoroutineScope()
@@ -128,10 +129,10 @@ fun FormScreen(
                     modifier = Modifier.weight(1f)
                 ) { page ->
                     when (page) {
-                        0 -> FormPage1(state, onEvent)
-                        1 -> FormPage2(state, onEvent)
-                        2 -> FormPage3(state, onEvent)
-                        3 -> FormPage4(state, onEvent)
+                        0 -> FormPage1(state.semesterModel, onEvent1)
+                        1 -> FormPage2(state, onEvent234)
+                        2 -> FormPage3(state, onEvent234)
+                        3 -> FormPage4(state, onEvent234)
                     }
                 }
                 Row(
@@ -189,7 +190,7 @@ fun FormScreen(
                     if (pagerState.currentPage == pages.size - 1) {
                         Button(
                             onClick = {
-                                onEvent(FormScreenEvents.AddInRoom)
+                                onEvent234(FormScreenEvents.AddInRoom)
                             },
                             modifier = Modifier
                                 .padding(8.dp)

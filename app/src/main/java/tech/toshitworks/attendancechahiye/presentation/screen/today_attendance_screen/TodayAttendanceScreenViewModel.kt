@@ -14,6 +14,7 @@ import tech.toshitworks.attendancechahiye.domain.model.TimetableModel
 import tech.toshitworks.attendancechahiye.domain.repository.AttendanceRepository
 import tech.toshitworks.attendancechahiye.domain.repository.DayRepository
 import tech.toshitworks.attendancechahiye.domain.repository.MarkAttendance
+import tech.toshitworks.attendancechahiye.domain.repository.NoteRepository
 import tech.toshitworks.attendancechahiye.domain.repository.SubjectRepository
 import tech.toshitworks.attendancechahiye.domain.repository.TimetableRepository
 import java.time.LocalDate
@@ -28,6 +29,7 @@ class TodayAttendanceScreenViewModel @Inject constructor(
     private val attendanceRepository: AttendanceRepository,
     private val subjectRepository: SubjectRepository,
     private val dayRepository: DayRepository,
+    private val noteRepository: NoteRepository,
     markAttendance: MarkAttendance
 ) : ViewModel() {
     private val today: LocalDate = LocalDate.now()
@@ -64,14 +66,14 @@ class TodayAttendanceScreenViewModel @Inject constructor(
         _state,
         attendanceRepository.getOverallAttendance(),
         attendanceRepository.getAttendanceByDate(date),
-        attendanceRepository.getAttendancePercentage()
-    ) { state, attendanceBySubject, attendanceByDate, attendanceStats ->
-        println("view")
-        println(attendanceByDate)
+        attendanceRepository.getAttendancePercentage(),
+        noteRepository.getNotesForTodayAttendance()
+    ) { state, attendanceBySubject, attendanceByDate, attendanceStats,notes ->
         state.copy(
             attendanceList = attendanceBySubject,
             attendanceByDate = attendanceByDate,
-            attendanceStats = attendanceStats
+            attendanceStats = attendanceStats,
+            notes = notes
         )
     }.stateIn(
         scope = viewModelScope,
@@ -101,6 +103,12 @@ class TodayAttendanceScreenViewModel @Inject constructor(
                     it.copy(
                          timetableForDay = mergeConsecutivePeriods(mlist)
                     )
+                }
+            }
+
+            is TodayAttendanceScreenEvents.OnAddNote -> {
+                viewModelScope.launch {
+                    noteRepository.insertNote(event.noteModel)
                 }
             }
         }

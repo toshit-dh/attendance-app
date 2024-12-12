@@ -1,5 +1,7 @@
 package tech.toshitworks.attendancechahiye.data.repository
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import tech.toshitworks.attendancechahiye.data.local.SemesterDao
 import tech.toshitworks.attendancechahiye.domain.model.SemesterModel
 import tech.toshitworks.attendancechahiye.domain.repository.SemesterRepository
@@ -18,8 +20,8 @@ class SemesterRepoImpl @Inject constructor(
         semesterDao.updateSemester(semester.toEntity())
     }
 
-    override suspend fun getSemester(): SemesterModel {
-        return semesterDao.getSemester().toModel()
+    override suspend fun getSemester(): SemesterModel = withContext(Dispatchers.IO) {
+        semesterDao.getSemester().toModel()
     }
 
     override suspend fun deleteSemester(semNumber: Int) {

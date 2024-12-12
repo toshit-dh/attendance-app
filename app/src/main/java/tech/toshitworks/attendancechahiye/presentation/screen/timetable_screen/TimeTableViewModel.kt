@@ -55,7 +55,6 @@ class TimeTableViewModel @Inject constructor(
                     listPeriods = listOfPeriods
                 )
             }
-            println(_state.value)
         }
 
     }

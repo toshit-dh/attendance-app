@@ -23,7 +23,7 @@ interface TimetableDao {
     suspend fun getTimetableForDay(dayId: Long): List<TimetableEntity>
 
     @Update
-    suspend fun updatePeriod(timetable: TimetableEntity)
+    suspend fun updatePeriods(timetables: List<TimetableEntity>)
 
     @Delete
     suspend fun deletePeriod(timetable: TimetableEntity)

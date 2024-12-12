@@ -14,6 +14,6 @@ interface SubjectRepository {
 
     suspend fun getSubjects(): List<SubjectModel>
 
-    fun getSubjectById(subjectId: Long): SubjectModel?
+    suspend fun getSubjectById(subjectId: Long): SubjectModel?
 
 }

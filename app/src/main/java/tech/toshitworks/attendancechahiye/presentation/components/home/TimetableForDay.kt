@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,6 +24,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,7 +37,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import tech.toshitworks.attendancechahiye.domain.model.AttendanceModel
 import tech.toshitworks.attendancechahiye.domain.model.DayModel
+import tech.toshitworks.attendancechahiye.domain.model.NoteModel
 import tech.toshitworks.attendancechahiye.domain.model.TimetableModel
+import tech.toshitworks.attendancechahiye.presentation.components.dialogs.AddNoteDialog
 import tech.toshitworks.attendancechahiye.presentation.screen.today_attendance_screen.TodayAttendanceScreenEvents
 import tech.toshitworks.attendancechahiye.presentation.screen.today_attendance_screen.TodayAttendanceScreenStates
 
@@ -47,6 +51,12 @@ fun TimetableForDay(
     date: String,
     day: DayModel
 ) {
+    val addNoteDialogOpen = remember {
+        mutableStateOf(false)
+    }
+    val attendanceIdOfNote = remember {
+        mutableLongStateOf(0L)
+    }
     Column {
         Text(
             text = "Add Attendance: ${day.name}",
@@ -71,8 +81,6 @@ fun TimetableForDay(
                 val subject = state.attendanceByDate.find { am ->
                     am.subject == tt.subject && tt.period.id == tt.period.id
                 }
-                println(state.attendanceByDate)
-                println(subject)
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -80,16 +88,6 @@ fun TimetableForDay(
                         .padding(4.dp),
                 ) {
                     Box {
-                        IconButton(
-                            modifier = Modifier
-                                .align(Alignment.TopEnd),
-                            onClick = onEditIconClick
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Edit,
-                                contentDescription = "edit"
-                            )
-                        }
                         Row(
                             modifier = Modifier
                                 .padding(8.dp)
@@ -131,18 +129,27 @@ fun TimetableForDay(
                                     AttendanceButton("A", subject, onEvent, tt, date,day)
                                 Spacer(modifier = Modifier.height(3.dp))
                                 if (subject!=null)
-                                    Box (
+                                    Row (
                                         modifier = Modifier
                                             .clip(RoundedCornerShape(16.dp))
                                     ){
                                         IconButton(
                                             onClick = {
-
+                                                addNoteDialogOpen.value = true
+                                                attendanceIdOfNote.longValue = subject.id
                                             }
                                         ) {
                                             Icon(
                                                 imageVector = Icons.Default.Email,
                                                 contentDescription = "note"
+                                            )
+                                        }
+                                        IconButton(
+                                            onClick = onEditIconClick
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Default.Edit,
+                                                contentDescription = "edit"
                                             )
                                         }
                                     }
@@ -151,6 +158,31 @@ fun TimetableForDay(
                         }
                     }
                 }
+            }
+        }
+        if (addNoteDialogOpen.value) {
+            val note = state.notes.find { nm ->
+                nm.attendanceId == attendanceIdOfNote.longValue
+            }
+            val content = remember {
+                mutableStateOf(note?.content ?: "")
+            }
+            AddNoteDialog(
+                contentFirst = content,
+                onDismiss = {
+                    addNoteDialogOpen.value = false
+                }
+            ) {
+                onEvent(
+                    TodayAttendanceScreenEvents.OnAddNote(
+                        NoteModel(
+                            id = note?.id?:0,
+                            attendanceId = attendanceIdOfNote.longValue,
+                            content = it
+                        )
+                    )
+                )
+                addNoteDialogOpen.value = false
             }
         }
     }

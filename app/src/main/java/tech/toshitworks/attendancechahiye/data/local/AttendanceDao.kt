@@ -6,9 +6,9 @@ import androidx.room.Query
 import androidx.room.Update
 import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
-import tech.toshitworks.attendancechahiye.data.entity.AttendanceBySubject
+import tech.toshitworks.attendancechahiye.data.dto.AttendanceBySubject
 import tech.toshitworks.attendancechahiye.data.entity.AttendanceEntity
-import tech.toshitworks.attendancechahiye.data.entity.AttendanceStats
+import tech.toshitworks.attendancechahiye.data.dto.AttendanceStats
 
 @Dao
 interface AttendanceDao {

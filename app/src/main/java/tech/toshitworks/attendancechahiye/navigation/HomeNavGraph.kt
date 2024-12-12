@@ -13,6 +13,11 @@ import tech.toshitworks.attendancechahiye.presentation.components.bars.BottomBar
 import tech.toshitworks.attendancechahiye.presentation.components.bars.TopBar
 import tech.toshitworks.attendancechahiye.presentation.screen.analytics_screen.AnalyticsScreen
 import tech.toshitworks.attendancechahiye.presentation.screen.analytics_screen.AnalyticsScreenViewModel
+import tech.toshitworks.attendancechahiye.presentation.screen.edit_info_screen.EditInfoScreen
+import tech.toshitworks.attendancechahiye.presentation.screen.edit_info_screen.EditScreenViewModel
+import tech.toshitworks.attendancechahiye.presentation.screen.export_screen.ExportScreen
+import tech.toshitworks.attendancechahiye.presentation.screen.notes_screen.NotesScreen
+import tech.toshitworks.attendancechahiye.presentation.screen.notes_screen.NotesScreenViewModel
 import tech.toshitworks.attendancechahiye.presentation.screen.today_attendance_screen.TodayAttendanceScreen
 import tech.toshitworks.attendancechahiye.presentation.screen.today_attendance_screen.TodayAttendanceScreenViewModel
 
@@ -47,6 +52,25 @@ fun NavHomeGraph(
                 AnalyticsScreen(
                     modifier,
                     viewModel,
+                )
+            }
+            composable(route = ScreenRoutes.EditInfoScreen.route){
+                val viewModel: EditScreenViewModel = hiltViewModel()
+                EditInfoScreen(
+                    modifier,
+                    viewModel
+                )
+            }
+            composable(route = ScreenRoutes.NotesScreen.route){
+                val viewModel: NotesScreenViewModel = hiltViewModel()
+                NotesScreen(
+                    modifier,
+                    viewModel
+                )
+            }
+            composable(route = ScreenRoutes.ExportScreen.route){
+                ExportScreen(
+                    modifier
                 )
             }
         }

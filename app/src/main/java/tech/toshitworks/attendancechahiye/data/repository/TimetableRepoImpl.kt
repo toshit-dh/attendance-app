@@ -107,17 +107,14 @@ class TimetableRepoImpl @Inject constructor(
         }
     }
 
-    override suspend fun updatePeriod(period: TimetableModel) {
-        val subjectId = getSubjectIdByName(period.subject.name)
-        val dayId = getDayIdByName(period.day.name)
-        val periodId = getPeriodIdByStartTime(period.period.startTime)
-        timetableDao.updatePeriod(
+    override suspend fun updatePeriods(timetables: List<TimetableModel>) {
+        timetableDao.updatePeriods(timetables.map {
             TimetableEntity(
-                subjectId = subjectId,
-                dayId = dayId,
-                periodId = periodId
+                subjectId = getSubjectIdByName(it.subject.name),
+                dayId = getDayIdByName(it.day.name),
+                periodId = getPeriodIdByStartTime(it.period.startTime)
             )
-        )
+        })
     }
 
     override suspend fun deletePeriod(period: TimetableModel) {

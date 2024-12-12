@@ -1,4 +1,4 @@
-package tech.toshitworks.attendancechahiye.presentation.home_screen
+package tech.toshitworks.attendancechahiye.presentation.screen.home_screen
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier

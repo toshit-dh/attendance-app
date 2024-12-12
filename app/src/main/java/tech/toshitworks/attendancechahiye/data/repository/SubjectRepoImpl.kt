@@ -1,5 +1,7 @@
 package tech.toshitworks.attendancechahiye.data.repository
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import tech.toshitworks.attendancechahiye.data.local.SubjectDao
 import tech.toshitworks.attendancechahiye.domain.model.SubjectModel
 import tech.toshitworks.attendancechahiye.domain.repository.SubjectRepository
@@ -34,8 +36,8 @@ class SubjectRepoImpl @Inject constructor(
         }
     }
 
-    override fun getSubjectById(subjectId: Long): SubjectModel? {
-        return subjectDao.getSubjectById(subjectId).toModel()
+    override suspend fun getSubjectById(subjectId: Long): SubjectModel = withContext(Dispatchers.IO){
+        subjectDao.getSubjectById(subjectId).toModel()
     }
 
 }

@@ -35,7 +35,6 @@ fun TrendAnalysis(
     analyticsByWeek: List<AnalyticsByWeek>,
     getWeek: KFunction2<Int, Int, Pair<LocalDate, LocalDate>>
 ) {
-    println(analyticsByWeek)
     val maxLecturesPresent = analyticsByWeek.maxOf {
         it.lecturesPresent
     }

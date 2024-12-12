@@ -1,4 +1,4 @@
-package tech.toshitworks.attendancechahiye.data.entity
+package tech.toshitworks.attendancechahiye.data.dto
 
 import androidx.room.ColumnInfo
 

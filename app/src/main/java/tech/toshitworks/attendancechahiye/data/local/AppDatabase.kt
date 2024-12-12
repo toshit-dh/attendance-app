@@ -2,7 +2,6 @@ package tech.toshitworks.attendancechahiye.data.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import tech.toshitworks.attendancechahiye.data.entity.AttendanceBySubject
 import tech.toshitworks.attendancechahiye.data.entity.AttendanceEntity
 import tech.toshitworks.attendancechahiye.data.entity.DayEntity
 import tech.toshitworks.attendancechahiye.data.entity.NoteEntity

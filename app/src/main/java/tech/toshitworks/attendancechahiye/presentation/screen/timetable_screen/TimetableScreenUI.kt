@@ -304,20 +304,12 @@ fun TimetableScreen(
                                             isUpdatePeriodDialogOpen.value = false
                                         }
                                     ) {
-                                        println(state.listPeriods)
                                         onEvent(
                                             TimeTableScreenEvents.OnAddPeriod(
                                                 it,
                                                 index.value!!
                                             )
                                         )
-                                        println(state.listPeriods.size)
-                                        state.listPeriods.map {u->
-                                            println(u?.subject?.name)
-                                        }
-                                        println(state.listPeriods.all {tm->
-                                            tm != null
-                                        })
                                     }
 
                             }

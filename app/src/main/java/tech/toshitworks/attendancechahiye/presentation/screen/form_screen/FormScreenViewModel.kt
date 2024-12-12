@@ -68,10 +68,9 @@ class FormScreenViewModel @Inject constructor(
         }
     }
 
-
-    fun onEvent(event: FormScreenEvents) {
-        when (event) {
-            is FormScreenEvents.OnSemesterNumberChange -> {
+    fun onFormScreen1Events(event: FormScreen1Events){
+        when(event){
+            is FormScreen1Events.OnSemesterNumberChange -> {
                 _state.update {
                     it.copy(
                         semesterModel = it.semesterModel?.copy(semNumber = event.semNumber)
@@ -79,16 +78,15 @@ class FormScreenViewModel @Inject constructor(
                 }
             }
 
-            is FormScreenEvents.OnStartDateChange -> {
+            is FormScreen1Events.OnStartDateChange -> {
                 _state.update {
-                    println(_state.value.semesterModel)
                     it.copy(
                         semesterModel = it.semesterModel?.copy(startDate = event.startDate)
                     )
                 }
             }
 
-            is FormScreenEvents.OnMidTermDateChange -> {
+            is FormScreen1Events.OnMidTermDateChange -> {
                 _state.update {
                     it.copy(
                         semesterModel = it.semesterModel?.copy(midTermDate = event.midTermDate)
@@ -96,14 +94,20 @@ class FormScreenViewModel @Inject constructor(
                 }
             }
 
-            is FormScreenEvents.OnEndDateChange -> {
+            is FormScreen1Events.OnEndDateChange -> {
                 _state.update {
                     it.copy(
                         semesterModel = it.semesterModel?.copy(endDate = event.endDate)
                     )
                 }
             }
+        }
 
+    }
+
+
+    fun onFormScreen234Event(event: FormScreenEvents) {
+        when (event) {
             is FormScreenEvents.OnAddPeriodClick -> {
                 _state.update {
                     it.copy(
@@ -183,6 +187,7 @@ class FormScreenViewModel @Inject constructor(
                     _event.emit(SnackBarEvent.ShowSnackBarForDataAdded())
                 }
             }
+
         }
     }
 

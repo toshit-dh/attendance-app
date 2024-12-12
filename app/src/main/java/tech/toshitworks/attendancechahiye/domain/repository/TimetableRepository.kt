@@ -13,7 +13,7 @@ interface TimetableRepository {
 
     suspend fun getTimetableForDay(dayModel: DayModel): List<TimetableModel>
 
-    suspend fun updatePeriod(period: TimetableModel)
+    suspend fun updatePeriods(timetables: List<TimetableModel>)
 
     suspend fun deletePeriod(period: TimetableModel)
 

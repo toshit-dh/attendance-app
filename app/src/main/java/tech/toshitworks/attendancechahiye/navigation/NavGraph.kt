@@ -5,7 +5,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import tech.toshitworks.attendancechahiye.presentation.home_screen.HomeScreen
+import tech.toshitworks.attendancechahiye.presentation.screen.home_screen.HomeScreen
 import tech.toshitworks.attendancechahiye.presentation.screen.form_screen.FormScreen
 import tech.toshitworks.attendancechahiye.presentation.screen.form_screen.FormScreenViewModel
 import tech.toshitworks.attendancechahiye.presentation.screen.onboarding_screen.OnBoardingScreen

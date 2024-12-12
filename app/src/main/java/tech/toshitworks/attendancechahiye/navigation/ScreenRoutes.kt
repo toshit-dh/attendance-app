@@ -2,7 +2,10 @@ package tech.toshitworks.attendancechahiye.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Analytics
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.EditNote
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.FileOpen
 import androidx.compose.material.icons.filled.Today
 import androidx.compose.material.icons.outlined.Analytics
 import androidx.compose.material.icons.outlined.EditNote
@@ -16,9 +19,18 @@ sealed class ScreenRoutes(val route: String)  {
     data object TimetableScreen: ScreenRoutes("attendance_screen")
     data object TodayAttendance: ScreenRoutes("today_attendance_screen")
     data object AnalyticsScreen: ScreenRoutes("analytics_screen")
+    data object EditInfoScreen: ScreenRoutes("edit_info_screen")
+    data object NotesScreen : ScreenRoutes("notes_screen")
+    data object ExportScreen : ScreenRoutes("export_screen")
 }
-enum class DrawerScreens{
-
+enum class DrawerScreens(
+    val route: String,
+    val description: String,
+    val icon: ImageVector,
+){
+    EditInfo(ScreenRoutes.EditInfoScreen.route,"Edit Info",Icons.Filled.Edit),
+    Notes(ScreenRoutes.NotesScreen.route,"Notes",Icons.Filled.Email),
+    Export(ScreenRoutes.ExportScreen.route,"Export",Icons.Filled.FileOpen)
 }
 enum class BottomScreens(
     val route: String,

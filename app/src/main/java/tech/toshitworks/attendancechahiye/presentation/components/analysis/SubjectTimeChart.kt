@@ -19,12 +19,6 @@ import co.yml.charts.ui.piechart.models.PieChartConfig
 import co.yml.charts.ui.piechart.models.PieChartData
 import tech.toshitworks.attendancechahiye.domain.model.AnalyticsModel
 
-@Composable
-fun SubjectTimeChart(
-    page: Int,
-   analyticsModel: AnalyticsModel,
-   subjectAnalyticsModel: List<AnalyticsModel>
-){
 val colors = listOf(
     Color(0xFFE57373),
     Color(0xFF81C784),
@@ -37,6 +31,14 @@ val colors = listOf(
     Color(0xFFFFF176),
     Color(0xFF29B6F6)
 )
+
+@Composable
+fun SubjectTimeChart(
+    page: Int,
+   analyticsModel: AnalyticsModel,
+   subjectAnalyticsModel: List<AnalyticsModel>
+){
+
     val slices = subjectAnalyticsModel.mapIndexed {idx,it->
         PieChartData.Slice(
             it.subject!!.name,

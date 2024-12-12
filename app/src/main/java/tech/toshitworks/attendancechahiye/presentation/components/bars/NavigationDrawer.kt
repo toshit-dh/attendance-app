@@ -13,10 +13,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.FileOpen
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -29,16 +25,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import kotlinx.coroutines.launch
 import tech.toshitworks.attendancechahiye.R
-import tech.toshitworks.attendancechahiye.navigation.NavGraph
+import tech.toshitworks.attendancechahiye.navigation.DrawerScreens
 import tech.toshitworks.attendancechahiye.navigation.NavHomeGraph
 
 @Composable
@@ -47,26 +44,10 @@ fun NavigationDrawer(
     navController: NavHostController,
     startDestination: String
 ) {
-    val items = listOf(
-        Pair(
-            first = "Edit  Info",
-            second = Icons.Default.Edit
-        ),
-        Pair(
-            first = "Notes",
-            second = Icons.Default.Email
-        ),
-        Pair(
-            first = "Export",
-            second = Icons.Default.FileOpen
-        )
-    )
-    val itemSelected = remember {
-        mutableStateOf(items[0])
-    }
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val config = LocalConfiguration.current
     val modalWidth = (config.screenWidthDp * 0.7f)
+    val scope = rememberCoroutineScope()
     ModalNavigationDrawer(
         modifier = modifier,
         scrimColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
@@ -112,8 +93,16 @@ fun NavigationDrawer(
                             .fillMaxSize(),
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ){
-                        items(items){
-                            DrawerItem(it, itemSelected)
+                        items(DrawerScreens.entries){
+                            DrawerItem(
+                                it,
+                                onClick = {
+                                    navController.navigate(it.route)
+                                    scope.launch {
+                                        drawerState.close()
+                                    }
+                                }
+                            )
                         }
                     }
                 }
@@ -132,8 +121,8 @@ fun NavigationDrawer(
 
 @Composable
 private fun DrawerItem(
-    it: Pair<String, ImageVector>,
-    itemSelected: MutableState<Pair<String, ImageVector>>
+    item: DrawerScreens,
+    onClick: () -> Unit
 ) {
     NavigationDrawerItem(
         modifier = Modifier
@@ -146,20 +135,18 @@ private fun DrawerItem(
             ),
         label = {
             Text(
-                text = it.first,
+                text = item.description,
                 style = MaterialTheme.typography.titleLarge.copy(
                     fontWeight = FontWeight.Bold
                 )
             )
         },
-        selected = itemSelected.equals(it),
-        onClick = {
-
-        },
+        selected = false,
+        onClick = onClick,
         badge = {
             Icon(
-                imageVector = it.second,
-                contentDescription = it.first,
+                imageVector = item.icon,
+                contentDescription = item.route,
                 tint = MaterialTheme.colorScheme.onSurface
             )
         }

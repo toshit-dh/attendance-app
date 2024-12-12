@@ -4,6 +4,7 @@ import tech.toshitworks.attendancechahiye.domain.model.AttendanceBySubject
 import tech.toshitworks.attendancechahiye.domain.model.AttendanceModel
 import tech.toshitworks.attendancechahiye.domain.model.AttendanceStats
 import tech.toshitworks.attendancechahiye.domain.model.DayModel
+import tech.toshitworks.attendancechahiye.domain.model.NoteModel
 import tech.toshitworks.attendancechahiye.domain.model.SubjectModel
 import tech.toshitworks.attendancechahiye.domain.model.TimetableModel
 
@@ -16,5 +17,7 @@ data class TodayAttendanceScreenStates(
     val attendanceByDate: List<AttendanceModel> = listOf(),
     val attendanceList: List<AttendanceBySubject> = listOf(),
     val timetableForDay: List<TimetableModel> = listOf(),
-    val attendanceStats: AttendanceStats = AttendanceStats(0, 0, 0.0)
+    val attendanceStats: AttendanceStats = AttendanceStats(0, 0, 0.0),
+    val notes: List<NoteModel> = listOf(),
+    val noteModel: NoteModel? = null
 )

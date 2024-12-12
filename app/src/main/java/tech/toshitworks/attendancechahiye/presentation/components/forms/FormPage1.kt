@@ -25,14 +25,15 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import tech.toshitworks.attendancechahiye.domain.model.SemesterModel
+import tech.toshitworks.attendancechahiye.presentation.screen.form_screen.FormScreen1Events
 import tech.toshitworks.attendancechahiye.presentation.screen.form_screen.FormScreenEvents
-import tech.toshitworks.attendancechahiye.presentation.screen.form_screen.FormScreenStates
 import java.util.Calendar
 
 @Composable
 fun FormPage1(
-    state: FormScreenStates,
-    onEvent: (event: FormScreenEvents) -> Unit
+    state: SemesterModel?,
+    onEvent: (event: FormScreen1Events) -> Unit
 ) {
     val context = LocalContext.current
     var showStartDatePicker by remember { mutableStateOf(false) }
@@ -44,15 +45,15 @@ fun FormPage1(
         val formattedDate = "$dayOfMonth/${month + 1}/$year"
         when {
             showStartDatePicker -> {
-                onEvent(FormScreenEvents.OnStartDateChange(formattedDate))
+                onEvent(FormScreen1Events.OnStartDateChange(formattedDate))
                 showStartDatePicker = false
             }
             showMidTermDatePicker -> {
-                onEvent(FormScreenEvents.OnMidTermDateChange(formattedDate))
+                onEvent(FormScreen1Events.OnMidTermDateChange(formattedDate))
                 showMidTermDatePicker = false
             }
             showEndDatePicker -> {
-                onEvent(FormScreenEvents.OnEndDateChange(formattedDate))
+                onEvent(FormScreen1Events.OnEndDateChange(formattedDate))
                 showEndDatePicker = false
             }
         }
@@ -82,11 +83,11 @@ fun FormPage1(
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(8.dp)),
             label = { Text("Add Semester Number") },
-            value = state.semesterModel?.semNumber?.toString() ?: "",
+            value = state?.semNumber?.toString() ?: "",
             onValueChange = {
                 val newValue = it.toIntOrNull()
                 if (newValue != null) {
-                    onEvent(FormScreenEvents.OnSemesterNumberChange(newValue))
+                    onEvent(FormScreen1Events.OnSemesterNumberChange(newValue))
                 }
             },
             singleLine = true,
@@ -97,7 +98,7 @@ fun FormPage1(
         Text("Start Date", fontSize = 18.sp, color = MaterialTheme.colorScheme.onBackground)
         Spacer(modifier = Modifier.height(8.dp))
         TextField(
-            value = state.semesterModel?.startDate ?: "",
+            value = state?.startDate ?: "",
             onValueChange = {},
             label = { Text("Select Start Date") },
             modifier = Modifier
@@ -119,11 +120,11 @@ fun FormPage1(
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Mid Term Date
+
         Text("Mid Term Date", fontSize = 18.sp, color = MaterialTheme.colorScheme.onBackground)
         Spacer(modifier = Modifier.height(8.dp))
         TextField(
-            value = state.semesterModel?.midTermDate ?: "",
+            value = state?.midTermDate ?: "",
             onValueChange = {},
             label = { Text("Select Mid Term Date") },
             modifier = Modifier
@@ -145,11 +146,11 @@ fun FormPage1(
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        // End Date
+
         Text("End Date", fontSize = 18.sp, color = MaterialTheme.colorScheme.onBackground)
         Spacer(modifier = Modifier.height(8.dp))
         TextField(
-            value = state.semesterModel?.endDate ?: "",
+            value = state?.endDate ?: "",
             onValueChange = {},
             label = { Text("Select End Date") },
             modifier = Modifier
