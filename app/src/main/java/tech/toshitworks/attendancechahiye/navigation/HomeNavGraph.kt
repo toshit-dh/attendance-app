@@ -29,7 +29,10 @@ fun NavHomeGraph(
 ) {
     Scaffold(
         topBar = {
-            TopBar(drawerState = drawerState)
+            TopBar(
+                drawerState = drawerState,
+                navController = navController
+            )
         },
         bottomBar = {
             BottomBar(navController)
