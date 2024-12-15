@@ -129,11 +129,14 @@ fun TimetableScreen(
     ) { pv ->
         if (!state.isLoading) {
             Column (
+                modifier = Modifier
+                    .padding(pv),
                 verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
                 Row(
-                    modifier = Modifier.padding(pv),
+                    modifier = Modifier
+                        .weight(5f),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.Top
                 ) {
