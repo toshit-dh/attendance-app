@@ -57,6 +57,18 @@ class AttendanceRepoImpl @Inject constructor(
         )
     }
 
+    override suspend fun getAllAttendance(): List<AttendanceModel> {
+        return attendanceDao.getAllAttendance().map {
+            AttendanceModel(
+                id = it.id,
+                subject = subjectRepository.getSubjectById(it.subjectId),
+                date = it.date,
+                isPresent = it.isPresent,
+                period = periodRepository.getPeriodById(it.periodId)
+            )
+        }
+    }
+
     override fun getAttendancePercentage(): Flow<AttendanceStats> {
         return attendanceDao.getAttendancePercentage().map {
             AttendanceStats(

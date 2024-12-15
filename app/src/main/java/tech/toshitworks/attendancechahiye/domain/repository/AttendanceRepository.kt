@@ -13,6 +13,8 @@ interface AttendanceRepository {
 
     suspend fun updateAttendanceByDate(attendance: AttendanceModel)
 
+    suspend fun getAllAttendance(): List<AttendanceModel>
+
     fun getAttendancePercentage(): Flow<AttendanceStats>
 
     suspend fun deleteAttendance(attendance: AttendanceModel)

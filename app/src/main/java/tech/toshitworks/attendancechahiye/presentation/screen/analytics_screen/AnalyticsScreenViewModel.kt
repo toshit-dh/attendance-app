@@ -8,6 +8,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import tech.toshitworks.attendancechahiye.domain.repository.AnalyticsRepository
+import tech.toshitworks.attendancechahiye.domain.repository.AttendanceRepository
+import tech.toshitworks.attendancechahiye.domain.repository.SemesterRepository
 import java.time.LocalDate
 import java.time.temporal.WeekFields
 import java.util.Locale
@@ -15,7 +17,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AnalyticsScreenViewModel @Inject constructor(
-    private val analyticsRepository: AnalyticsRepository
+    private val analyticsRepository: AnalyticsRepository,
+    private val attendanceRepository: AttendanceRepository,
+    private val semesterRepository: SemesterRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AnalyticsScreenState())
@@ -32,12 +36,32 @@ class AnalyticsScreenViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-           val analyticList = analyticsRepository.getAnalysis()
+            val info = semesterRepository.getSemester()
+            val attendance = attendanceRepository.getAllAttendance()
+            val analyticList =
+                analyticsRepository.getAnalysis(info.startDate, info.midTermDate, info.endDate)
             _state.update {
                 it.copy(
                     isLoading = false,
-                    analyticsList = analyticList
+                    analyticsList = analyticList,
+                    attendanceList = attendance,
+                    filteredAttendanceList = attendance
                 )
+            }
+        }
+    }
+
+    fun onEvent(event: AnalyticsScreenEvents) {
+        when (event) {
+            is AnalyticsScreenEvents.OnChangeSubject -> {
+                val filteredList = if (event.subjectId!=0L)_state.value.attendanceList.filter {
+                    it.subject!!.id == event.subjectId
+                } else _state.value.attendanceList
+                _state.update {
+                    it.copy(
+                        filteredAttendanceList = filteredList
+                    )
+                }
             }
         }
     }

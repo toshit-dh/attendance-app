@@ -36,7 +36,7 @@ val colors = listOf(
 fun SubjectTimeChart(
     page: Int,
    analyticsModel: AnalyticsModel,
-   subjectAnalyticsModel: List<AnalyticsModel>
+   subjectAnalyticsModel: List<AnalyticsModel>,
 ){
 
     val slices = subjectAnalyticsModel.mapIndexed {idx,it->
@@ -59,7 +59,7 @@ fun SubjectTimeChart(
         plotType = PlotType.Pie,
     )
     Column(
-        modifier = Modifier.height(200.dp),
+        modifier = Modifier.height(180.dp),
         verticalArrangement = Arrangement.Center
     ) {
         Row(
@@ -90,10 +90,16 @@ fun SubjectTimeChart(
                     PieChart(
                         modifier = Modifier
                             .width(200.dp)
-                            .height(175.dp),
+                            .height(150.dp),
                         pieChartData,
                         pieChartConfig
                     )
+                else
+                    if (analyticsModel.subject?.isAttendanceCounted == true)
+                        EligibilityAnalysis(
+                            analyticsModel.eligibilityOfMidterm,
+                            analyticsModel.eligibilityOfEndSem
+                        )
             }
         }
     }

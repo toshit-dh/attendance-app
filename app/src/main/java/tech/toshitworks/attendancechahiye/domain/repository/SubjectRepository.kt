@@ -1,5 +1,6 @@
 package tech.toshitworks.attendancechahiye.domain.repository
 
+import tech.toshitworks.attendancechahiye.domain.model.DayModel
 import tech.toshitworks.attendancechahiye.domain.model.SubjectModel
 
 interface SubjectRepository {
@@ -15,5 +16,7 @@ interface SubjectRepository {
     suspend fun getSubjects(): List<SubjectModel>
 
     suspend fun getSubjectById(subjectId: Long): SubjectModel?
+
+    //suspend fun getLecturesByDays(subjectId: Long): List<DayModel>
 
 }

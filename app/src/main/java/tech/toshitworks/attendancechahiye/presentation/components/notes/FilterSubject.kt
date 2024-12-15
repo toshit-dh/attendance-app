@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.zIndex
 import tech.toshitworks.attendancechahiye.domain.model.SubjectModel
+import tech.toshitworks.attendancechahiye.presentation.screen.notes_screen.Filters
 import tech.toshitworks.attendancechahiye.presentation.screen.notes_screen.NotesScreenEvents
 
 @Composable
@@ -88,7 +89,8 @@ fun FilterSubject(
                                 if (sm.id !in selectedSubjects)
                                     IconButton(
                                         onClick = {
-
+                                            onEvent(NotesScreenEvents.OnChangeFilter(Filters.Subject(sm.id)))
+                                            println(selectedSubjects)
                                         }
                                     ) {
                                         Icon(
@@ -99,7 +101,7 @@ fun FilterSubject(
                                 else
                                     IconButton(
                                         onClick = {
-
+                                            onEvent(NotesScreenEvents.OnChangeFilter(Filters.Subject(sm.id)))
                                         }
                                     ) {
                                         Icon(

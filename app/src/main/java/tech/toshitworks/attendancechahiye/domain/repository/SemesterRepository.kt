@@ -11,4 +11,6 @@ interface SemesterRepository {
     suspend fun getSemester(): SemesterModel
 
     suspend fun deleteSemester(semNumber: Int)
+
+
 }

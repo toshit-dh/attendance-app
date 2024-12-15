@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
+import tech.toshitworks.attendancechahiye.data.entity.DayEntity
 import tech.toshitworks.attendancechahiye.data.entity.SubjectEntity
 
 @Dao
@@ -26,5 +27,12 @@ interface SubjectDao {
 
     @Query("SELECT * FROM subjects WHERE id = :subjectId LIMIT 1")
     fun getSubjectById(subjectId: Long): SubjectEntity
+
+//    @Query("""
+//        SELECT d.name FROM
+//        timetable t INNER JOIN days d
+//        WHERE t.day_id = d.id AND t.subject_id = :subjectId
+//    """)
+//    suspend fun getLecturesByDays(subjectId: Long): List<DayEntity>
 
 }

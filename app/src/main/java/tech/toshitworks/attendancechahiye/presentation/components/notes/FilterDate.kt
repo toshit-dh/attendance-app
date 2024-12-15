@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import tech.toshitworks.attendancechahiye.presentation.screen.notes_screen.NotesScreenEvents
 
 @Composable
@@ -30,11 +31,13 @@ fun FilterDate(
         )
         Text(
             text = "Start Date",
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            textDecoration = TextDecoration.Underline
         )
         Text(
             text = "End Date",
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            textDecoration = TextDecoration.Underline
         )
     }
 }

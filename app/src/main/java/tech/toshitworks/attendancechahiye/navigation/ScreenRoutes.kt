@@ -22,6 +22,7 @@ sealed class ScreenRoutes(val route: String)  {
     data object EditInfoScreen: ScreenRoutes("edit_info_screen")
     data object NotesScreen : ScreenRoutes("notes_screen")
     data object ExportScreen : ScreenRoutes("export_screen")
+    data object NotificationScreen : ScreenRoutes("notification_screen")
 }
 enum class DrawerScreens(
     val route: String,

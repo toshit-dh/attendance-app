@@ -10,6 +10,8 @@ import tech.toshitworks.attendancechahiye.domain.model.AnalyticsModel
 import tech.toshitworks.attendancechahiye.domain.repository.AnalyticsRepository
 import tech.toshitworks.attendancechahiye.domain.repository.DayRepository
 import tech.toshitworks.attendancechahiye.domain.repository.SubjectRepository
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 class AnalyticsRepoImpl @Inject constructor(
@@ -17,7 +19,22 @@ class AnalyticsRepoImpl @Inject constructor(
     private val subjectRepository: SubjectRepository,
     private val analyticsDao: AnalyticsDao
 ): AnalyticsRepository {
-    override suspend fun getAnalysis(): List<AnalyticsModel> = coroutineScope {
+    fun countDaysBetweenDates(startDate: String, endDate: String): Map<String, Int> {
+        val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        val start = LocalDate.parse(startDate, dateFormatter)
+        val end = LocalDate.parse(endDate, dateFormatter)
+
+        val dayCount = mutableMapOf<String, Int>()
+        var currentDate = start
+        while (!currentDate.isAfter(end)) {
+            val dayOfWeek = currentDate.dayOfWeek.toString()
+            dayCount[dayOfWeek] = dayCount.getOrDefault(dayOfWeek, 0) + 1
+            currentDate = currentDate.plusDays(1)
+        }
+        return dayCount
+    }
+
+    override suspend fun getAnalysis(startDate: String, midTermDate: String?, endSemDate: String?): List<AnalyticsModel> = coroutineScope {
         val subjects = async { subjectRepository.getSubjects() }.await().dropLastWhile {
             it.name == "Lunch" || it.name == "No Period"
         }
@@ -51,7 +68,12 @@ class AnalyticsRepoImpl @Inject constructor(
             val subjectsAnalysisByMonth = subjectsAnalysisByMonthD.map { it.await() }
             val dayMap = days.associateBy { it.id }
             val subjectMap = subjects.associateBy { it.id }
+            val midTermMap = countDaysBetweenDates(startDate,midTermDate?:startDate)
+            val endSemMap = countDaysBetweenDates(startDate,endSemDate?:startDate)
+            
             val subjectAnalysisList = subjects.mapIndexed { idx, it ->
+                //val days = subjectRepository.getLecturesByDays(it.id)
+
                 val sA = subjectsAnalysis[idx]
                 val sABD = subjectsAnalysisByDay[idx]
                 val sABW = subjectsAnalysisByWeek[idx]
