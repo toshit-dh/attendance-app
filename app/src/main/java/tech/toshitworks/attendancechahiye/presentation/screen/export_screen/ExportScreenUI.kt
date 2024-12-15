@@ -29,7 +29,8 @@ fun ExportScreen(
     val list = listOf(
         "Subjects",
         "Timetable",
-        "Attendance"
+        "Attendance",
+        "Notes"
     )
     val selectedItems = remember {
         mutableStateOf(listOf(""))
