@@ -39,6 +39,10 @@ android {
     buildFeatures {
         compose = true
     }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.1.0-beta03"
+    }
+
 }
 
 dependencies {
@@ -82,5 +86,8 @@ dependencies {
     implementation(libs.androidx.work.runtime.ktx)
 
     implementation(libs.ycharts)
+
+    implementation(libs.androidx.glance)
+    implementation(libs.androidx.glance.appwidget)
 
 }
