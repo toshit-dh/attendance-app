@@ -88,6 +88,16 @@ fun TimetableForDay(
                         .padding(4.dp),
                 ) {
                     Box {
+                        IconButton(
+                            modifier = Modifier
+                                .align(Alignment.TopEnd),
+                            onClick = onEditIconClick
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Edit,
+                                contentDescription = "edit"
+                            )
+                        }
                         Row(
                             modifier = Modifier
                                 .padding(8.dp)
@@ -142,14 +152,6 @@ fun TimetableForDay(
                                             Icon(
                                                 imageVector = Icons.Default.Email,
                                                 contentDescription = "note"
-                                            )
-                                        }
-                                        IconButton(
-                                            onClick = onEditIconClick
-                                        ) {
-                                            Icon(
-                                                imageVector = Icons.Default.Edit,
-                                                contentDescription = "edit"
                                             )
                                         }
                                     }
