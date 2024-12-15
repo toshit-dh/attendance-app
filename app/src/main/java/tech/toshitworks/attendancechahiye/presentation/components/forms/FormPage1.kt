@@ -29,6 +29,7 @@ import tech.toshitworks.attendancechahiye.domain.model.SemesterModel
 import tech.toshitworks.attendancechahiye.presentation.screen.form_screen.FormScreen1Events
 import tech.toshitworks.attendancechahiye.presentation.screen.form_screen.FormScreenEvents
 import java.util.Calendar
+import java.util.Locale
 
 @Composable
 fun FormPage1(
@@ -42,7 +43,7 @@ fun FormPage1(
     val calendar = Calendar.getInstance()
 
     val datePickerListener = DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
-        val formattedDate = "$dayOfMonth/${month + 1}/$year"
+        val formattedDate = String.format(Locale.US,"%04d-%02d-%02d", year, month + 1, dayOfMonth)
         when {
             showStartDatePicker -> {
                 onEvent(FormScreen1Events.OnStartDateChange(formattedDate))
