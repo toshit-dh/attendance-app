@@ -15,6 +15,7 @@ import tech.toshitworks.attendancechahiye.domain.repository.AttendanceRepository
 import tech.toshitworks.attendancechahiye.domain.repository.DayRepository
 import tech.toshitworks.attendancechahiye.domain.repository.MarkAttendance
 import tech.toshitworks.attendancechahiye.domain.repository.NoteRepository
+import tech.toshitworks.attendancechahiye.domain.repository.SemesterRepository
 import tech.toshitworks.attendancechahiye.domain.repository.SubjectRepository
 import tech.toshitworks.attendancechahiye.domain.repository.TimetableRepository
 import java.time.LocalDate
@@ -30,6 +31,7 @@ class TodayAttendanceScreenViewModel @Inject constructor(
     private val subjectRepository: SubjectRepository,
     private val dayRepository: DayRepository,
     private val noteRepository: NoteRepository,
+    private val semesterRepository: SemesterRepository,
     markAttendance: MarkAttendance
 ) : ViewModel() {
     private val today: LocalDate = LocalDate.now()
@@ -46,6 +48,7 @@ class TodayAttendanceScreenViewModel @Inject constructor(
             val subjectList = subjectRepository.getSubjects()
             val dayList = dayRepository.getDays()
             val timetable = timetableRepository.getTimetableForDay(DayModel(name = dayOfWeek))
+            val startDate = semesterRepository.getSemester().startDate
             _state.update {
                 it.copy(
                     dayList = dayList,
@@ -53,6 +56,7 @@ class TodayAttendanceScreenViewModel @Inject constructor(
                         dmn.name == day
                     },
                     date = date,
+                    startDate = startDate,
                     timetableForDay = mergeConsecutivePeriods(timetable),
                     subjectList = subjectList,
                     isLoading = false

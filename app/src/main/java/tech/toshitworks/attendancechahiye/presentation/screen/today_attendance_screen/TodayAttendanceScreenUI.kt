@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import tech.toshitworks.attendancechahiye.presentation.components.dialogs.ChangeSubjectDialog
 import tech.toshitworks.attendancechahiye.presentation.components.home.TimetableForDay
+import java.time.LocalDate
 
 
 @Composable
@@ -33,14 +34,18 @@ fun TodayAttendanceScreen(
     val isSubjectChangedDialogOpen = remember {
         mutableStateOf(false)
     }
-    if (!state.isLoading)
+    if (!state.isLoading) {
+        val startDate = state.startDate.split("-")
+        val todayDate = state.date.split("-")
+        val sdLocale = LocalDate.of(startDate[0].toInt(), startDate[1].toInt(), startDate[2].toInt())
+        val tdLocale = LocalDate.of(todayDate[0].toInt(), todayDate[1].toInt(), todayDate[2].toInt())
         Column(
             modifier = modifier
         ) {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(140.dp)
+                    .height(165.dp)
                     .padding(12.dp),
             ) {
                 Text(
@@ -70,7 +75,7 @@ fun TodayAttendanceScreen(
                     )
                 }
             }
-            if (state.dayList.contains(state.day)) {
+            if (state.dayList.contains(state.day) && tdLocale.isAfter(sdLocale)) {
                 TimetableForDay(
                     state = state,
                     onEvent = onEvent,
@@ -91,6 +96,7 @@ fun TodayAttendanceScreen(
                     }
             }
         }
+    }
 }
 
 
