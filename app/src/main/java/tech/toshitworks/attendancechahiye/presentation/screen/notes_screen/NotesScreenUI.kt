@@ -21,28 +21,29 @@ fun NotesScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val onEvent = viewModel::onEvent
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(8.dp),
-        verticalArrangement = Arrangement.spacedBy(6.dp)
-    ) {
-        FiltersRow(
-            states = state,
-            onEvent = onEvent
-        )
-        LazyColumn(
-            modifier = Modifier,
+    if(!state.isLoading)
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(8.dp),
             verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
-            items(state.notes) {
-                NoteCard(
-                    state = state,
-                    note = it.note,
-                    attendance = it.attendance
-                )
+            FiltersRow(
+                states = state,
+                onEvent = onEvent
+            )
+            LazyColumn(
+                modifier = Modifier,
+                verticalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                items(state.filteredNotes) {
+                    NoteCard(
+                        state = state,
+                        note = it.note,
+                        attendance = it.attendance
+                    )
+                }
             }
         }
-    }
 }
 

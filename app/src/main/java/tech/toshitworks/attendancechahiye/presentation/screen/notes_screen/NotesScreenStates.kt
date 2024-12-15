@@ -3,11 +3,12 @@ package tech.toshitworks.attendancechahiye.presentation.screen.notes_screen
 import tech.toshitworks.attendancechahiye.domain.model.DayModel
 import tech.toshitworks.attendancechahiye.domain.model.NotesOf
 import tech.toshitworks.attendancechahiye.domain.model.PeriodModel
-import tech.toshitworks.attendancechahiye.domain.model.Six
 import tech.toshitworks.attendancechahiye.domain.model.SubjectModel
 
 data class NotesScreenStates(
+    val isLoading: Boolean = true,
     val notes: List<NotesOf> = listOf(),
+    val filteredNotes: List<NotesOf> = listOf(),
     val subjects: List<SubjectModel> = listOf(),
     val periods: List<PeriodModel> = listOf(),
     val days: List<DayModel> = listOf(),

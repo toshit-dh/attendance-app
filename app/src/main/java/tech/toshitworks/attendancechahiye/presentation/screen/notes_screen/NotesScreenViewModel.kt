@@ -38,16 +38,24 @@ class NotesScreenViewModel @Inject constructor(
                 periods = periods,
                 days = days,
                 notes = notes,
+                filteredNotes = notes,
                 subjectFilter = subjects.map {
                     it.id
-                }
+                },
+                periodFilter = periods.map {
+                    it.id
+                },
+                dayFilter = days.map {
+                    it.id!!
+                },
+                isLoading = false
             )
         }
     }
 
     private fun applyFilters() {
         _state.update { currentState ->
-            val filteredNotes = currentState.notes.filter { note ->
+            val filteredNotes = _state.value.notes.filter { note ->
                 val matchesSubject = currentState.subjectFilter.isEmpty() ||
                         note.attendance.subjectId in currentState.subjectFilter
 
@@ -63,11 +71,9 @@ class NotesScreenViewModel @Inject constructor(
                 val matchesAttend =
                     currentState.attend == null ||
                             note.attendance.isPresent == currentState.attend
-
                 matchesSubject && matchesPeriod && matchesDate && matchesDay && matchesAttend
             }
-
-            currentState.copy(notes = filteredNotes)
+            currentState.copy(filteredNotes = filteredNotes)
         }
     }
 
