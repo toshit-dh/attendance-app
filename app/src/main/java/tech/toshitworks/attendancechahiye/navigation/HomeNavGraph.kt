@@ -13,11 +13,13 @@ import tech.toshitworks.attendancechahiye.presentation.components.bars.BottomBar
 import tech.toshitworks.attendancechahiye.presentation.components.bars.TopBar
 import tech.toshitworks.attendancechahiye.presentation.screen.analytics_screen.AnalyticsScreen
 import tech.toshitworks.attendancechahiye.presentation.screen.analytics_screen.AnalyticsScreenViewModel
+import tech.toshitworks.attendancechahiye.presentation.screen.edit_attendance_screen.EditAttendanceScreen
 import tech.toshitworks.attendancechahiye.presentation.screen.edit_info_screen.EditInfoScreen
 import tech.toshitworks.attendancechahiye.presentation.screen.edit_info_screen.EditScreenViewModel
 import tech.toshitworks.attendancechahiye.presentation.screen.export_screen.ExportScreen
 import tech.toshitworks.attendancechahiye.presentation.screen.notes_screen.NotesScreen
 import tech.toshitworks.attendancechahiye.presentation.screen.notes_screen.NotesScreenViewModel
+import tech.toshitworks.attendancechahiye.presentation.screen.notification_screen.NotificationScreen
 import tech.toshitworks.attendancechahiye.presentation.screen.today_attendance_screen.TodayAttendanceScreen
 import tech.toshitworks.attendancechahiye.presentation.screen.today_attendance_screen.TodayAttendanceScreenViewModel
 
@@ -73,6 +75,16 @@ fun NavHomeGraph(
             }
             composable(route = ScreenRoutes.ExportScreen.route){
                 ExportScreen(
+                    modifier
+                )
+            }
+            composable(route = ScreenRoutes.EditAttendanceScreen.route){
+                EditAttendanceScreen(
+                    modifier
+                )
+            }
+            composable(route = ScreenRoutes.NotificationScreen.route){
+                NotificationScreen(
                     modifier
                 )
             }

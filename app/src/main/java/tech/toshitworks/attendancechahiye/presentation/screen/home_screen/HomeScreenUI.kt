@@ -10,9 +10,9 @@ import tech.toshitworks.attendancechahiye.presentation.components.bars.Navigatio
 fun HomeScreen(
 ) {
     val navController = rememberNavController()
-        NavigationDrawer(
-            modifier = Modifier,
-            navController = navController,
-            startDestination = ScreenRoutes.TodayAttendance.route
-        )
+    NavigationDrawer(
+        modifier = Modifier,
+        navController = navController,
+        startDestination = ScreenRoutes.TodayAttendance.route
+    )
 }
