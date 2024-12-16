@@ -9,9 +9,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -84,13 +86,18 @@ fun TimetableForDay(
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(130.dp)
+                        .height(145.dp)
                         .padding(4.dp),
                 ) {
-                    Box {
+                    Box(
+                        modifier = Modifier
+                            .padding(4.dp)
+                    ) {
                         IconButton(
                             modifier = Modifier
-                                .align(Alignment.TopEnd),
+                                .align(Alignment.TopEnd)
+                                .height(25.dp)
+                                .width(25.dp),
                             onClick = onEditIconClick
                         ) {
                             Icon(
@@ -105,6 +112,8 @@ fun TimetableForDay(
                             Column(
                                 modifier = Modifier
                                     .weight(1f)
+                                    .fillMaxHeight(),
+                                verticalArrangement = Arrangement.SpaceBetween
                             ) {
                                 Details(tt)
                             }
@@ -128,8 +137,9 @@ fun TimetableForDay(
                             }
                             Column(
                                 modifier = Modifier
-                                    .weight(1f),
-                                verticalArrangement = Arrangement.Center,
+                                    .weight(1f)
+                                    .fillMaxHeight(),
+                                verticalArrangement = Arrangement.SpaceBetween,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 if (subject == null || !subject.isPresent)
