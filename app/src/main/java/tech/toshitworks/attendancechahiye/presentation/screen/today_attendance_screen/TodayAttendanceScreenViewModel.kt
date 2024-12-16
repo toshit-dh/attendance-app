@@ -49,6 +49,7 @@ class TodayAttendanceScreenViewModel @Inject constructor(
             val dayList = dayRepository.getDays()
             val timetable = timetableRepository.getTimetableForDay(DayModel(name = dayOfWeek))
             val startDate = semesterRepository.getSemester().startDate
+            val endDate = semesterRepository.getSemester().endDate
             _state.update {
                 it.copy(
                     dayList = dayList,
@@ -57,6 +58,7 @@ class TodayAttendanceScreenViewModel @Inject constructor(
                     },
                     date = date,
                     startDate = startDate,
+                    endDate = endDate,
                     timetableForDay = mergeConsecutivePeriods(timetable),
                     subjectList = subjectList,
                     isLoading = false

@@ -13,6 +13,7 @@ data class TodayAttendanceScreenStates(
     val day: DayModel? = null,
     val date: String = "",
     val startDate: String = "",
+    val endDate: String? = "",
     val dayList: List<DayModel> = listOf(),
     val subjectList: List<SubjectModel> = listOf(),
     val attendanceByDate: List<AttendanceModel> = listOf(),

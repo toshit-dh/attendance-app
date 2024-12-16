@@ -34,11 +34,19 @@ fun TodayAttendanceScreen(
     val isSubjectChangedDialogOpen = remember {
         mutableStateOf(false)
     }
+    var endDateNull: Boolean = false
     if (!state.isLoading) {
         val startDate = state.startDate.split("-")
         val todayDate = state.date.split("-")
+        val endDate = state.endDate?.split("-")
         val sdLocale = LocalDate.of(startDate[0].toInt(), startDate[1].toInt(), startDate[2].toInt())
         val tdLocale = LocalDate.of(todayDate[0].toInt(), todayDate[1].toInt(), todayDate[2].toInt())
+        val edLocale = try{
+            LocalDate.of(endDate?.get(0)?.toInt() ?: 0, endDate?.get(1)?.toInt() ?: 0, endDate?.get(2)?.toInt() ?: 0)
+        }catch (e: Exception){
+            endDateNull = true
+            LocalDate.of(2000,1,1)
+        }
         Column(
             modifier = modifier
         ) {
@@ -75,7 +83,10 @@ fun TodayAttendanceScreen(
                     )
                 }
             }
-            if (state.dayList.contains(state.day) && tdLocale.isAfter(sdLocale)) {
+            val isValidDay = state.day != null && state.dayList.contains(state.day)
+            val isInDateRange = tdLocale.isAfter(sdLocale) ||
+                    (tdLocale.isEqual(sdLocale) && (endDateNull || tdLocale.isBefore(edLocale)))
+            if (isValidDay && isInDateRange) {
                 TimetableForDay(
                     state = state,
                     onEvent = onEvent,
