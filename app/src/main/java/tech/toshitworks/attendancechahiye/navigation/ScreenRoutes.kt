@@ -23,6 +23,7 @@ sealed class ScreenRoutes(val route: String)  {
     data object NotesScreen : ScreenRoutes("notes_screen")
     data object ExportScreen : ScreenRoutes("export_screen")
     data object NotificationScreen : ScreenRoutes("notification_screen")
+    data object EditAttendanceScreen : ScreenRoutes("edit_attendance_screen")
 }
 enum class DrawerScreens(
     val route: String,
@@ -41,5 +42,5 @@ enum class BottomScreens(
 ) {
     TodayAttendance(ScreenRoutes.TodayAttendance.route,"today-attendance",Icons.Outlined.Today,Icons.Filled.Today),
     AttendanceAnalysis(ScreenRoutes.AnalyticsScreen.route,"attendance-analysis",Icons.Outlined.Analytics,Icons.Filled.Analytics),
-    EditAttendance("","edit-attendance",Icons.Outlined.EditNote,Icons.Filled.EditNote)
+    EditAttendance(ScreenRoutes.EditAttendanceScreen.route,"edit-attendance",Icons.Outlined.EditNote,Icons.Filled.EditNote)
 }
