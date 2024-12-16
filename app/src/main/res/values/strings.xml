@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">AttendanceChahiye</string>
+    <string name="widget_text">Attendance Stats</string>"
+    <string name="widget_text_2">Mark Attendance</string>
 </resources>
