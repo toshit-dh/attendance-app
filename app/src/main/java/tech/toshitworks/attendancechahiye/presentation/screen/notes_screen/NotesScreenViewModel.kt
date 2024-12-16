@@ -26,7 +26,7 @@ class NotesScreenViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            val notes = noteRepository.getNotesByAttendance()
+            val notes = noteRepository.getNotesByAttendance().reversed()
             val subjects = subjectRepository.getSubjects().filter {
                 it.name != "Lunch" && it.name != "No Period"
             }
