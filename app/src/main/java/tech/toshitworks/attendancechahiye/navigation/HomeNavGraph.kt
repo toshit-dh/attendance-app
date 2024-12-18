@@ -14,6 +14,7 @@ import tech.toshitworks.attendancechahiye.presentation.components.bars.TopBar
 import tech.toshitworks.attendancechahiye.presentation.screen.analytics_screen.AnalyticsScreen
 import tech.toshitworks.attendancechahiye.presentation.screen.analytics_screen.AnalyticsScreenViewModel
 import tech.toshitworks.attendancechahiye.presentation.screen.edit_attendance_screen.EditAttendanceScreen
+import tech.toshitworks.attendancechahiye.presentation.screen.edit_attendance_screen.EditAttendanceScreenViewModel
 import tech.toshitworks.attendancechahiye.presentation.screen.edit_info_screen.EditInfoScreen
 import tech.toshitworks.attendancechahiye.presentation.screen.edit_info_screen.EditScreenViewModel
 import tech.toshitworks.attendancechahiye.presentation.screen.export_screen.ExportScreen
@@ -79,8 +80,10 @@ fun NavHomeGraph(
                 )
             }
             composable(route = ScreenRoutes.EditAttendanceScreen.route){
+                val viewModel: EditAttendanceScreenViewModel = hiltViewModel()
                 EditAttendanceScreen(
-                    modifier
+                    modifier,
+                    viewModel
                 )
             }
             composable(route = ScreenRoutes.NotificationScreen.route){
