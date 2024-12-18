@@ -47,7 +47,7 @@ fun TrendAnalysis(
     val endDay = analyticsByWeek.last().yearWeek.split('-')
     val (_,end) = getWeek(endDay[0].toInt(),endDay[1].toInt())
     val xAxisData = AxisData.Builder()
-        .axisStepSize(100.dp)
+        .axisStepSize(40.dp)
         .backgroundColor(Color.White)
         .steps(points.size-1)
         .labelData { i ->
