@@ -17,6 +17,8 @@ interface AttendanceRepository {
 
     fun getAttendancePercentage(): Flow<AttendanceStats>
 
+    fun getAttendancePercentageBySubject(): Flow<List<AttendanceBySubject>>
+
     suspend fun deleteAttendance(attendance: AttendanceModel)
 
     fun getAttendanceByDate(date: String): Flow<List<AttendanceModel>>

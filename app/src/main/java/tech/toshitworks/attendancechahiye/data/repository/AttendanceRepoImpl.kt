@@ -79,6 +79,23 @@ class AttendanceRepoImpl @Inject constructor(
         }
     }
 
+    override fun getAttendancePercentageBySubject(): Flow<List<AttendanceBySubject>> {
+        return attendanceDao.getAttendancePercentageBySubject().map {l->
+            l.map {
+                AttendanceBySubject(
+                    subjectModel = SubjectModel(
+                        it.subjectId,
+                        it.subjectName,
+                        it.facultyName,
+                        it.isAttendanceCounted
+                    ),
+                    lecturesPresent = it.lecturesPresent,
+                    lecturesTaken = it.lecturesTaken
+                )
+            }
+        }
+    }
+
     override suspend fun deleteAttendance(attendance: AttendanceModel) {
         val subjectId = subjectRepository.getSubjectByName(attendance.subject!!.name)!!.id
         attendanceDao.deleteAttendance(

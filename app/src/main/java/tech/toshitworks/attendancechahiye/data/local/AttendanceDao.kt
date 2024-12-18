@@ -72,6 +72,21 @@ interface AttendanceDao {
 """)
     fun getAttendancePercentage(): Flow<AttendanceStats>
 
+    @Query("""
+        SELECT s.id AS subjectId,
+        s.name AS subjectName,
+        s.facultyName AS facultyName,
+        s.isAttendanceCounted AS isAttendanceCounted,
+        COUNT(a.id) AS lecturesTaken,
+        SUM(CASE WHEN a.is_present THEN 1 ELSE 0 END) AS lecturesPresent
+        FROM subjects s
+        INNER JOIN attendance a
+        ON s.id = a.subject_id
+        WHERE s.isAttendanceCounted = 1
+        GROUP BY s.id
+    """)
+    fun getAttendancePercentageBySubject(): Flow<List<AttendanceBySubject>>
+
 
     @Query("SELECT * FROM attendance WHERE date = :date")
     fun getAttendanceByDate(date: String): Flow<List<AttendanceEntity>>
