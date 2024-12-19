@@ -14,6 +14,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import tech.toshitworks.attendancechahiye.domain.model.AnalyticsByDay
 import tech.toshitworks.attendancechahiye.domain.model.AnalyticsByMonth
@@ -39,15 +41,20 @@ fun AnalysisByTime(
             when (it) {
                 0 -> {
                     Text(
+                        modifier = Modifier
+                            .fillMaxWidth(),
                         text = "Lectures By Day",
-                        style = MaterialTheme.typography.titleLarge
+                        style = MaterialTheme.typography.titleLarge.copy(
+                            fontWeight = FontWeight.Bold
+                        ),
+                        textAlign = TextAlign.Center
                     )
                     Spacer(Modifier.height(4.dp))
                     analyticsByDay.forEach {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                            horizontalArrangement = Arrangement.SpaceBetween
                         ){
                             Text(text = it.day.name)
                             Text(
@@ -60,15 +67,20 @@ fun AnalysisByTime(
 
                 1 -> {
                     Text(
+                        modifier = Modifier
+                            .fillMaxWidth(),
                         text = "Lectures By Week",
-                        style = MaterialTheme.typography.titleLarge
+                        style = MaterialTheme.typography.titleLarge.copy(
+                            fontWeight = FontWeight.Bold
+                        ),
+                        textAlign = TextAlign.Center
                     )
                     Spacer(Modifier.height(4.dp))
                     analyticsByWeek.forEach {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                            horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(text = it.yearWeek)
                             Text(
@@ -80,15 +92,20 @@ fun AnalysisByTime(
 
                 2 -> {
                     Text(
+                        modifier = Modifier
+                            .fillMaxWidth(),
                         text = "Lectures By Month",
-                        style = MaterialTheme.typography.titleLarge
+                        style = MaterialTheme.typography.titleLarge.copy(
+                            fontWeight = FontWeight.Bold
+                        ),
+                        textAlign = TextAlign.Center
                     )
                     Spacer(Modifier.height(4.dp))
                     analyticsByMonth.forEach {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                            horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(text = it.yearMonth)
                             Text(
