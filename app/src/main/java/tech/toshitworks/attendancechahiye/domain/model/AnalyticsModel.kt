@@ -8,8 +8,8 @@ data class AnalyticsModel(
     val analyticsByDay: List<AnalyticsByDay>,
     val analysisByWeek: List<AnalyticsByWeek>,
     val analysisByMonth: List<AnalyticsByMonth>,
-    val eligibilityOfMidterm: Pair<Pair<Int,Int>,Boolean>?,
-    val eligibilityOfEndSem: Pair<Pair<Int,Int>,Boolean>?
+    val eligibilityOfMidterm: EligibilityData?,
+    val eligibilityOfEndSem: EligibilityData?
 
 )
 
