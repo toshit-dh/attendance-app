@@ -13,12 +13,12 @@ import tech.toshitworks.attendancechahiye.data.local.AttendanceDatabase
 import javax.inject.Singleton
 
 val MIGRATION_2_3 = object : Migration(2, 3) {
-    override fun migrate(database: SupportSQLiteDatabase) {
+    override fun migrate(db: SupportSQLiteDatabase) {
         // Drop the old table
-        database.execSQL("DROP TABLE IF EXISTS attendance")
+        db.execSQL("DROP TABLE IF EXISTS attendance")
 
         // Create the new table
-        database.execSQL(
+        db.execSQL(
             """
             CREATE TABLE attendance (
                 id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -28,10 +28,10 @@ val MIGRATION_2_3 = object : Migration(2, 3) {
             )
             """
         )
-        database.execSQL("DELETE FROM attendance")
+        db.execSQL("DELETE FROM attendance")
 
         // Add the unique index for (subject_id, date)
-        database.execSQL(
+        db.execSQL(
             """
             CREATE UNIQUE INDEX index_attendance_subject_id_date
             ON attendance (subject_id, date)
@@ -41,13 +41,13 @@ val MIGRATION_2_3 = object : Migration(2, 3) {
 }
 
 val MIGRATION_3_4 = object : Migration(3,4) {
-    override fun migrate(database: SupportSQLiteDatabase) {
+    override fun migrate(db: SupportSQLiteDatabase) {
         // Step 1: Rename the old table
-        database.execSQL("ALTER TABLE attendance RENAME TO attendance_old")
+        db.execSQL("ALTER TABLE attendance RENAME TO attendance_old")
 
 
         // Step 2: Create the new table with the updated schema
-        database.execSQL("""
+        db.execSQL("""
             CREATE TABLE attendance (
                 id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                 subject_id INTEGER NOT NULL,
@@ -59,25 +59,25 @@ val MIGRATION_3_4 = object : Migration(3,4) {
                 UNIQUE(period_id, date)
             )
         """)
-        database.execSQL(
+        db.execSQL(
             "CREATE UNIQUE INDEX IF NOT EXISTS index_attendance_period_id_date ON attendance (period_id ASC, date ASC)"
         )
 
         // Step 4: Drop the old table
-        database.execSQL("DROP TABLE attendance_old")
+        db.execSQL("DROP TABLE attendance_old")
     }
 }
 
 val MIGRATION_4_5 = object : Migration(4,5) {
-    override fun migrate(database: SupportSQLiteDatabase) {
+    override fun migrate(db: SupportSQLiteDatabase) {
         // Add index on subject_id column
-        database.execSQL("CREATE INDEX IF NOT EXISTS index_attendance_subject_id ON attendance(subject_id)")
+        db.execSQL("CREATE INDEX IF NOT EXISTS index_attendance_subject_id ON attendance(subject_id)")
     }
 }
 val MIGRATION_5_6 = object : Migration(5, 6) {
-    override fun migrate(database: SupportSQLiteDatabase) {
+    override fun migrate(db: SupportSQLiteDatabase) {
         // Creating the new table for `note` entity
-        database.execSQL(
+        db.execSQL(
             """
             CREATE TABLE IF NOT EXISTS `note` (
                 `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
@@ -89,19 +89,19 @@ val MIGRATION_5_6 = object : Migration(5, 6) {
         )
 
         // Creating the index for `attendance_id` in the `note` table
-        database.execSQL(
+        db.execSQL(
             "CREATE UNIQUE INDEX IF NOT EXISTS `index_note_attendance_id` ON `note` (`attendance_id`)"
         )
     }
 }
 
 val MIGRATION_6_7 = object : Migration(6, 7) {
-    override fun migrate(database: SupportSQLiteDatabase) {
+    override fun migrate(db: SupportSQLiteDatabase) {
         // Rename the old table
-        database.execSQL("ALTER TABLE attendance RENAME TO attendance_temp")
+        db.execSQL("ALTER TABLE attendance RENAME TO attendance_temp")
 
         // Create the new table with correct schema
-        database.execSQL(
+        db.execSQL(
             """
             CREATE TABLE attendance (
                 id INTEGER NOT NULL PRIMARY KEY,
@@ -121,12 +121,31 @@ val MIGRATION_6_7 = object : Migration(6, 7) {
 
 
         // Drop the old table
-        database.execSQL("DROP TABLE attendance_temp")
+        db.execSQL("DROP TABLE attendance_temp")
 
         // Recreate indices with the correct properties
-        database.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS index_attendance_period_id_date ON attendance(period_id, date)")
-        database.execSQL("CREATE INDEX IF NOT EXISTS index_attendance_subject_id ON attendance(subject_id)")
-        database.execSQL("CREATE INDEX IF NOT EXISTS index_attendance_day_id ON attendance(day_id)")
+        db.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS index_attendance_period_id_date ON attendance(period_id, date)")
+        db.execSQL("CREATE INDEX IF NOT EXISTS index_attendance_subject_id ON attendance(subject_id)")
+        db.execSQL("CREATE INDEX IF NOT EXISTS index_attendance_day_id ON attendance(day_id)")
+    }
+}
+
+val MIGRATION_7_8 = object : Migration(7, 8) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        // Create the new `event` table with the foreign key and index
+        db.execSQL(
+            """
+            CREATE TABLE IF NOT EXISTS `event` (
+                `id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
+                `date` TEXT NOT NULL, 
+                `subject_id` INTEGER NOT NULL, 
+                FOREIGN KEY(`subject_id`) REFERENCES `subjects`(`id`) ON DELETE CASCADE
+            )
+            """
+        )
+
+        // Add an index on the `subject_id` column
+        db.execSQL("CREATE INDEX IF NOT EXISTS `index_event_subject_id` ON `event`(`subject_id`)")
     }
 }
 
@@ -152,6 +171,7 @@ object DatabaseModule {
         .addMigrations(MIGRATION_4_5)
         .addMigrations(MIGRATION_5_6)
         .addMigrations(MIGRATION_6_7)
+        .addMigrations(MIGRATION_7_8)
         .build()
 
     @Provides
