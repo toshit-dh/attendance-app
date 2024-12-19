@@ -26,7 +26,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -41,6 +40,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.launch
 import tech.toshitworks.attendancechahiye.domain.model.SubjectModel
 import tech.toshitworks.attendancechahiye.presentation.components.analysis.AttendanceList
+import tech.toshitworks.attendancechahiye.presentation.components.analysis.EligibilityAnalysis
 import tech.toshitworks.attendancechahiye.presentation.components.analysis.SubjectTimeChart
 import tech.toshitworks.attendancechahiye.presentation.components.analysis.TrendAnalysis
 import java.util.Locale
@@ -66,136 +66,164 @@ fun AnalyticsScreen(
     var subject: SubjectModel? by remember {
         mutableStateOf(null)
     }
-    if (!state.isLoading)
-        Column(
+    if (!state.isLoading) {
+        Column (
             modifier = modifier
                 .fillMaxSize()
-                .padding(10.dp)
-        ) {
-            HorizontalPager(
+        ){
+            Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .weight(1f),
-                state = pagerState,
-                userScrollEnabled = true
+                    .weight(30f)
             ) {
-                Card(
+                HorizontalPager(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(8.dp)
+                        .fillMaxSize(),
+                    state = pagerState,
+                    userScrollEnabled = true
                 ) {
-                    Column(
+                    Card(
                         modifier = Modifier
+                            .fillMaxSize()
                             .padding(8.dp)
-                            .fillMaxHeight(),
-                        verticalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
-                        Text(
+                        Column(
                             modifier = Modifier
-                                .fillMaxWidth(),
-                            text = " ${analysisList[it].subject?.name ?: "Overall "} Analysis: ${analysisList[it].lecturesPresent} / ${analysisList[it].lecturesConducted}: ${
-                                String.format(
-                                    Locale.US,
-                                    "%.2f",
-                                    (analysisList[it].lecturesPresent.toFloat() / analysisList[it].lecturesConducted.toFloat()) * 100
-                                )
-                            } %",
-                            textAlign = TextAlign.Center,
-                            style = MaterialTheme.typography.titleLarge.copy(
-                                fontWeight = FontWeight.Bold
-                            )
-                        )
-                        SubjectTimeChart(
-                            page = it,
-                            analyticsModel = analysisList[it],
-                            subjectAnalyticsModel = analysisList.drop(1).filter {
-                                it.subject!!.isAttendanceCounted
-                            }
-                        )
-                        if (analysisList[it].analysisByWeek.isNotEmpty())
-                            TrendAnalysis(
-                                getWeek = getWeek,
-                                analyticsByWeek = analysisList[it].analysisByWeek
-                            )
-
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
+                                .padding(8.dp)
+                                .fillMaxHeight(),
+                            verticalArrangement = Arrangement.spacedBy(6.dp)
                         ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Center,
+                            Text(
                                 modifier = Modifier
-                                    .padding(8.dp)
                                     .fillMaxWidth()
-                            ) {
-                                Text(
-                                    text = "View List"
+                                    .weight(1f),
+                                text = " ${analysisList[it].subject?.name ?: "Overall "} Analysis: ${analysisList[it].lecturesPresent} / ${analysisList[it].lecturesConducted}: ${
+                                    String.format(
+                                        Locale.US,
+                                        "%.2f",
+                                        (analysisList[it].lecturesPresent.toFloat() / analysisList[it].lecturesConducted.toFloat()) * 100
+                                    )
+                                } %",
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.titleLarge.copy(
+                                    fontWeight = FontWeight.Bold
                                 )
-                                IconButton(
-                                    onClick = {
-                                        scope.launch {
-                                            if (!isSheetOpen) {
-                                                subject =
-                                                    if (it == 0) null else analysisList[it].subject
-                                                isSheetOpen = true
-                                                sheetState.show()
-                                            } else {
-                                                isSheetOpen = false
-                                                sheetState.hide()
+                            )
+                            Box (
+                                modifier = Modifier
+                                    .weight(if (it == 0) 7f else 5f)
+                            ){
+                                SubjectTimeChart(
+                                    page = it,
+                                    analyticsModel = analysisList[it],
+                                    subjectAnalyticsModel = analysisList.drop(1).filter {
+                                        it.subject!!.isAttendanceCounted
+                                    }
+                                )
+                            }
+                            if (it != 0)
+                                Box(
+                                    modifier = Modifier
+                                        .weight(4f)
+                                ){
+                                    if (analysisList[it].subject?.isAttendanceCounted == true)
+                                        EligibilityAnalysis(
+                                            analysisList[it].eligibilityOfMidterm,
+                                            analysisList[it].eligibilityOfEndSem
+                                        )
+                                }
+                            Box(
+                                modifier = Modifier
+                                    .weight(10f)
+                            ) {
+                                if (analysisList[it].analysisByWeek.isNotEmpty())
+                                    TrendAnalysis(
+                                        getWeek = getWeek,
+                                        analyticsByWeek = analysisList[it].analysisByWeek
+                                    )
+                            }
+                            Card(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .weight(1.3f)
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Center,
+                                    modifier = Modifier
+                                        .padding(8.dp)
+                                        .fillMaxWidth()
+                                ) {
+                                    Text(
+                                        text = "View List"
+                                    )
+                                    IconButton(
+                                        onClick = {
+                                            scope.launch {
+                                                if (!isSheetOpen) {
+                                                    subject =
+                                                        if (it == 0) null else analysisList[it].subject
+                                                    isSheetOpen = true
+                                                    sheetState.show()
+                                                } else {
+                                                    isSheetOpen = false
+                                                    sheetState.hide()
+                                                }
                                             }
                                         }
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.RemoveRedEye,
+                                            contentDescription = "view sheet"
+                                        )
                                     }
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.RemoveRedEye,
-                                        contentDescription = "view sheet"
-                                    )
                                 }
                             }
                         }
                     }
-                }
 
+                }
+                AttendanceList(
+                    onEvent = onEvent,
+                    isSheetOpen = isSheetOpen,
+                    subject = subject,
+                    attendanceList = state.filteredAttendanceList,
+                    sheetState = sheetState
+                ) {
+                    scope.launch {
+                        isSheetOpen = false
+                        sheetState.hide()
+                    }
+                }
             }
-            AttendanceList(
-                onEvent = onEvent,
-                isSheetOpen = isSheetOpen,
-                subject = subject,
-                attendanceList = state.filteredAttendanceList,
-                sheetState = sheetState
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                horizontalArrangement = Arrangement.Center
             ) {
-                scope.launch {
-                    isSheetOpen = false
-                    sheetState.hide()
+                val visibleRange = when {
+                    pageCount <= maxIndicators -> 0 until pageCount
+                    pagerState.currentPage < maxIndicators / 2 -> 0 until maxIndicators
+                    pagerState.currentPage > pageCount - maxIndicators / 2 -> (pageCount - maxIndicators) until pageCount
+                    else -> (pagerState.currentPage - maxIndicators / 2)..(pagerState.currentPage + maxIndicators / 2)
+                }
+
+                for (i in visibleRange) {
+                    val color = if (pagerState.currentPage == i) Color.DarkGray else Color.LightGray
+                    Box(
+                        modifier = Modifier
+                            .padding(4.dp)
+                            .background(
+                                color = color,
+                                shape = if (pagerState.currentPage == i) RoundedCornerShape(0.dp) else CircleShape
+                            )
+                            .size(10.dp)
+                    )
                 }
             }
-        }
-    Row(
-        Modifier
-            .height(25.dp)
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center
-    ) {
-        val visibleRange = when {
-            pageCount <= maxIndicators -> 0 until pageCount
-            pagerState.currentPage < maxIndicators / 2 -> 0 until maxIndicators
-            pagerState.currentPage > pageCount - maxIndicators / 2 -> (pageCount - maxIndicators) until pageCount
-            else -> (pagerState.currentPage - maxIndicators / 2)..(pagerState.currentPage + maxIndicators / 2)
-        }
-
-        for (i in visibleRange) {
-            val color = if (pagerState.currentPage == i) Color.DarkGray else Color.LightGray
-            Box(
-                modifier = Modifier
-                    .padding(4.dp)
-                    .background(
-                        color = color,
-                        shape = if (pagerState.currentPage == i) RoundedCornerShape(0.dp) else CircleShape
-                    )
-                    .size(10.dp)
-            )
         }
     }
-}
 
+
+}
