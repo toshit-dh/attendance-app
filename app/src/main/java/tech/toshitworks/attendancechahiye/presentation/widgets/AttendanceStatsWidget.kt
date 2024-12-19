@@ -1,6 +1,5 @@
 package tech.toshitworks.attendancechahiye.presentation.widgets
 
-import android.appwidget.AppWidgetManager
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -9,34 +8,25 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
-import androidx.glance.Image
-import androidx.glance.ImageProvider
-import androidx.glance.action.ActionParameters
 import androidx.glance.action.actionStartActivity
 import androidx.glance.action.clickable
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
-import androidx.glance.appwidget.action.ActionCallback
-import androidx.glance.appwidget.action.actionRunCallback
 import androidx.glance.appwidget.lazy.LazyColumn
 import androidx.glance.appwidget.lazy.items
 import androidx.glance.appwidget.provideContent
-import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.glance.background
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
+import androidx.glance.layout.Column
 import androidx.glance.layout.Row
-import androidx.glance.layout.Spacer
+import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.fillMaxWidth
-import androidx.glance.layout.height
 import androidx.glance.layout.padding
-import androidx.glance.layout.width
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import dagger.hilt.android.EntryPointAccessors
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import tech.toshitworks.attendancechahiye.MainActivity
 import tech.toshitworks.attendancechahiye.R
 import tech.toshitworks.attendancechahiye.di.WidgetEntryPoint
@@ -80,102 +70,142 @@ private fun AttendanceStatsUI(
                 .background(Color(0xFFFFB2BC))
                 .padding(12.dp),
         ) {
-            LazyColumn(
-                horizontalAlignment = Alignment.Start
+            Column(
+                modifier = GlanceModifier
+                    .fillMaxSize(),
             ) {
-                val totalPresent = overall.totalPresent
-                val totalLectures = overall.totalLectures
-                val attendancePercentage =
-                    String.format(Locale.US, "%.2f", overall.attendancePercentage)
-                item {
-                    Row(
-                        modifier = GlanceModifier
-                            .fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "Attendance",
-                            style = TextStyle(
-                                fontSize = 24.sp,
-                                fontWeight = FontWeight.Bold
-                            )
+                Row(
+                    modifier = GlanceModifier
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Attendance",
+                        style = TextStyle(
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold
                         )
-                    }
-                }
-                item {
-                    Row(
-                        modifier = GlanceModifier
-                            .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = "Overall: ",
-                            style = TextStyle(
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Medium
-                            )
-                        )
-                        Spacer(modifier = GlanceModifier.width(4.dp))
-                        Text(
-                            text = "$totalPresent / $totalLectures",
-                            style = TextStyle(
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Medium
-                            )
-                        )
-                        Spacer(modifier = GlanceModifier.width(4.dp))
-                        Text(
-                            text = "$attendancePercentage %",
-                            style = TextStyle(
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Medium
-                            )
-                        )
-                    }
-                    Spacer(modifier = GlanceModifier.height(8.dp))
-                }
-                items(stats) {
-                    val subjectName = it.subjectModel.name
-                    val lecturesPresent = it.lecturesPresent
-                    val lecturesTaken = it.lecturesTaken
-                    val percentage = String.format(
-                        Locale.US,
-                        "%.2f",
-                        it.lecturesPresent.toFloat() * 100.0 / it.lecturesTaken.toFloat()
                     )
-                    Row(
+                }
+                Row(
+                    modifier = GlanceModifier
+                        .fillMaxWidth()
+                ) {
+                    val totalPresent = overall.totalPresent
+                    val totalLectures = overall.totalLectures
+                    val formattedTotalPresent = String.format(Locale.US,"%02d", totalPresent)
+                    val formattedTotalLectures = String.format(Locale.US,"%02d", totalLectures)
+                    val attendancePercentage = String.format(Locale.US, "%.2f", overall.attendancePercentage)
+                    LazyColumn(
                         modifier = GlanceModifier
-                            .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
+                            .defaultWeight()
                     ) {
-                        Text(
-                            text = "$subjectName: ",
-                            style = TextStyle(
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Medium
+                        item {
+                            Text(
+                                text = "Subjects",
+                                style = TextStyle(
+                                    fontSize = 22.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
                             )
-                        )
-                        Spacer(modifier = GlanceModifier.width(4.dp))
-                        Text(
-                            text = "$lecturesPresent / $lecturesTaken",
-                            style = TextStyle(
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Medium
+                        }
+                        item {
+                            Text(
+                                text = "Overall: ",
+                                style = TextStyle(
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.Medium
+                                )
                             )
-                        )
-                        Spacer(modifier = GlanceModifier.width(4.dp))
-                        Text(
-                            text = "$percentage %",
-                            style = TextStyle(
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Medium
+                        }
+                        items(stats){
+                            val subjectName = it.subjectModel.name
+                            Text(
+                                text = "$subjectName: ",
+                                style = TextStyle(
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.Medium
+                                )
                             )
-                        )
+                        }
                     }
-                    Spacer(modifier = GlanceModifier.height(6.dp))
+                    LazyColumn(
+                        modifier = GlanceModifier
+                            .defaultWeight()
+                    ) {
+                        item {
+                            Text(
+                                text = "Lectures",
+                                style = TextStyle(
+                                    fontSize = 22.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            )
+                        }
+                        item {
+                            Text(
+                                text = "$formattedTotalPresent / $formattedTotalLectures",
+                                style = TextStyle(
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.Medium
+                                )
+                            )
+                        }
+                        items(stats){
+                            val lecturesPresent = it.lecturesPresent
+                            val lecturesTaken = it.lecturesTaken
+                            val formattedTotalPresentS = String.format(Locale.US,"%02d", lecturesPresent)
+                            val formattedTotalLecturesS = String.format(Locale.US,"%02d", lecturesTaken)
+                            Text(
+                                text = "$formattedTotalPresentS / $formattedTotalLecturesS",
+                                style = TextStyle(
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.Medium
+                                )
+                            )
+                        }
+                    }
+                    LazyColumn (
+                        modifier = GlanceModifier
+                            .defaultWeight()
+                    ){
+                        item {
+                            Text(
+                                text = "Percent",
+                                style = TextStyle(
+                                    fontSize = 22.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            )
+                        }
+                        item {
+                            Text(
+                                text = "$attendancePercentage %",
+                                style = TextStyle(
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.Medium
+                                )
+                            )
+                        }
+                        items(stats){
+                            val percentage = String.format(
+                                Locale.US,
+                                "%05.2f",
+                                it.lecturesPresent.toFloat() * 100.0 / it.lecturesTaken.toFloat()
+                            )
+                            Text(
+                                text = "$percentage %",
+                                style = TextStyle(
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.Medium
+                                )
+                            )
+                        }
+                    }
                 }
             }
+
 //            Image(
 //                modifier = GlanceModifier
 //                    .clickable(
