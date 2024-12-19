@@ -4,6 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import tech.toshitworks.attendancechahiye.data.entity.AttendanceEntity
 import tech.toshitworks.attendancechahiye.data.entity.DayEntity
+import tech.toshitworks.attendancechahiye.data.entity.EventEntity
 import tech.toshitworks.attendancechahiye.data.entity.NoteEntity
 import tech.toshitworks.attendancechahiye.data.entity.PeriodEntity
 import tech.toshitworks.attendancechahiye.data.entity.SubjectEntity
@@ -19,9 +20,10 @@ import javax.inject.Singleton
         SubjectEntity::class,
         TimetableEntity::class,
         SemesterEntity::class,
-        NoteEntity::class
+        NoteEntity::class,
+        EventEntity::class
     ],
-    version = 7,
+    version = 8,
     exportSchema = false
 )
 
