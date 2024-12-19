@@ -5,6 +5,7 @@ import androidx.compose.material.icons.filled.Analytics
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.EditNote
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.EventRepeat
 import androidx.compose.material.icons.filled.FileOpen
 import androidx.compose.material.icons.filled.Today
 import androidx.compose.material.icons.outlined.Analytics
@@ -20,6 +21,7 @@ sealed class ScreenRoutes(val route: String)  {
     data object TodayAttendance: ScreenRoutes("today_attendance_screen")
     data object AnalyticsScreen: ScreenRoutes("analytics_screen")
     data object EditInfoScreen: ScreenRoutes("edit_info_screen")
+    data object EventsScreen: ScreenRoutes("events_screen")
     data object NotesScreen : ScreenRoutes("notes_screen")
     data object ExportScreen : ScreenRoutes("export_screen")
     data object NotificationScreen : ScreenRoutes("notification_screen")
@@ -32,6 +34,7 @@ enum class DrawerScreens(
 ){
     EditInfo(ScreenRoutes.EditInfoScreen.route,"Edit Info",Icons.Filled.Edit),
     Notes(ScreenRoutes.NotesScreen.route,"Notes",Icons.Filled.Email),
+    Events(ScreenRoutes.EventsScreen.route,"Events",Icons.Filled.EventRepeat),
     Export(ScreenRoutes.ExportScreen.route,"Export",Icons.Filled.FileOpen)
 }
 enum class BottomScreens(
