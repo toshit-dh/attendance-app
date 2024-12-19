@@ -41,10 +41,9 @@ class SubjectRepoImpl @Inject constructor(
         subjectDao.getSubjectById(subjectId).toModel()
     }
 
-//    override suspend fun getLecturesByDays(subjectId: Long): List<DayModel> {
-//        return subjectDao.getLecturesByDays(subjectId).map {
-//            it.toModel()
-//        }
-//    }
+    override suspend fun getDays(subjectId: Long): List<String> {
+        return subjectDao.getDays(subjectId)
+    }
+
 
 }

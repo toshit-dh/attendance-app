@@ -17,6 +17,6 @@ interface SubjectRepository {
 
     suspend fun getSubjectById(subjectId: Long): SubjectModel?
 
-    //suspend fun getLecturesByDays(subjectId: Long): List<DayModel>
+    suspend fun getDays(subjectId: Long): List<String>
 
 }

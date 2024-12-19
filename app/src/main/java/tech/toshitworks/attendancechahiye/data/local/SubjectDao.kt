@@ -28,11 +28,11 @@ interface SubjectDao {
     @Query("SELECT * FROM subjects WHERE id = :subjectId LIMIT 1")
     fun getSubjectById(subjectId: Long): SubjectEntity
 
-//    @Query("""
-//        SELECT d.name FROM
-//        timetable t INNER JOIN days d
-//        WHERE t.day_id = d.id AND t.subject_id = :subjectId
-//    """)
-//    suspend fun getLecturesByDays(subjectId: Long): List<DayEntity>
+    @Query("""
+        SELECT d.name FROM
+        timetable t INNER JOIN days d
+        WHERE t.day_id = d.id AND t.subject_id = :subjectId
+    """)
+    suspend fun getDays(subjectId: Long): List<String>
 
 }
