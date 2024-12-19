@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,14 +54,15 @@ fun SubjectTimeChart(
         showSliceLabels = true,
         sliceLabelTextColor = Color.DarkGray,
         animationDuration = 1500,
-        backgroundColor = MaterialTheme.colorScheme.inverseOnSurface
+        backgroundColor = CardDefaults.cardColors().containerColor
     )
     val pieChartData = PieChartData(
         slices = slices,
         plotType = PlotType.Pie,
     )
     Column(
-        modifier = Modifier.height(180.dp),
+        modifier = Modifier
+            .fillMaxHeight(),
         verticalArrangement = Arrangement.Center
     ) {
         Row(
@@ -79,6 +82,7 @@ fun SubjectTimeChart(
                     analyticsByMonth = analyticsModel.analysisByMonth
                 )
             }
+            VerticalDivider(thickness = 5.dp)
             Column(
                 modifier = Modifier
                     .weight(1f)
@@ -89,17 +93,10 @@ fun SubjectTimeChart(
                 if (page == 0)
                     PieChart(
                         modifier = Modifier
-                            .width(200.dp)
-                            .height(150.dp),
+                            .fillMaxWidth(),
                         pieChartData,
                         pieChartConfig
                     )
-                else
-                    if (analyticsModel.subject?.isAttendanceCounted == true)
-                        EligibilityAnalysis(
-                            analyticsModel.eligibilityOfMidterm,
-                            analyticsModel.eligibilityOfEndSem
-                        )
             }
         }
     }
