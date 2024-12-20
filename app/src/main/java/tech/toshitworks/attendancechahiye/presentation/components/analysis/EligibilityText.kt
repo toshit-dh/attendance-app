@@ -77,7 +77,7 @@ private fun MidTermText(
     eligibilityOfMidterm: EligibilityData
 ) {
     Text(
-        text = if (eligibilityOfMidterm.isEligibleForNow) "Eligible" else "Not Eligible"
+        text = if (eligibilityOfMidterm.isEligibleForNow) "Eligible \uD83D\uDE03" else "Not Eligible \uD83D\uDE1E"
     )
     if (eligibilityOfMidterm.isEligibleForNow)
         Text(
@@ -96,7 +96,7 @@ private fun EndSemText(
     eligibilityOfEndSem: EligibilityData
 ) {
     Text(
-        text = if (eligibilityOfEndSem.isEligibleForNow) "Eligible" else "Not Eligible"
+        text = if (eligibilityOfEndSem.isEligibleForNow) "Eligible \uD83D\uDE03" else "Not Eligible \uD83D\uDE1E"
     )
     if (eligibilityOfEndSem.isEligibleForNow)
         Text(
