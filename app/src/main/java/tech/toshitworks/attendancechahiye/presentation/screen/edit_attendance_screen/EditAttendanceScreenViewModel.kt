@@ -8,11 +8,16 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import tech.toshitworks.attendancechahiye.domain.repository.AttendanceRepository
+import tech.toshitworks.attendancechahiye.domain.repository.SemesterRepository
 import tech.toshitworks.attendancechahiye.domain.repository.SubjectRepository
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
 class EditAttendanceScreenViewModel @Inject constructor(
+    private val semesterRepository: SemesterRepository,
     private val subjectRepository: SubjectRepository,
     private val attendanceRepository: AttendanceRepository
 ): ViewModel(){
@@ -22,13 +27,28 @@ class EditAttendanceScreenViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
+            val semester = semesterRepository.getSemester()
+            val minDateString = semester.startDate
+            val maxDateString = semester.endDate
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            val minDate = dateFormat.parse(minDateString)?.time ?: 0L
+            val maxDate = maxDateString?.let {
+                try {
+                    dateFormat.parse(it)?.time
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    null
+                }
+            } ?: 0L
             val subjects = subjectRepository.getSubjects()
             val attendance = attendanceRepository.getAllAttendance()
             _state.update {
                 it.copy(
                     subjects = subjects,
                     attendance = attendance,
-                    isLoading = false
+                    isLoading = false,
+                    startDate = minDate,
+                    endDate = maxDate
                 )
             }
         }
@@ -40,13 +60,6 @@ class EditAttendanceScreenViewModel @Inject constructor(
                 _state.update {
                     it.copy(
                         date = event.date
-                    )
-                }
-            }
-            is EditAttendanceScreenEvents.OnSubjectSelected -> {
-                _state.update {
-                    it.copy(
-                        selectedSubject = event.subject
                     )
                 }
             }
