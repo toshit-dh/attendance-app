@@ -30,6 +30,7 @@ fun ExportScreen(
         "Subjects",
         "Timetable",
         "Attendance",
+        "Events",
         "Notes"
     )
     val selectedItems = remember {
