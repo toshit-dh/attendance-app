@@ -90,7 +90,6 @@ fun FilterSubject(
                                     IconButton(
                                         onClick = {
                                             onEvent(NotesScreenEvents.OnChangeFilter(Filters.Subject(sm.id)))
-                                            println(selectedSubjects)
                                         }
                                     ) {
                                         Icon(
