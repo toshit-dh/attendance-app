@@ -57,15 +57,18 @@ class AttendanceRepoImpl @Inject constructor(
         )
     }
 
-    override suspend fun getAllAttendance(): List<AttendanceModel> {
+    override fun getAllAttendance(): Flow<List<AttendanceModel>> {
         return attendanceDao.getAllAttendance().map {
-            AttendanceModel(
-                id = it.id,
-                subject = subjectRepository.getSubjectById(it.subjectId),
-                date = it.date,
-                isPresent = it.isPresent,
-                period = periodRepository.getPeriodById(it.periodId)
-            )
+            it.map {ae->
+                AttendanceModel(
+                    id = ae.id,
+                    day = dayRepository.getDayById(ae.dayId),
+                    subject = subjectRepository.getSubjectById(ae.subjectId),
+                    date = ae.date,
+                    isPresent = ae.isPresent,
+                    period = periodRepository.getPeriodById(ae.periodId)
+                )
+            }
         }
     }
 
