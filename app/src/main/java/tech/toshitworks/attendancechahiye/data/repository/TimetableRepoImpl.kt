@@ -1,6 +1,8 @@
 package tech.toshitworks.attendancechahiye.data.repository
 
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import tech.toshitworks.attendancechahiye.data.entity.TimetableEntity
 import tech.toshitworks.attendancechahiye.data.local.TimetableDao
@@ -96,14 +98,18 @@ class TimetableRepoImpl @Inject constructor(
         timetableDao.insertTimetableForDay(timetableEntities)
     }
 
-    override suspend fun getTimetableForDay(dayModel: DayModel): List<TimetableModel> = withContext(Dispatchers.IO) {
-        val dayId = getDayIdByName(dayModel.name)
-        timetableDao.getTimetableForDay(dayId).map {
-            TimetableModel(
-                subject = subjectRepository.getSubjectById(it.subjectId)!!,
-                day = dayRepository.getDayById(it.dayId),
-                period = periodRepository.getPeriodById(it.periodId)
-            )
+    override fun getTimetableForDay(day: String): Flow<List<TimetableModel>> {
+        return timetableDao.getTimetableForDay(day).map { list ->
+            list.map {
+                TimetableModel(
+                    id = it.id,
+                    subject = subjectRepository.getSubjectById(it.subjectId)!!,
+                    day = dayRepository.getDayById(it.dayId),
+                    period = periodRepository.getPeriodById(it.periodId),
+                    deletedForDates = it.deletedForDates,
+                    editedForDates = it.editedForDates
+                )
+            }
         }
     }
 
@@ -149,5 +155,35 @@ class TimetableRepoImpl @Inject constructor(
                 period = periodRepository.getPeriodById(it.periodId)
             )
         }
+    }
+
+    override suspend fun deletePeriodForADate(
+        dayModel: DayModel,
+        periodModel: TimetableModel,
+        date: String
+    ) {
+        val deletedPeriodDates = timetableDao.getDeletedPeriodsForDay(dayModel.id!!,periodModel.id)
+        deletedPeriodDates.toMutableList().add(date)
+        timetableDao.updateDeletedPeriodsForDay(dayModel.id,periodModel.id,deletedPeriodDates)
+    }
+
+    override suspend fun editPeriodForADate(
+        timetable: TimetableModel,
+        date: String
+    ) {
+        val te = timetableDao.getEditedPeriodsForDay(timetable.day.id!!,timetable.period.id)
+        val editedPeriodDates = te.editedForDates?: emptyList()
+        val pair = "$date:${timetable.subject.id}"
+        val updatedEditedPeriodDates = editedPeriodDates.toMutableList().apply {
+            val index = indexOfFirst {
+                it.split(':')[0] == date
+            }
+            if (index == -1){
+                add(pair)
+            }else{
+                set(index,pair)
+            }
+        }
+        timetableDao.updateEditedPeriodsForDay(timetable.day.id,timetable.period.id,updatedEditedPeriodDates)
     }
 }

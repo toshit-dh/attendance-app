@@ -11,15 +11,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import tech.toshitworks.attendancechahiye.presentation.components.dialogs.ChangeSubjectDialog
 import tech.toshitworks.attendancechahiye.presentation.components.home.TimetableForDay
 import java.time.LocalDate
 
@@ -31,10 +28,7 @@ fun TodayAttendanceScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val onEvent = viewModel::onEvent
-    val isSubjectChangedDialogOpen = remember {
-        mutableStateOf(false)
-    }
-    var endDateNull: Boolean = false
+    var endDateNull = false
     if (!state.isLoading) {
         val startDate = state.startDate.split("-")
         val todayDate = state.date.split("-")
@@ -90,21 +84,9 @@ fun TodayAttendanceScreen(
                 TimetableForDay(
                     state = state,
                     onEvent = onEvent,
-                    onEditIconClick = {
-                        isSubjectChangedDialogOpen.value = true
-                    },
                     date = state.date,
                     day = state.day!!
                 )
-                if (isSubjectChangedDialogOpen.value)
-                    ChangeSubjectDialog(
-                        subjects = state.subjectList,
-                        onDismiss = {
-                            isSubjectChangedDialogOpen.value = false
-                        }
-                    ) { a, b ->
-
-                    }
             }
         }
     }

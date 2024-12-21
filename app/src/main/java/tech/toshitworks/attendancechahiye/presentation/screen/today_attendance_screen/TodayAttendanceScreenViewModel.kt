@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import tech.toshitworks.attendancechahiye.domain.model.DayModel
 import tech.toshitworks.attendancechahiye.domain.model.TimetableModel
 import tech.toshitworks.attendancechahiye.domain.repository.AttendanceRepository
 import tech.toshitworks.attendancechahiye.domain.repository.DayRepository
@@ -37,29 +36,26 @@ class TodayAttendanceScreenViewModel @Inject constructor(
     private val today: LocalDate = LocalDate.now()
     private val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
     private val date = today.format(formatter)
+    private val day = today.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault())
+
     init {
-        val today: LocalDate = LocalDate.now()
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-        val date = today.format(formatter)
         val day = today.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault())
         markAttendance.markAttendance()
         val dayOfWeek = today.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault())
         viewModelScope.launch {
             val subjectList = subjectRepository.getSubjects()
             val dayList = dayRepository.getDays()
-            val timetable = timetableRepository.getTimetableForDay(DayModel(name = dayOfWeek))
             val startDate = semesterRepository.getSemester().startDate
             val endDate = semesterRepository.getSemester().endDate
             _state.update {
                 it.copy(
                     dayList = dayList,
-                    day = dayList.find {dmn->
+                    day = dayList.find { dmn ->
                         dmn.name == day
                     },
                     date = date,
                     startDate = startDate,
                     endDate = endDate,
-                    timetableForDay = mergeConsecutivePeriods(timetable),
                     subjectList = subjectList,
                     isLoading = false
                 )
@@ -68,24 +64,34 @@ class TodayAttendanceScreenViewModel @Inject constructor(
     }
 
     private val _state = MutableStateFlow(TodayAttendanceScreenStates())
-    val state = combine(
+    private val combinedStateFlow1 = combine(
         _state,
         attendanceRepository.getOverallAttendance(),
         attendanceRepository.getAttendanceByDate(date),
         attendanceRepository.getAttendancePercentage(),
         noteRepository.getNotesForTodayAttendance()
-    ) { state, attendanceBySubject, attendanceByDate, attendanceStats,notes ->
+    ) { state, attendanceBySubject, attendanceByDate, attendanceStats, notes ->
         state.copy(
             attendanceList = attendanceBySubject,
             attendanceByDate = attendanceByDate,
             attendanceStats = attendanceStats,
             notes = notes
         )
+    }
+
+    val state = combine(
+        combinedStateFlow1,
+        timetableRepository.getTimetableForDay(day)
+    ) { state, timetableForDay ->
+        state.copy(
+            timetableForDay = mergeConsecutivePeriods(timetableForDay)
+        )
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = TodayAttendanceScreenStates()
     )
+
 
     fun onEvent(event: TodayAttendanceScreenEvents) {
         when (event) {
@@ -101,13 +107,12 @@ class TodayAttendanceScreenViewModel @Inject constructor(
                 }
             }
 
-            is TodayAttendanceScreenEvents.OnUpdateSubject -> {
-                _state.update {
-                    val list = it.timetableForDay
-                    val mlist = list.toMutableList()
-                    mlist[event.index] = event.timetableModel
-                    it.copy(
-                         timetableForDay = mergeConsecutivePeriods(mlist)
+            is TodayAttendanceScreenEvents.OnUpdatePeriod -> {
+                viewModelScope.launch {
+                    val tm = event.timetableModel
+                    timetableRepository.editPeriodForADate(
+                        tm,
+                        state.value.date
                     )
                 }
             }

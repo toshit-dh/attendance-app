@@ -8,6 +8,6 @@ sealed class TodayAttendanceScreenEvents {
 
     data class OnAddAttendance(val attendanceModel: AttendanceModel): TodayAttendanceScreenEvents()
     data class OnUpdateAttendance(val attendanceModel: AttendanceModel): TodayAttendanceScreenEvents()
-    data class OnUpdateSubject(val timetableModel: TimetableModel,val index: Int): TodayAttendanceScreenEvents()
+    data class OnUpdatePeriod(val timetableModel: TimetableModel): TodayAttendanceScreenEvents()
     data class OnAddNote(val noteModel: NoteModel): TodayAttendanceScreenEvents()
 }
