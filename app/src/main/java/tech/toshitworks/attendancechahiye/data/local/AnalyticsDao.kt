@@ -128,5 +128,4 @@ interface AnalyticsDao {
     )
     suspend fun getAnalysisOfSubject(subjectName: String): AnalyticsEntity
 
-
 }
