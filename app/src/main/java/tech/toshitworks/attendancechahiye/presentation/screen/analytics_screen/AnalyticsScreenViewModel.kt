@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import tech.toshitworks.attendancechahiye.domain.repository.AnalyticsRepository
@@ -37,7 +38,7 @@ class AnalyticsScreenViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             val info = semesterRepository.getSemester()
-            val attendance = attendanceRepository.getAllAttendance()
+            val attendance = attendanceRepository.getAllAttendance().first()
             val analyticList =
                 analyticsRepository.getAnalysis(info.startDate, info.midTermDate, info.endDate)
             _state.update {
