@@ -2,6 +2,8 @@ package tech.toshitworks.attendancechahiye.data.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import tech.toshitworks.attendancechahiye.data.converters.Converters
 import tech.toshitworks.attendancechahiye.data.entity.AttendanceEntity
 import tech.toshitworks.attendancechahiye.data.entity.DayEntity
 import tech.toshitworks.attendancechahiye.data.entity.EventEntity
@@ -23,10 +25,10 @@ import javax.inject.Singleton
         NoteEntity::class,
         EventEntity::class
     ],
-    version = 8,
+    version = 1,
     exportSchema = false
 )
-
+@TypeConverters(Converters::class)
 @Singleton
 abstract class AttendanceDatabase : RoomDatabase() {
 
