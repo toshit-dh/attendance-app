@@ -1,27 +1,35 @@
 package tech.toshitworks.attendancechahiye.presentation.components.dialogs
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import co.yml.charts.common.extensions.isNotNull
 import tech.toshitworks.attendancechahiye.domain.model.SubjectModel
 
 @Composable
 fun ChangeSubjectDialog(
     subjects: List<SubjectModel>,
     onDismiss: () -> Unit,
-    onUpdatePeriod: (String,String) -> Unit,
+    onUpdatePeriod: (SubjectModel) -> Unit,
 ) {
-    val subjectName = remember { mutableStateOf("") }
-    val facultyName = remember { mutableStateOf("") }
+    var subject: SubjectModel? by remember {
+        mutableStateOf(null)
+    }
     val isDropDownOpen = remember { mutableStateOf(false) }
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -29,24 +37,31 @@ fun ChangeSubjectDialog(
             Text(text = "Update Period")
         },
         text = {
-            Column {
-                Text(text = "Enter subject name:")
+            Column(
+                verticalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                Text(
+                    text = "Enter subject name: ",
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        fontWeight = FontWeight.Bold
+                    )
+                )
                 TextField(
                     modifier = Modifier
                         .clickable {
                             isDropDownOpen.value = true
                         },
-                    value = subjectName.value,
+                    value = subject?.name?:"",
                     onValueChange = {
-                        subjectName.value = it
+
                     },
                     label = { Text("Subject Name") },
                     enabled = false
                 )
                 TextField(
-                    value = facultyName.value,
+                    value = subject?.facultyName?:"",
                     onValueChange = {
-                        facultyName.value = it
+
                     },
                     label = { Text("Faculty Name") },
                     enabled = false
@@ -63,8 +78,7 @@ fun ChangeSubjectDialog(
                                 Text(text = it.name)
                             },
                             onClick = {
-                                subjectName.value = it.name
-                                facultyName.value = it.facultyName
+                                subject = it
                                 isDropDownOpen.value = false
                             }
                         )
@@ -75,15 +89,18 @@ fun ChangeSubjectDialog(
         confirmButton = {
             Button(
                 onClick = {
-                    onUpdatePeriod(subjectName.value,facultyName.value)
+                    onUpdatePeriod(subject!!)
+                    onDismiss()
                 },
-                enabled = subjectName.value.isNotBlank() && facultyName.value.isNotBlank()
+                enabled = subject.isNotNull()
             ) {
                 Text("Add")
             }
         },
         dismissButton = {
-            Button(onClick = onDismiss) {
+            Button(
+                onClick = onDismiss
+            ) {
                 Text("Cancel")
             }
         }
