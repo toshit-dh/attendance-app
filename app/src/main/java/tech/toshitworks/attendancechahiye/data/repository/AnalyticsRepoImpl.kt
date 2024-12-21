@@ -9,6 +9,7 @@ import tech.toshitworks.attendancechahiye.domain.model.AnalyticsByMonth
 import tech.toshitworks.attendancechahiye.domain.model.AnalyticsByWeek
 import tech.toshitworks.attendancechahiye.domain.model.AnalyticsModel
 import tech.toshitworks.attendancechahiye.domain.repository.AnalyticsRepository
+import tech.toshitworks.attendancechahiye.domain.repository.AttendanceRepository
 import tech.toshitworks.attendancechahiye.domain.repository.DayRepository
 import tech.toshitworks.attendancechahiye.domain.repository.SubjectRepository
 import java.time.LocalDate
@@ -18,7 +19,7 @@ import javax.inject.Inject
 class AnalyticsRepoImpl @Inject constructor(
     private val dayRepository: DayRepository,
     private val subjectRepository: SubjectRepository,
-    private val analyticsDao: AnalyticsDao
+    private val analyticsDao: AnalyticsDao,
 ) : AnalyticsRepository {
     private fun countDaysBetweenDates(startDate: String, endDate: String): Map<String, Int> {
         val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
@@ -42,7 +43,6 @@ class AnalyticsRepoImpl @Inject constructor(
     ): Array<EligibilityData> {
         val totalLecturesTillMidTerm = lecturesConducted + totalCountMidTerm
         val totalLecturesTillEndSem = lecturesConducted + totalCountEndSem
-        println(totalLecturesTillEndSem)
         val percentageAttendedMidTerm =
             (lecturesPresent.toFloat() / lecturesConducted.toFloat()) * 100
         val percentageAttendedEndSem =
