@@ -6,9 +6,9 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import tech.toshitworks.attendancechahiye.domain.model.AttendanceModel
-import tech.toshitworks.attendancechahiye.domain.model.DayModel
 import tech.toshitworks.attendancechahiye.domain.repository.AttendanceRepository
 import tech.toshitworks.attendancechahiye.domain.repository.TimetableRepository
 import java.time.LocalDate
@@ -26,8 +26,8 @@ class MarkAttendanceWorker(
             return@withContext try {
                 val currentDate = LocalDate.now().toString()
                 val currentDay = LocalDate.now().dayOfWeek.toString()
-                val timetable = timetableRepository.getTimetableForDay(DayModel(name = currentDay))
-                timetable.forEach {
+                val timetable = timetableRepository.getTimetableForDay(currentDay)
+                timetable.first().forEach {
                     try {
                         attendanceRepository.insertAttendance(
                             AttendanceModel(
