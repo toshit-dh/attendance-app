@@ -10,7 +10,6 @@ data class AnalyticsModel(
     val analysisByMonth: List<AnalyticsByMonth>,
     val eligibilityOfMidterm: EligibilityData?,
     val eligibilityOfEndSem: EligibilityData?
-
 )
 
 data class AnalyticsByDay(
