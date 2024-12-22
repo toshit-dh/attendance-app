@@ -1,4 +1,4 @@
-package tech.toshitworks.attendancechahiye.presentation.components.edit_attendance
+package tech.toshitworks.attendancechahiye.presentation.components.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -21,16 +21,17 @@ import tech.toshitworks.attendancechahiye.presentation.screen.today_attendance_s
 @Composable
 fun AttendanceButton(
     type: String,
-    subject: AttendanceModel?,
+    attendanceModel: AttendanceModel?,
     onEvent: (TodayAttendanceScreenEvents) -> Unit,
     tt: TimetableModel,
     date: String,
-    day: DayModel
+    day: DayModel,
+    deleted: Boolean
 ) {
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(16.dp))
-            .background(if (type == "P") Color.Green else Color.Red)
+            .background(if (deleted) Color.Gray else if (type == "P") Color.Green else Color.Red)
             .border(
                 4.dp,
                 Color.White,
@@ -40,7 +41,7 @@ fun AttendanceButton(
     ) {
         IconButton(
             onClick = {
-                if (subject == null)
+                if (attendanceModel == null)
                     onEvent(
                         TodayAttendanceScreenEvents.OnAddAttendance(
                             AttendanceModel(
@@ -65,7 +66,7 @@ fun AttendanceButton(
                         )
                     )
             },
-
+            enabled = !deleted
             ) {
             Text(
                 text = if (type == "P") "P" else "A",

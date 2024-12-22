@@ -1,4 +1,4 @@
-package tech.toshitworks.attendancechahiye.presentation.components.edit_attendance
+package tech.toshitworks.attendancechahiye.presentation.components.home
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -16,10 +16,10 @@ import tech.toshitworks.attendancechahiye.domain.model.TimetableModel
 
 @Composable
 fun Details(
-    tt: TimetableModel,
+    tm: TimetableModel,
     editedSubject: SubjectModel?
 ) {
-    val initials = tt.subject.facultyName.split(" ")
+    val initials = tm.subject.facultyName.split(" ")
     var initial1 = ' '
     var initial2 = ' '
     var editedInitial = ' '
@@ -31,7 +31,7 @@ fun Details(
         initial1 = initials[0].first()
     }
     Text(
-        text = "Period: ${tt.period.id}",
+        text = "Period: ${tm.period.id}",
         style = MaterialTheme.typography.titleLarge
     )
     Row(
@@ -40,7 +40,7 @@ fun Details(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            text = tt.subject.name,
+            text = tm.subject.name,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
             style = MaterialTheme.typography.bodyLarge.copy(
@@ -95,7 +95,7 @@ fun Details(
         }
     }
     Text(
-        text = "${tt.period.startTime}-${tt.period.endTime}",
+        text = "${tm.period.startTime}-${tm.period.endTime}",
         style = MaterialTheme.typography.bodyLarge.copy(
             fontWeight = FontWeight.Bold
         )
