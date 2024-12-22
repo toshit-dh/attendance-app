@@ -25,7 +25,7 @@ import javax.inject.Singleton
         NoteEntity::class,
         EventEntity::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
