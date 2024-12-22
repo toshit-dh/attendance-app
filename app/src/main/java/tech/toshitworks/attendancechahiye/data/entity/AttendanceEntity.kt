@@ -40,5 +40,6 @@ data class AttendanceEntity(
     @ColumnInfo(name = "subject_id") val subjectId: Long,
     @ColumnInfo(name = "period_id") val periodId: Long,
     @ColumnInfo(name = "date") val date: String,
-    @ColumnInfo(name = "is_present") val isPresent: Boolean
+    @ColumnInfo(name = "is_present") val isPresent: Boolean,
+    @ColumnInfo(name = "deleted") val deleted: Boolean = false
 )

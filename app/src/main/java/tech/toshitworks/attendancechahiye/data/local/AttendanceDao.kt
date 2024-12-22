@@ -22,7 +22,7 @@ interface AttendanceDao {
     @Delete
     suspend fun deleteAttendance(attendance: AttendanceEntity)
 
-    @Query("SELECT * FROM attendance")
+    @Query("SELECT * FROM attendance WHERE deleted = false")
     fun getAllAttendance(): Flow<List<AttendanceEntity>>
 
 
@@ -31,18 +31,18 @@ interface AttendanceDao {
         SELECT attendance.*
         FROM attendance
         INNER JOIN subjects ON attendance.subject_id = subjects.id
-        WHERE subjects.name = :subjectName
+        WHERE subjects.name = :subjectName AND attendance.deleted = false
     """)
     fun getAttendanceBySubject(subjectName: String): Flow<List<AttendanceEntity>>
 
     @Query("""
         UPDATE attendance
-        SET is_present = :isPresent, subject_id = :subjectId
+        SET is_present = :isPresent, subject_id = :subjectId,deleted = :deleted
         WHERE date = :date AND period_id = :periodId
     """)
-    suspend fun updateAttendanceByDate(date: String,isPresent: Boolean,periodId: Long,subjectId: Long)
+    suspend fun updateAttendanceByDate(date: String,isPresent: Boolean,deleted: Boolean,periodId: Long,subjectId: Long)
 
-    @Query("SELECT * FROM attendance WHERE date BETWEEN :startDate AND :endDate")
+    @Query("SELECT * FROM attendance WHERE date BETWEEN :startDate AND :endDate AND deleted = false")
     fun getAttendanceByDateRange(startDate: String, endDate: String): Flow<List<AttendanceEntity>>
 
     @Query("""
@@ -54,7 +54,9 @@ interface AttendanceDao {
            COUNT(attendance.id) AS lecturesTaken
     FROM attendance
     INNER JOIN subjects ON attendance.subject_id = subjects.id
+    WHERE deleted = false
     GROUP BY subjects.id
+    
 """)
     fun getOverallAttendance(): Flow<List<AttendanceBySubject>>
 
@@ -68,7 +70,7 @@ interface AttendanceDao {
         JOIN 
             subjects s ON a.subject_id = s.id
         WHERE 
-            s.isAttendanceCounted = 1
+            s.isAttendanceCounted = 1 AND deleted = false
 """)
     fun getAttendancePercentage(): Flow<AttendanceStats>
 
@@ -82,13 +84,13 @@ interface AttendanceDao {
         FROM subjects s
         INNER JOIN attendance a
         ON s.id = a.subject_id
-        WHERE s.isAttendanceCounted = 1
+        WHERE s.isAttendanceCounted = 1 AND deleted = false
         GROUP BY s.id
     """)
     fun getAttendancePercentageBySubject(): Flow<List<AttendanceBySubject>>
 
 
-    @Query("SELECT * FROM attendance WHERE date = :date")
+    @Query("SELECT * FROM attendance WHERE date = :date AND deleted = false")
     fun getAttendanceByDate(date: String): Flow<List<AttendanceEntity>>
 
     @Query("DELETE FROM attendance")

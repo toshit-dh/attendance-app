@@ -6,5 +6,6 @@ data class AttendanceModel(
     val subject: SubjectModel? = null,
     val period: PeriodModel,
     val date: String,
-    val isPresent: Boolean
+    val isPresent: Boolean,
+    val deleted: Boolean = false
 )

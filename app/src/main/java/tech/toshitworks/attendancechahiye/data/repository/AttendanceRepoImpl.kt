@@ -31,6 +31,7 @@ class AttendanceRepoImpl @Inject constructor(
                 periodId = attendance.period.id,
                 date = attendance.date,
                 isPresent = attendance.isPresent,
+                deleted = attendance.deleted
             )
         )
     }
@@ -43,7 +44,8 @@ class AttendanceRepoImpl @Inject constructor(
                 subjectId = subjectId,
                 periodId = attendance.period.id,
                 date = attendance.date,
-                isPresent = attendance.isPresent
+                isPresent = attendance.isPresent,
+                deleted = attendance.deleted
             )
         )
     }
@@ -53,7 +55,8 @@ class AttendanceRepoImpl @Inject constructor(
             date = attendance.date,
             subjectId = attendance.subject!!.id,
             periodId = attendance.period.id,
-            isPresent = attendance.isPresent
+            isPresent = attendance.isPresent,
+            deleted = attendance.deleted
         )
     }
 
