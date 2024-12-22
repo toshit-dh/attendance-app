@@ -27,8 +27,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import tech.toshitworks.attendancechahiye.domain.model.AttendanceModel
 import tech.toshitworks.attendancechahiye.domain.model.DayModel
+import tech.toshitworks.attendancechahiye.presentation.components.dialogs.AddExtraAttendanceDialog
 import tech.toshitworks.attendancechahiye.presentation.components.edit_attendance.TimetableForEdit
+import tech.toshitworks.attendancechahiye.presentation.screen.home_screen.HomeScreenViewModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
@@ -38,7 +41,9 @@ import java.util.Locale
 fun EditAttendanceScreen(
     modifier: Modifier,
     viewModel: EditAttendanceScreenViewModel,
+    homeScreenViewModel: HomeScreenViewModel
 ) {
+    val isAddExtraAttendanceDialogOpen by homeScreenViewModel.isAddExtraAttendanceDialogOpen.collectAsStateWithLifecycle()
     val state by viewModel.state.collectAsStateWithLifecycle()
     val onEvent = viewModel::onEvent
     val context = LocalContext.current
@@ -49,102 +54,103 @@ fun EditAttendanceScreen(
                 .padding(8.dp),
             verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
-
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(165.dp),
-                ) {
-                    Text(
-                        text = "Overall Attendance",
-                        modifier = Modifier.padding(8.dp, 3.dp),
-                        style = MaterialTheme.typography.titleLarge.copy(
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.Bold,
-                            letterSpacing = 2.sp,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(165.dp),
+            ) {
+                Text(
+                    text = "Overall Attendance",
+                    modifier = Modifier.padding(8.dp, 3.dp),
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = 2.sp,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
-                    Row(
-                        modifier = Modifier
-                            .padding(8.dp)
-                            .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            modifier = Modifier.weight(1f),
-                            text = "${state.attendanceStats.totalPresent} / ${state.attendanceStats.totalLectures}",
-                            fontSize = 20.sp
-                        )
-                        CircularProgress(
-                            modifier = Modifier.weight(1f),
-                            percentage = state.attendanceStats.attendancePercentage.toFloat()
-                        )
-                    }
-                }
+                )
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f),
-                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                        .padding(8.dp)
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Card(
+                    Text(
+                        modifier = Modifier.weight(1f),
+                        text = "${state.attendanceStats.totalPresent} / ${state.attendanceStats.totalLectures}",
+                        fontSize = 20.sp
+                    )
+                    CircularProgress(
+                        modifier = Modifier.weight(1f),
+                        percentage = state.attendanceStats.attendancePercentage.toFloat()
+                    )
+                }
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxSize()
+                ) {
+                    Row(
                         modifier = Modifier
-                            .fillMaxSize()
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(
-                                text = "Edit Attendance : ${if (state.date != null) state.date else "Date?"}"
-                            )
-                            IconButton(
-                                onClick = {
-                                    val datePicker = DatePickerDialog(
-                                        context,
-                                        { _: DatePicker, year: Int, month: Int, day: Int ->
-                                            val formattedDate = String.format(
-                                                Locale.US,
-                                                "%04d-%02d-%02d",
-                                                year,
-                                                month + 1,
-                                                day
+                        Text(
+                            text = "Edit Attendance : ${if (state.date != null) state.date else "Date?"}"
+                        )
+                        IconButton(
+                            onClick = {
+                                val datePicker = DatePickerDialog(
+                                    context,
+                                    { _: DatePicker, year: Int, month: Int, day: Int ->
+                                        val formattedDate = String.format(
+                                            Locale.US,
+                                            "%04d-%02d-%02d",
+                                            year,
+                                            month + 1,
+                                            day
+                                        )
+                                        onEvent(
+                                            EditAttendanceScreenEvents.OnDateSelected(
+                                                formattedDate
                                             )
-                                            onEvent(
-                                                EditAttendanceScreenEvents.OnDateSelected(
-                                                    formattedDate
-                                                )
-                                            )
-                                        },
-                                        calendar.get(Calendar.YEAR),
-                                        calendar.get(Calendar.MONTH),
-                                        calendar.get(Calendar.DAY_OF_MONTH)
-                                    )
-                                    val today = calendar.timeInMillis
-                                    val endDate = state.endDate
-                                    val maxDate = if (today > endDate) state.endDate else today
-                                    datePicker.datePicker.minDate = state.startDate
-                                    datePicker.datePicker.maxDate = maxDate
-                                    datePicker.show()
-                                }
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.CalendarMonth,
-                                    contentDescription = "select date"
+                                        )
+                                    },
+                                    calendar.get(Calendar.YEAR),
+                                    calendar.get(Calendar.MONTH),
+                                    calendar.get(Calendar.DAY_OF_MONTH)
                                 )
+                                val today = calendar.timeInMillis
+                                val endDate = state.endDate
+                                val maxDate = if (today > endDate) state.endDate else today
+                                datePicker.datePicker.minDate = state.startDate
+                                datePicker.datePicker.maxDate = maxDate
+                                datePicker.show()
                             }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.CalendarMonth,
+                                contentDescription = "select date"
+                            )
                         }
                     }
                 }
-            Box(modifier = Modifier
-                .weight(10f)){
+            }
+            Box(
+                modifier = Modifier
+                    .weight(10f)
+            ) {
                 if (state.date != null) {
                     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-                    val day = LocalDate.parse(state.date!!,formatter).dayOfWeek.getDisplayName(
+                    val day = LocalDate.parse(state.date!!, formatter).dayOfWeek.getDisplayName(
                         java.time.format.TextStyle.FULL,
                         Locale.getDefault()
                     )
@@ -157,7 +163,29 @@ fun EditAttendanceScreen(
                         date = state.date!!,
                         day = DayModel(name = day)
                     )
-                }}
+                }
             }
+            if (isAddExtraAttendanceDialogOpen)
+                AddExtraAttendanceDialog(
+                    startDate = state.startDate,
+                    endDate = state.endDate,
+                    subjectList = state.subjects,
+                    onDismiss = {
+                        homeScreenViewModel.floatingButtonClick(false)
+                    }
+                ) {sm,date,isPresent->
+                    val period = state.periods.find {
+                        it.startTime == "empty" && it.endTime == "empty"
+                    }!!
+                    onEvent(EditAttendanceScreenEvents.OnUpdateAttendance(
+                        AttendanceModel(
+                            subject = sm,
+                            date = date,
+                            isPresent = isPresent,
+                            period = period
+                        )
+                    ))
+                }
         }
+}
 

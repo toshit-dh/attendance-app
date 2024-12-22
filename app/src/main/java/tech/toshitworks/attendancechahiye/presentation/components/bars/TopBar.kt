@@ -26,11 +26,11 @@ import tech.toshitworks.attendancechahiye.navigation.ScreenRoutes
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(
+    screen: String?,
     drawerState: DrawerState,
     navController: NavHostController
 ) {
     val scope = rememberCoroutineScope()
-    val screen = navController.currentBackStackEntryAsState().value?.destination?.route
     val isNotificationScreen = screen == ScreenRoutes.NotificationScreen.route
     TopAppBar(
         title = {
@@ -80,6 +80,7 @@ fun TopBar(
                             tint = MaterialTheme.colorScheme.background
                         )
                 }
-        }
+        },
+
     )
 }

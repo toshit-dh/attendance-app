@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import tech.toshitworks.attendancechahiye.presentation.screen.home_screen.HomeScreen
 import tech.toshitworks.attendancechahiye.presentation.screen.form_screen.FormScreen
 import tech.toshitworks.attendancechahiye.presentation.screen.form_screen.FormScreenViewModel
+import tech.toshitworks.attendancechahiye.presentation.screen.home_screen.HomeScreenViewModel
 import tech.toshitworks.attendancechahiye.presentation.screen.onboarding_screen.OnBoardingScreen
 import tech.toshitworks.attendancechahiye.presentation.screen.onboarding_screen.OnBoardingScreenViewModel
 import tech.toshitworks.attendancechahiye.presentation.screen.timetable_screen.TimeTableViewModel
@@ -36,7 +37,10 @@ fun NavGraph(
             TimetableScreen(viewModel,navController)
         }
         composable(route = ScreenRoutes.HomeScreen.route){
-            HomeScreen()
+            val viewModel: HomeScreenViewModel = hiltViewModel()
+            HomeScreen(
+                viewModel
+            )
         }
 
     }

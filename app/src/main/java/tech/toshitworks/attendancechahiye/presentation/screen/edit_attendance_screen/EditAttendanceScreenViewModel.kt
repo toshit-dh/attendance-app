@@ -57,7 +57,9 @@ class EditAttendanceScreenViewModel @Inject constructor(
                     null
                 }
             } ?: 0L
-            val subjects = subjectRepository.getSubjects()
+            val subjects = subjectRepository.getSubjects().filter {
+                it.name != "Lunch" && it.name != "No Period" && it.isAttendanceCounted
+            }
             val periods = periodRepository.getPeriods()
             _state.update {
                 it.copy(

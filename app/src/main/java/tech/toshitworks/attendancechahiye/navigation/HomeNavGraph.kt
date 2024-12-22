@@ -1,16 +1,11 @@
 package tech.toshitworks.attendancechahiye.navigation
 
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.DrawerState
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import tech.toshitworks.attendancechahiye.presentation.components.bars.BottomBar
-import tech.toshitworks.attendancechahiye.presentation.components.bars.TopBar
 import tech.toshitworks.attendancechahiye.presentation.screen.analytics_screen.AnalyticsScreen
 import tech.toshitworks.attendancechahiye.presentation.screen.analytics_screen.AnalyticsScreenViewModel
 import tech.toshitworks.attendancechahiye.presentation.screen.edit_attendance_screen.EditAttendanceScreen
@@ -20,6 +15,7 @@ import tech.toshitworks.attendancechahiye.presentation.screen.edit_info_screen.E
 import tech.toshitworks.attendancechahiye.presentation.screen.events_screen.EventsScreen
 import tech.toshitworks.attendancechahiye.presentation.screen.events_screen.EventsScreenViewModel
 import tech.toshitworks.attendancechahiye.presentation.screen.export_screen.ExportScreen
+import tech.toshitworks.attendancechahiye.presentation.screen.home_screen.HomeScreenViewModel
 import tech.toshitworks.attendancechahiye.presentation.screen.notes_screen.NotesScreen
 import tech.toshitworks.attendancechahiye.presentation.screen.notes_screen.NotesScreenViewModel
 import tech.toshitworks.attendancechahiye.presentation.screen.notification_screen.NotificationScreen
@@ -28,22 +24,11 @@ import tech.toshitworks.attendancechahiye.presentation.screen.today_attendance_s
 
 @Composable
 fun NavHomeGraph(
-    drawerState: DrawerState,
+    modifier: Modifier,
     navController: NavHostController,
-    startDestination: String
+    startDestination: String,
+    homeScreenViewModel: HomeScreenViewModel
 ) {
-    Scaffold(
-        topBar = {
-            TopBar(
-                drawerState = drawerState,
-                navController = navController
-            )
-        },
-        bottomBar = {
-            BottomBar(navController)
-        },
-    ) {
-        val modifier = Modifier.padding(it)
         NavHost(
             navController = navController,
             startDestination = startDestination
@@ -92,7 +77,8 @@ fun NavHomeGraph(
                 val viewModel: EditAttendanceScreenViewModel = hiltViewModel()
                 EditAttendanceScreen(
                     modifier,
-                    viewModel
+                    viewModel,
+                    homeScreenViewModel
                 )
             }
             composable(route = ScreenRoutes.NotificationScreen.route){
@@ -102,4 +88,3 @@ fun NavHomeGraph(
             }
         }
     }
-}

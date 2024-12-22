@@ -11,14 +11,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import tech.toshitworks.attendancechahiye.navigation.BottomScreens
 
 @Composable
 fun BottomBar(
+    screen: String?,
     navController: NavHostController
 ) {
-    val screen = navController.currentBackStackEntryAsState().value?.destination?.route
     val isScreenABottomScreen = BottomScreens.entries.any { it.route == screen }
     BottomAppBar(
         modifier = Modifier
