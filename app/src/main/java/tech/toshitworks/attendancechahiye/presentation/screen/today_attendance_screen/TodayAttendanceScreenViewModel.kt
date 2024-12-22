@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import tech.toshitworks.attendancechahiye.domain.model.AttendanceModel
 import tech.toshitworks.attendancechahiye.domain.model.TimetableModel
 import tech.toshitworks.attendancechahiye.domain.repository.AttendanceRepository
 import tech.toshitworks.attendancechahiye.domain.repository.DayRepository
@@ -114,6 +115,25 @@ class TodayAttendanceScreenViewModel @Inject constructor(
                         tm,
                         state.value.date
                     )
+                    if (event.isPresent!=null)
+                        attendanceRepository.updateAttendanceByDate(
+                            AttendanceModel(
+                                subject = tm.subject,
+                                period = tm.period,
+                                date = state.value.date,
+                                isPresent = event.isPresent
+                            )
+                        )
+                }
+            }
+
+            is TodayAttendanceScreenEvents.OnDeletePeriod -> {
+                viewModelScope.launch {
+                    timetableRepository.deletePeriodForADate(event.timetableModel,state.value.date)
+                    if (event.toInsert)
+                        attendanceRepository.insertAttendance(event.attendanceModel)
+                    else
+                        attendanceRepository.updateAttendanceByDate(event.attendanceModel)
                 }
             }
 
@@ -122,6 +142,7 @@ class TodayAttendanceScreenViewModel @Inject constructor(
                     noteRepository.insertNote(event.noteModel)
                 }
             }
+
         }
     }
 }

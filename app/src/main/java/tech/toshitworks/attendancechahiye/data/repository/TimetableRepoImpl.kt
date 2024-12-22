@@ -158,13 +158,25 @@ class TimetableRepoImpl @Inject constructor(
     }
 
     override suspend fun deletePeriodForADate(
-        dayModel: DayModel,
-        periodModel: TimetableModel,
+        timetable: TimetableModel,
         date: String
     ) {
-        val deletedPeriodDates = timetableDao.getDeletedPeriodsForDay(dayModel.id!!,periodModel.id)
-        deletedPeriodDates.toMutableList().add(date)
-        timetableDao.updateDeletedPeriodsForDay(dayModel.id,periodModel.id,deletedPeriodDates)
+        val te = timetableDao.getDeletedPeriodsForDay(timetable.day.id!!,timetable.period.id)
+        val deletedForDates = te.deletedForDates?: emptyList()
+        val updatedDeletedForDates = deletedForDates.toMutableList().apply {
+            val index = indexOfFirst {
+                it == date
+            }
+            if (index == -1) {
+                add(date)
+            }else{
+                if (
+                    te.periodId == timetable.period.id &&
+                    te.dayId == timetable.day.id
+                ) removeAt(index)
+            }
+        }
+        timetableDao.updateDeletedPeriodsForDay(timetable.day.id,timetable.period.id,updatedDeletedForDates)
     }
 
     override suspend fun editPeriodForADate(
@@ -181,7 +193,12 @@ class TimetableRepoImpl @Inject constructor(
             if (index == -1){
                 add(pair)
             }else{
-                set(index,pair)
+                if (
+                    te.periodId == timetable.period.id &&
+                    te.subjectId == timetable.subject.id &&
+                    te.dayId == timetable.day.id
+                ) removeAt(index)
+                else set(index,pair)
             }
         }
         timetableDao.updateEditedPeriodsForDay(timetable.day.id,timetable.period.id,updatedEditedPeriodDates)

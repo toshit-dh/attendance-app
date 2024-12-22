@@ -39,8 +39,8 @@ interface TimetableDao {
     @Query("SELECT * FROM timetable")
     suspend fun getAllPeriods(): List<TimetableEntity>
 
-    @Query("SELECT deletedForDates FROM timetable WHERE day_id = :dayId AND period_id = :periodId")
-    suspend fun getDeletedPeriodsForDay(dayId: Long, periodId: Long): List<String>
+    @Query("SELECT * FROM timetable WHERE day_id = :dayId AND period_id = :periodId")
+    suspend fun getDeletedPeriodsForDay(dayId: Long, periodId: Long): TimetableEntity
 
     @Query("UPDATE timetable SET deletedForDates = :deletedForDates WHERE day_id = :dayId AND period_id = :periodId")
     suspend fun updateDeletedPeriodsForDay(dayId: Long, periodId: Long, deletedForDates: List<String>)
