@@ -2,6 +2,8 @@ package tech.toshitworks.attendancechahiye.di
 
 import android.content.Context
 import androidx.room.Room
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -10,6 +12,12 @@ import dagger.hilt.components.SingletonComponent
 import tech.toshitworks.attendancechahiye.data.local.AttendanceDatabase
 import javax.inject.Singleton
 
+val MIGRATION_1_2 = object : Migration(1, 2) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        // Adding the new column 'deleted' with default value false
+        db.execSQL("ALTER TABLE attendance ADD COLUMN deleted INTEGER NOT NULL DEFAULT 0")
+    }
+}
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -25,6 +33,7 @@ object DatabaseModule {
         AttendanceDatabase::class.java,
         AttendanceDatabase.DATABASE_NAME
     )
+        .addMigrations(MIGRATION_1_2)
         .build()
 
     @Provides
