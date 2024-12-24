@@ -1,13 +1,14 @@
 package tech.toshitworks.attendancechahiye.presentation.components.analysis
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -26,47 +27,57 @@ fun EligibilityAnalysis(
     Row (
         modifier = Modifier
             .fillMaxSize(),
+        horizontalArrangement = Arrangement.spacedBy(6.dp)
     ){
-        Column(
-            modifier = Modifier
+        Card(
+            Modifier
                 .weight(1f)
-                .padding(5.dp)
         ) {
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = "Mid Term",
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.titleMedium.copy(
-                    fontWeight = FontWeight.Bold
-                )
-            )
-            if (midTermDateProvided)
-                MidTermText(eligibilityOfMidterm!!)
-            else
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(5.dp)
+            ) {
                 Text(
-                    text = "No Date Provided",
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "Mid Term",
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.Bold
+                    )
                 )
+                if (midTermDateProvided)
+                    MidTermText(eligibilityOfMidterm!!)
+                else
+                    Text(
+                        text = "No Date Provided",
+                    )
+            }
         }
-        VerticalDivider(thickness = 5.dp)
-        Column(
-            modifier = Modifier
+        Card(
+            Modifier
                 .weight(1f)
-                .padding(5.dp)
         ) {
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = "End Sem",
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.titleMedium.copy(
-                    fontWeight = FontWeight.Bold
-                )
-            )
-            if (endSemDateProvided)
-                EndSemText(eligibilityOfEndSem!!)
-            else
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(5.dp)
+            ) {
                 Text(
-                    text = "No Date Provided"
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "End Sem",
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.Bold
+                    )
                 )
+                if (endSemDateProvided)
+                    EndSemText(eligibilityOfEndSem!!)
+                else
+                    Text(
+                        text = "No Date Provided"
+                    )
+            }
         }
     }
 
