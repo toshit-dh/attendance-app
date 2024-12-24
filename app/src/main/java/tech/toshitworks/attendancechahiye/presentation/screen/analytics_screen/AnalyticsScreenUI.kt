@@ -1,229 +1,135 @@
 package tech.toshitworks.attendancechahiye.presentation.screen.analytics_screen
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.RemoveRedEye
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import kotlinx.coroutines.launch
-import tech.toshitworks.attendancechahiye.domain.model.SubjectModel
-import tech.toshitworks.attendancechahiye.presentation.components.analysis.AttendanceList
-import tech.toshitworks.attendancechahiye.presentation.components.analysis.EligibilityAnalysis
-import tech.toshitworks.attendancechahiye.presentation.components.analysis.SubjectTimeChart
-import tech.toshitworks.attendancechahiye.presentation.components.analysis.TrendAnalysis
-import java.util.Locale
+import tech.toshitworks.attendancechahiye.presentation.components.analysis.AnalysisForSubject
+import tech.toshitworks.attendancechahiye.presentation.screen.home_screen.HomeScreenEvents
+import tech.toshitworks.attendancechahiye.presentation.screen.home_screen.HomeScreenViewModel
+import tech.toshitworks.attendancechahiye.utils.colors
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AnalyticsScreen(
     modifier: Modifier,
     viewModel: AnalyticsScreenViewModel,
+    homeScreenViewModel: HomeScreenViewModel
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val onEvent = viewModel::onEvent
+    val homeScreenState by homeScreenViewModel.state.collectAsStateWithLifecycle()
+    val homeScreenEvents = homeScreenViewModel::onEvent
+    val subjectList = homeScreenState.subjectList.filter {
+        it.name != "Lunch" && it.name != "No Period"
+    }
+    val isSubjectSearchOpen = homeScreenState.isSubjectSearchOpen
+    val subject = homeScreenState.analysisSubject
     val getWeek = viewModel::getWeekDateRange
-    val pageCount = state.analyticsList.size
-    val analysisList = state.analyticsList
-    val pagerState = rememberPagerState { pageCount }
-    val maxIndicators = 5
-    val sheetState = rememberModalBottomSheetState()
-    val scope = rememberCoroutineScope()
-    var isSheetOpen by remember {
-        mutableStateOf(false)
-    }
-    var subject: SubjectModel? by remember {
-        mutableStateOf(null)
-    }
     if (!state.isLoading) {
-        Column (
+        val analysisList = state.analyticsList
+        val analysisModel = analysisList.find {
+            it.subject == subject
+        }?:analysisList[0]
+        val subjectAnalysis = analysisList.drop(1).filter {
+            it.subject!!.isAttendanceCounted
+        }
+        val attendanceList = state.attendanceList
+        Column(
             modifier = modifier
                 .fillMaxSize()
-        ){
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .weight(30f)
-            ) {
-                HorizontalPager(
+        ) {
+            if (!isSubjectSearchOpen)
+                AnalysisForSubject(
+                    state = state,
+                    onEvent = onEvent,
+                    analyticsModel = analysisModel,
+                    subjectAnalysis = subjectAnalysis,
+                    getWeek = getWeek,
+                    attendanceList = attendanceList
+                )
+            else
+                LazyColumn(
                     modifier = Modifier
-                        .fillMaxSize(),
-                    state = pagerState,
-                    userScrollEnabled = true
+                        .padding(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
-                    Card(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(8.dp)
-                    ) {
-                        Column(
+                    item {
+                        Card(
                             modifier = Modifier
-                                .padding(8.dp)
-                                .fillMaxHeight(),
-                            verticalArrangement = Arrangement.spacedBy(6.dp)
+                                .fillMaxWidth()
+                                .clickable {
+                                    homeScreenEvents(
+                                        HomeScreenEvents.OnSubjectSelectForAnalysis(null)
+                                    )
+                                }
                         ) {
-                            Text(
+                            Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .weight(1f),
-                                text = " ${analysisList[it].subject?.name ?: "Overall "} Analysis: ${analysisList[it].lecturesPresent} / ${analysisList[it].lecturesConducted}: ${
-                                    String.format(
-                                        Locale.US,
-                                        "%.2f",
-                                        (analysisList[it].lecturesPresent.toFloat() / analysisList[it].lecturesConducted.toFloat()) * 100
-                                    )
-                                } %",
-                                textAlign = TextAlign.Center,
-                                style = MaterialTheme.typography.titleLarge.copy(
+                                    .padding(8.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "Overall",
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    color = colors.random(),
                                     fontWeight = FontWeight.Bold
                                 )
-                            )
-                            Box (
-                                modifier = Modifier
-                                    .weight(if (it == 0) 7f else 5f)
-                            ){
-                                SubjectTimeChart(
-                                    page = it,
-                                    analyticsModel = analysisList[it],
-                                    subjectAnalyticsModel = analysisList.drop(1).filter {
-                                        it.subject!!.isAttendanceCounted
-                                    }
-                                )
-                            }
-                            if (it != 0)
-                                Box(
-                                    modifier = Modifier
-                                        .weight(4f)
-                                ){
-                                    if (analysisList[it].subject?.isAttendanceCounted == true)
-                                        EligibilityAnalysis(
-                                            analysisList[it].eligibilityOfMidterm,
-                                            analysisList[it].eligibilityOfEndSem
-                                        )
-                                }
-                            Box(
-                                modifier = Modifier
-                                    .weight(10f)
-                            ) {
-                                if (analysisList[it].analysisByWeek.isNotEmpty())
-                                    TrendAnalysis(
-                                        getWeek = getWeek,
-                                        analyticsByWeek = analysisList[it].analysisByWeek
-                                    )
-                            }
-                            Card(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .weight(1.3f)
-                            ) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.Center,
-                                    modifier = Modifier
-                                        .padding(8.dp)
-                                        .fillMaxWidth()
-                                ) {
-                                    Text(
-                                        text = "View List"
-                                    )
-                                    IconButton(
-                                        onClick = {
-                                            scope.launch {
-                                                if (!isSheetOpen) {
-                                                    subject =
-                                                        if (it == 0) null else analysisList[it].subject
-                                                    isSheetOpen = true
-                                                    sheetState.show()
-                                                } else {
-                                                    isSheetOpen = false
-                                                    sheetState.hide()
-                                                }
-                                            }
-                                        }
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.Default.RemoveRedEye,
-                                            contentDescription = "view sheet"
-                                        )
-                                    }
-                                }
                             }
                         }
                     }
-
-                }
-                AttendanceList(
-                    onEvent = onEvent,
-                    isSheetOpen = isSheetOpen,
-                    subject = subject,
-                    attendanceList = state.filteredAttendanceList,
-                    sheetState = sheetState
-                ) {
-                    scope.launch {
-                        isSheetOpen = false
-                        sheetState.hide()
+                    items(subjectList){
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    homeScreenEvents(
+                                        HomeScreenEvents.OnSubjectSelectForAnalysis(it)
+                                    )
+                                }
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                               Text(
+                                   text = it.name,
+                                   maxLines = 1,
+                                   overflow = TextOverflow.Ellipsis,
+                                   color = colors.random(),
+                                   fontWeight = FontWeight.Bold
+                               )
+                                Text(
+                                    text = it.facultyName,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
+                        }
                     }
                 }
-            }
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .weight(1f),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                val visibleRange = when {
-                    pageCount <= maxIndicators -> 0 until pageCount
-                    pagerState.currentPage < maxIndicators / 2 -> 0 until maxIndicators
-                    pagerState.currentPage > pageCount - maxIndicators / 2 -> (pageCount - maxIndicators) until pageCount
-                    else -> (pagerState.currentPage - maxIndicators / 2)..(pagerState.currentPage + maxIndicators / 2)
-                }
-
-                for (i in visibleRange) {
-                    val color = if (pagerState.currentPage == i) Color.DarkGray else Color.LightGray
-                    Box(
-                        modifier = Modifier
-                            .padding(4.dp)
-                            .background(
-                                color = color,
-                                shape = if (pagerState.currentPage == i) RoundedCornerShape(0.dp) else CircleShape
-                            )
-                            .size(10.dp)
-                    )
-                }
-            }
         }
+
     }
-
-
 }
+
