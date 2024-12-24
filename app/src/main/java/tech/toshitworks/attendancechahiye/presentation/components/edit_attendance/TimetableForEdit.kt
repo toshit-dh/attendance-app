@@ -56,15 +56,6 @@ fun TimetableForEdit(
         mutableLongStateOf(0L)
     }
     Column{
-        Text(
-            text = "Edit Attendance: $date | ${day.name}",
-            modifier = Modifier.padding(24.dp, 3.dp),
-            style = MaterialTheme.typography.titleLarge.copy(
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-        )
         LazyColumn {
             items(state.filteredAttendance) {
                 Card(
