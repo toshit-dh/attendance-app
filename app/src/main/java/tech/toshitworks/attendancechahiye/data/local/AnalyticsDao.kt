@@ -105,8 +105,8 @@ interface AnalyticsDao {
         SELECT
         s.id AS subjectId,
             strftime('%Y-%m', a.date) AS month,  
-            SUM(CASE WHEN a.id IS NOT NULL AND s.isAttendanceCounted = 1 THEN 1 ELSE 0 END) AS lecturesConducted, 
-            SUM(CASE WHEN a.is_present = 1 AND s.isAttendanceCounted = 1 THEN 1 ELSE 0 END) AS lecturesPresent
+            SUM(CASE WHEN a.id IS NOT NULL THEN 1 ELSE 0 END) AS lecturesConducted, 
+            SUM(CASE WHEN a.is_present = 1 THEN 1 ELSE 0 END) AS lecturesPresent
         FROM attendance a
         JOIN subjects s ON s.id = a.subject_id
         WHERE s.name = :subjectName
