@@ -1,7 +1,9 @@
 package tech.toshitworks.attendancechahiye.presentation.components.bars
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddBox
@@ -20,12 +22,12 @@ fun FloatingButton(
     IconButton(
         modifier = Modifier
             .offset(y = 10.dp)
-            .clip(RoundedCornerShape(36.dp))
-            .background(MaterialTheme.colorScheme.primary),
+            .border(2.dp, MaterialTheme.colorScheme.primary,CutCornerShape(15.dp))
+            .clip(RoundedCornerShape(36.dp)),
         onClick = onClick
     ) {
         Icon(
-            tint = MaterialTheme.colorScheme.background,
+            tint = MaterialTheme.colorScheme.primary,
             imageVector = Icons.Default.AddBox,
             contentDescription = "add extra attendance"
         )
