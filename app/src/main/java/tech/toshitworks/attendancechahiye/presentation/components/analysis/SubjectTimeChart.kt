@@ -7,14 +7,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,23 +24,11 @@ import co.yml.charts.ui.piechart.charts.PieChart
 import co.yml.charts.ui.piechart.models.PieChartConfig
 import co.yml.charts.ui.piechart.models.PieChartData
 import tech.toshitworks.attendancechahiye.domain.model.AnalyticsModel
-
-val colors = listOf(
-    Color(0xFFE57373),
-    Color(0xFF81C784),
-    Color(0xFF64B5F6),
-    Color(0xFFFFD54F),
-    Color(0xFFBA68C8),
-    Color(0xFFFF7043),
-    Color(0xFF4CAF50),
-    Color(0xFF9575CD),
-    Color(0xFFFFF176),
-    Color(0xFF29B6F6)
-)
+import tech.toshitworks.attendancechahiye.utils.colors
 
 @Composable
 fun SubjectTimeChart(
-    page: Int,
+    isOverall: Boolean,
    analyticsModel: AnalyticsModel,
    subjectAnalyticsModel: List<AnalyticsModel>,
 ){
@@ -74,7 +59,8 @@ fun SubjectTimeChart(
     ) {
         Row(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
         ) {
             Column (
                 modifier = Modifier
@@ -89,7 +75,7 @@ fun SubjectTimeChart(
                     analyticsByMonth = analyticsModel.analysisByMonth
                 )
             }
-            VerticalDivider(thickness = 5.dp)
+
             Column(
                 modifier = Modifier
                     .weight(1f)
@@ -97,58 +83,69 @@ fun SubjectTimeChart(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                if (page == 0)
-                    PieChart(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        pieChartData,
-                        pieChartConfig
-                    )
-                else{
-                    Column (
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(8.dp),
-                        verticalArrangement = Arrangement.SpaceBetween
-                    ){
-                        Text(
+                if (isOverall)
+                    Card {
+                        Column (
                             modifier = Modifier
-                                .fillMaxWidth(),
-                            text = "Streak",
-                            textAlign = TextAlign.Center,
-                            style = MaterialTheme.typography.titleMedium.copy(
-                                fontWeight = FontWeight.Bold
-                            )
-                        )
-                        Text(
-                            text = "Current:  5 🎯"
-                        )
-                        Text(
-                            text = "Longest:  8 🎯"
-                        )
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Center
-                        ) {
-                            Card(
+                                .fillMaxSize()
+                                .padding(8.dp),
+                            verticalArrangement = Arrangement.Center
+                        ){
+                            PieChart(
                                 modifier = Modifier
-                                    .padding(6.dp)
-                                    .clickable {
-
-                                    },
-                                colors = CardDefaults.cardColors(
-                                    containerColor = MaterialTheme.colorScheme.primary,
-                                    contentColor = MaterialTheme.colorScheme.background
-                                ),
+                                    .fillMaxWidth(),
+                                pieChartData,
+                                pieChartConfig,
+                            )
+                        }
+                    }
+                else{
+                    Card  {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(8.dp),
+                            verticalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                text = "Streak",
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.titleMedium.copy(
+                                    fontWeight = FontWeight.Bold
+                                )
+                            )
+                            Text(
+                                text = "Current:  5 🎯"
+                            )
+                            Text(
+                                text = "Longest:  8 🎯"
+                            )
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Center
                             ) {
-                                Column(
+                                Card(
                                     modifier = Modifier
                                         .padding(6.dp)
+                                        .clickable {
+
+                                        },
+                                    colors = CardDefaults.cardColors(
+                                        containerColor = MaterialTheme.colorScheme.primary,
+                                        contentColor = MaterialTheme.colorScheme.background
+                                    ),
                                 ) {
-                                    Text(
-                                        text = "View Streak"
-                                    )
+                                    Column(
+                                        modifier = Modifier
+                                            .padding(6.dp)
+                                    ) {
+                                        Text(
+                                            text = "View Streak"
+                                        )
+                                    }
                                 }
                             }
                         }
