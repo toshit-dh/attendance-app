@@ -34,15 +34,14 @@ class TodayAttendanceScreenViewModel @Inject constructor(
     private val semesterRepository: SemesterRepository,
     markAttendance: MarkAttendance
 ) : ViewModel() {
+
     private val today: LocalDate = LocalDate.now()
     private val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
     private val date = today.format(formatter)
     private val day = today.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault())
 
     init {
-        val day = today.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault())
         markAttendance.markAttendance()
-        val dayOfWeek = today.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault())
         viewModelScope.launch {
             val subjectList = subjectRepository.getSubjects()
             val dayList = dayRepository.getDays()
