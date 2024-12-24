@@ -22,20 +22,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import tech.toshitworks.attendancechahiye.domain.model.AttendanceModel
 import tech.toshitworks.attendancechahiye.domain.model.SubjectModel
-import tech.toshitworks.attendancechahiye.presentation.screen.analytics_screen.AnalyticsScreenEvents
-import kotlin.reflect.KFunction1
+import tech.toshitworks.attendancechahiye.utils.colors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AttendanceList(
-    onEvent: KFunction1<AnalyticsScreenEvents, Unit>,
     isSheetOpen: Boolean,
     subject: SubjectModel?,
     attendanceList: List<AttendanceModel>,
     sheetState: SheetState,
     onDismiss: () -> Unit,
 ) {
-    onEvent(AnalyticsScreenEvents.OnChangeSubject(subject?.id?:0))
     if (isSheetOpen)
         ModalBottomSheet(
             onDismissRequest = onDismiss,
@@ -71,7 +68,7 @@ fun AttendanceList(
                                 Text(
                                     modifier = Modifier.weight(1f),
                                     text = it.subject!!.name,
-                                    color = colors[idx % colors.size]
+                                    color = colors.random()
                                 )
                                 Text(
                                     modifier = Modifier.weight(1f),
