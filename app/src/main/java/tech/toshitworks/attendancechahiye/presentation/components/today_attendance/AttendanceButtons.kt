@@ -1,4 +1,4 @@
-package tech.toshitworks.attendancechahiye.presentation.components.home
+package tech.toshitworks.attendancechahiye.presentation.components.today_attendance
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
