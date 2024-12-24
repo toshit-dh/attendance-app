@@ -1,6 +1,8 @@
 package tech.toshitworks.attendancechahiye.presentation.components.bars
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
@@ -29,8 +31,10 @@ fun BottomBar(
                     bottomStart = 0.dp,
                     bottomEnd = 0.dp
                 )
-            ),
-        containerColor = MaterialTheme.colorScheme.primary,
+            )
+            .border(2.dp, MaterialTheme.colorScheme.primary, CutCornerShape(16.dp)),
+
+        containerColor = MaterialTheme.colorScheme.background,
     ) {
         BottomScreens.entries.forEach {
             NavigationBarItem(
@@ -40,7 +44,7 @@ fun BottomBar(
                 },
                 icon = {
                     Icon(
-                        tint = if (!isScreenABottomScreen) MaterialTheme.colorScheme.background else if (it.route == screen) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.background,
+                        tint = if (!isScreenABottomScreen) MaterialTheme.colorScheme.primary else if (it.route == screen) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.primary,
                         imageVector = if (it.route == screen) it.iconFilled else it.iconOutlined,
                         contentDescription = it.description
                     )
