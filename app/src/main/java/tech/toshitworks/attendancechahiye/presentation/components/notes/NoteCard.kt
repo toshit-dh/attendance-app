@@ -17,8 +17,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import tech.toshitworks.attendancechahiye.domain.model.NoteModel
 import tech.toshitworks.attendancechahiye.domain.model.Six
-import tech.toshitworks.attendancechahiye.presentation.components.analysis.colors
 import tech.toshitworks.attendancechahiye.presentation.screen.notes_screen.NotesScreenStates
+import tech.toshitworks.attendancechahiye.utils.colors
 
 @Composable
 fun NoteCard(
