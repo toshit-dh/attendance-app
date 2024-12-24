@@ -1,5 +1,6 @@
 package tech.toshitworks.attendancechahiye.presentation.screen.timetable_screen
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -74,14 +75,20 @@ class TimeTableViewModel @Inject constructor(
             }
             TimeTableScreenEvents.OnNextClick -> {
                 viewModelScope.launch {
-                    _event.emit(
-                        SnackBarEvent.ShowSnackBarForAddingData()
-                    )
-                    timetableRepository.insertTimetable(_state.value.listPeriods.filterNotNull())
-                    dataStoreRepository.saveScreenSelection(3)
-                    _event.emit(
-                        SnackBarEvent.ShowSnackBarForDataAdded()
-                    )
+                    try {
+                        _event.emit(
+                            SnackBarEvent.ShowSnackBarForAddingData()
+                        )
+                        timetableRepository.insertTimetable(_state.value.listPeriods.filterNotNull())
+                        dataStoreRepository.saveScreenSelection(3)
+                        _event.emit(
+                            SnackBarEvent.ShowSnackBarForDataAdded()
+                        )
+                    } catch (e: Exception) {
+                        Log.e("exception: ",e.message?:"null message")
+                        e.printStackTrace()
+
+                    }
                 }
             }
         }
