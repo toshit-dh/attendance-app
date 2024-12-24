@@ -45,6 +45,7 @@ fun NavHomeGraph(
                 AnalyticsScreen(
                     modifier,
                     viewModel,
+                    homeScreenViewModel
                 )
             }
             composable(route = ScreenRoutes.EditInfoScreen.route){
