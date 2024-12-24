@@ -1,4 +1,4 @@
-package tech.toshitworks.attendancechahiye.presentation.components.home
+package tech.toshitworks.attendancechahiye.presentation.components.today_attendance
 
 import CircularProgress
 import androidx.compose.foundation.border
@@ -53,13 +53,13 @@ fun PeriodCard(
     addNoteDialogOpen: MutableState<Boolean>,
     attendanceIdOfNote: MutableState<Long>,
     deleted: Boolean,
-    details: @Composable ()->Unit,
+    details: @Composable () -> Unit,
     onEditIconClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(145.dp)
+            .height(150.dp)
             .padding(4.dp),
         colors = if (deleted) CardColors(
             containerColor = MaterialTheme.colorScheme.onError,
@@ -91,18 +91,20 @@ fun PeriodCard(
                     .height(25.dp)
                     .width(25.dp),
                 onClick = {
-                    onEvent(TodayAttendanceScreenEvents.OnDeletePeriod(
-                        tt,
-                        AttendanceModel(
-                            day = day,
-                            subject = tt.subject,
-                            period = tt.period,
-                            date = date,
-                            isPresent = attendanceModel?.isPresent ?: false,
-                            deleted = true
-                        ),
-                        true
-                    ))
+                    onEvent(
+                        TodayAttendanceScreenEvents.OnDeletePeriod(
+                            tt,
+                            AttendanceModel(
+                                day = day,
+                                subject = tt.subject,
+                                period = tt.period,
+                                date = date,
+                                isPresent = attendanceModel?.isPresent ?: false,
+                                deleted = true
+                            ),
+                            toInsert = attendanceModel == null
+                        )
+                    )
                 }
             ) {
                 Icon(
@@ -117,17 +119,19 @@ fun PeriodCard(
                         .zIndex(1f)
                         .border(3.dp, Color.White, RoundedCornerShape(16.dp)),
                     onClick = {
-                        onEvent(TodayAttendanceScreenEvents.OnDeletePeriod(
-                            tt,
-                            AttendanceModel(
-                                day = day,
-                                subject = tt.subject,
-                                period = tt.period,
-                                date = date,
-                                isPresent = attendanceModel?.isPresent ?: false,
-                                deleted = false
-                            ),
-                            false)
+                        onEvent(
+                            TodayAttendanceScreenEvents.OnDeletePeriod(
+                                tt,
+                                AttendanceModel(
+                                    day = day,
+                                    subject = tt.subject,
+                                    period = tt.period,
+                                    date = date,
+                                    isPresent = attendanceModel?.isPresent ?: false,
+                                    deleted = false
+                                ),
+                                toInsert = false
+                            )
                         )
                     },
                 ) {
@@ -161,7 +165,7 @@ fun PeriodCard(
                     val lp = subjectAttendance?.lecturesPresent ?: 0
                     val lt = subjectAttendance?.lecturesTaken ?: 0
                     Text(
-                        text =  "$lp / $lt",
+                        text = "$lp / $lt",
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp
                     )
@@ -179,10 +183,10 @@ fun PeriodCard(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     if (attendanceModel == null || !attendanceModel.isPresent)
-                        AttendanceButton("P", attendanceModel, onEvent, tt, date, day,deleted)
+                        AttendanceButton("P", attendanceModel, onEvent, tt, date, day, deleted)
                     Spacer(modifier = Modifier.height(3.dp))
                     if (attendanceModel == null || attendanceModel.isPresent)
-                        AttendanceButton("A", attendanceModel, onEvent, tt, date, day,deleted)
+                        AttendanceButton("A", attendanceModel, onEvent, tt, date, day, deleted)
                     Spacer(modifier = Modifier.height(3.dp))
                     if (attendanceModel != null)
                         Row(
