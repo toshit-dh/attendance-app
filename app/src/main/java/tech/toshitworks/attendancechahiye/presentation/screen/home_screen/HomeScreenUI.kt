@@ -20,6 +20,8 @@ import tech.toshitworks.attendancechahiye.presentation.components.bars.TopBar
 fun HomeScreen(
     viewModel: HomeScreenViewModel
 ) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val onEvent = viewModel::onEvent
     val navController = rememberNavController()
     val screen = navController.currentBackStackEntryAsState().value?.destination?.route
     val isEditAttendanceScreen = screen == ScreenRoutes.EditAttendanceScreen.route
@@ -32,7 +34,9 @@ fun HomeScreen(
                 TopBar(
                     screen = screen,
                     drawerState = drawerState,
-                    navController = navController
+                    navController = navController,
+                    state = state,
+                    onEvent = onEvent
                 )
             },
             bottomBar = {
@@ -43,7 +47,7 @@ fun HomeScreen(
             floatingActionButton = {
                 if (isEditAttendanceScreen)
                     FloatingButton{
-                        viewModel.floatingButtonClick(true)
+                        onEvent(HomeScreenEvents.OnAddExtraAttendanceClick)
                     }
             },
             floatingActionButtonPosition = FabPosition.Center
