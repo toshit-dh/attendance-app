@@ -182,6 +182,14 @@ class FormScreenViewModel @Inject constructor(
                     semesterRepository.insertSemester(_state.value.semesterModel!!)
                     dayRepository.insertDays(_state.value.dayList)
                     subjectRepository.insertSubjects(_state.value.subjectList)
+                    _state.update {
+                        it.copy(
+                            periodList = it.periodList + PeriodModel(
+                                startTime = "empty",
+                                endTime = "empty"
+                            )
+                        )
+                    }
                     periodRepository.insertPeriods(_state.value.periodList)
                     dataStoreRepository.saveScreenSelection(2)
                     _event.emit(SnackBarEvent.ShowSnackBarForDataAdded())
