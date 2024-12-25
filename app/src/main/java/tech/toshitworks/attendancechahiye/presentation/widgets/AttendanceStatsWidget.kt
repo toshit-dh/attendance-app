@@ -29,7 +29,7 @@ import androidx.glance.text.TextStyle
 import dagger.hilt.android.EntryPointAccessors
 import tech.toshitworks.attendancechahiye.MainActivity
 import tech.toshitworks.attendancechahiye.R
-import tech.toshitworks.attendancechahiye.di.WidgetEntryPoint
+import tech.toshitworks.attendancechahiye.di.RepoEntryPoint
 import tech.toshitworks.attendancechahiye.domain.model.AttendanceStats
 import java.util.Locale
 
@@ -54,7 +54,7 @@ class AttendanceStatsWidget : GlanceAppWidget(
 private fun AttendanceStatsUI(
     context: Context,
 ) {
-    val widgetRepo = EntryPointAccessors.fromApplication(context, WidgetEntryPoint::class.java)
+    val widgetRepo = EntryPointAccessors.fromApplication(context, RepoEntryPoint::class.java)
     val attendanceRepo = widgetRepo.attendanceRepository()
     val overallState =
         attendanceRepo.getAttendancePercentage().collectAsState(AttendanceStats(-1, -1, 0.0))
