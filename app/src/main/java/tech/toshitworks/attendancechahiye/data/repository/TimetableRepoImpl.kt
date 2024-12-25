@@ -150,6 +150,7 @@ class TimetableRepoImpl @Inject constructor(
     override suspend fun getAllPeriods(): List<TimetableModel> {
         return timetableDao.getAllPeriods().map {
             TimetableModel(
+                id = it.id,
                 subject = subjectRepository.getSubjectById(it.subjectId)!!,
                 day = dayRepository.getDayById(it.dayId),
                 period = periodRepository.getPeriodById(it.periodId)

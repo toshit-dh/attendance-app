@@ -71,7 +71,8 @@ fun NavHomeGraph(
             }
             composable(route = ScreenRoutes.ExportScreen.route){
                 ExportScreen(
-                    modifier
+                    modifier,
+                    homeScreenViewModel
                 )
             }
             composable(route = ScreenRoutes.EditAttendanceScreen.route){

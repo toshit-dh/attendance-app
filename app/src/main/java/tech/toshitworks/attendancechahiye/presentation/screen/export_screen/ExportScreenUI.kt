@@ -13,6 +13,8 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -21,11 +23,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import tech.toshitworks.attendancechahiye.presentation.screen.home_screen.HomeScreenEvents
+import tech.toshitworks.attendancechahiye.presentation.screen.home_screen.HomeScreenViewModel
 
 @Composable
 fun ExportScreen(
-    modifier: Modifier
+    modifier: Modifier,
+    homeScreenViewModel: HomeScreenViewModel
 ) {
+    val onEvent = homeScreenViewModel::onEvent
     val list = listOf(
         "Subjects",
         "Timetable",
@@ -33,8 +40,8 @@ fun ExportScreen(
         "Events",
         "Notes"
     )
-    val selectedItems = remember {
-        mutableStateOf(listOf(""))
+    val selectedItems: MutableState<List<String>> = remember {
+        mutableStateOf(emptyList())
     }
     LazyColumn(
         modifier = modifier
@@ -92,9 +99,9 @@ fun ExportScreen(
             ) {
                 Button(
                     onClick = {
-
-                    }
-
+                        onEvent(HomeScreenEvents.OnExportClick(selectedItems.value))
+                    },
+                    enabled = selectedItems.value.isNotEmpty()
                 ) {
                     Text(
                         text = "Export ${selectedItems.value.drop(1)}",

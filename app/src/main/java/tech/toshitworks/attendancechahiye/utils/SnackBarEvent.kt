@@ -16,5 +16,10 @@ sealed class SnackBarEvent {
         val message: String = Message.DATA_ADDED_SUCCESSFULLY,
         val duration: SnackbarDuration = SnackbarDuration.Indefinite
     ) : SnackBarEvent()
-
+}
+sealed class SnackBarWorkerEvent {
+    data class ShowSnackBarForCSVWorker(
+        val message: String,
+        val duration: SnackbarDuration = SnackbarDuration.Indefinite
+    ) : SnackBarWorkerEvent()
 }

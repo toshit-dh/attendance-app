@@ -6,8 +6,11 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import tech.toshitworks.attendancechahiye.data.repository.AnalyticsRepoImpl
 import tech.toshitworks.attendancechahiye.data.repository.AttendanceRepoImpl
+import tech.toshitworks.attendancechahiye.data.repository.CsvWorkRepository
+import tech.toshitworks.attendancechahiye.data.repository.CsvWorkRepositoryImpl
 import tech.toshitworks.attendancechahiye.data.repository.DataStoreRepoImpl
 import tech.toshitworks.attendancechahiye.data.repository.DayRepositoryImpl
+import tech.toshitworks.attendancechahiye.data.repository.EventRepoImpl
 import tech.toshitworks.attendancechahiye.data.repository.MarkAttendanceImpl
 import tech.toshitworks.attendancechahiye.data.repository.NoteRepositoryImpl
 import tech.toshitworks.attendancechahiye.data.repository.PeriodRepositoryImpl
@@ -18,6 +21,7 @@ import tech.toshitworks.attendancechahiye.domain.repository.AnalyticsRepository
 import tech.toshitworks.attendancechahiye.domain.repository.AttendanceRepository
 import tech.toshitworks.attendancechahiye.domain.repository.DataStoreRepository
 import tech.toshitworks.attendancechahiye.domain.repository.DayRepository
+import tech.toshitworks.attendancechahiye.domain.repository.EventRepository
 import tech.toshitworks.attendancechahiye.domain.repository.MarkAttendance
 import tech.toshitworks.attendancechahiye.domain.repository.NoteRepository
 import tech.toshitworks.attendancechahiye.domain.repository.PeriodRepository
@@ -86,9 +90,20 @@ abstract class RepositoryModule {
 
     @Singleton
     @Binds
+    abstract fun bindEventRepository(
+        eventRepoImpl: EventRepoImpl
+    ): EventRepository
+
+    @Singleton
+    @Binds
     abstract fun bindMarkAttendance(
        markAttendance: MarkAttendanceImpl
     ): MarkAttendance
 
+    @Singleton
+    @Binds
+    abstract fun bindCsvWorkRepository(
+        csvWorkRepositoryImpl: CsvWorkRepositoryImpl
+    ): CsvWorkRepository
 
 }

@@ -15,5 +15,6 @@ data class HomeScreenStates(
     val todayDay: String = "",
     val editAttendanceDate: String? = null,
     val subjectList: List<SubjectModel> = emptyList(),
-    val analysisSubject: SubjectModel? = null
+    val analysisSubject: SubjectModel? = null,
+    val csvWorkerState: String = ""
 )
