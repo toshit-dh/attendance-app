@@ -25,7 +25,7 @@ import javax.inject.Singleton
         NoteEntity::class,
         EventEntity::class
     ],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -40,7 +40,7 @@ abstract class AttendanceDatabase : RoomDatabase() {
     abstract fun semesterDao(): SemesterDao
     abstract fun noteDao(): NoteDao
     abstract fun analyticsDao(): AnalyticsDao
-
+    abstract fun eventDao(): EventDao
     companion object {
         const val DATABASE_NAME = "attendance_database"
     }

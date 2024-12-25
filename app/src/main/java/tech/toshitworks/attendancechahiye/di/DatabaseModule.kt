@@ -19,6 +19,14 @@ val MIGRATION_1_2 = object : Migration(1, 2) {
     }
 }
 
+val MIGRATION_2_3 = object : Migration(2,3) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        // Add the new column with a default value to avoid breaking existing rows
+        db.execSQL("ALTER TABLE event ADD COLUMN content TEXT NOT NULL DEFAULT ''")
+    }
+}
+
+
 @Module
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
@@ -34,6 +42,7 @@ object DatabaseModule {
         AttendanceDatabase.DATABASE_NAME
     )
         .addMigrations(MIGRATION_1_2)
+        .addMigrations(MIGRATION_2_3)
         .build()
 
     @Provides
@@ -59,6 +68,9 @@ object DatabaseModule {
 
     @Provides
     fun provideAnalyticsDao(database: AttendanceDatabase) = database.analyticsDao()
+
+    @Provides
+    fun providesEventDao(database: AttendanceDatabase) = database.eventDao()
 
 
 }
