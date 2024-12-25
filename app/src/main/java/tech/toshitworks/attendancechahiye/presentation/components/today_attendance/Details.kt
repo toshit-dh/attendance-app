@@ -62,7 +62,7 @@ fun Details(
                 text = editedSubject.name,
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 1,
-                style = MaterialTheme.typography.titleLarge.copy(
+                style = MaterialTheme.typography.bodyLarge.copy(
                     fontWeight = FontWeight.ExtraBold,
                     letterSpacing = 2.sp
                 ),
@@ -78,7 +78,7 @@ fun Details(
             text = "$initial1$initial2",
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
-            style = MaterialTheme.typography.titleMedium.copy(
+            style = MaterialTheme.typography.bodyLarge.copy(
                 fontWeight = FontWeight.ExtraBold,
                 letterSpacing = 2.sp
             ),
@@ -101,6 +101,7 @@ fun Details(
                     fontWeight = FontWeight.Bold,
                     letterSpacing = 2.sp
                 ),
+                color = random
             )
         }
     }
