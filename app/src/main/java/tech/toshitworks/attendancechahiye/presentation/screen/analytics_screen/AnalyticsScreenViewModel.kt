@@ -79,17 +79,23 @@ class AnalyticsScreenViewModel @Inject constructor(
                     val toDateParsed = LocalDate.parse(event.toDate)
                     subject && itDate in fromDateParsed..toDateParsed
                 }.fold(AttendanceStats(0,0,0.0)) { acc: AttendanceStats, attendanceModel ->
+
+                    val subject =  event.subjectModel == null
+                    val totalLectures =
+                        if (subject)
+                            if (attendanceModel.subject?.isAttendanceCounted==true) acc.totalLectures + 1 else acc.totalLectures
+                        else acc.totalLectures + 1
+                    val totalPresent =
+                        if (subject)
+                            if (attendanceModel.subject?.isAttendanceCounted==true) if (attendanceModel.isPresent) acc.totalPresent + 1 else acc.totalPresent else acc.totalPresent
+                        else if (attendanceModel.isPresent) acc.totalPresent + 1 else acc.totalPresent
                     AttendanceStats(
-                        totalPresent = acc.totalPresent + if (attendanceModel.isPresent) 1 else 0,
-                        totalLectures = acc.totalLectures + 1,
+                        totalPresent = totalPresent,
+                        totalLectures = totalLectures,
                         attendancePercentage = (acc.totalPresent.toDouble() / acc.totalLectures.toDouble()) * 100.0
                     )
                 }
-                _state.update {
-                    it.copy(
-                        filteredAttendanceByDate = filteredAttendance
-                    )
-                }
+                event.stats(filteredAttendance)
             }
         }
     }
