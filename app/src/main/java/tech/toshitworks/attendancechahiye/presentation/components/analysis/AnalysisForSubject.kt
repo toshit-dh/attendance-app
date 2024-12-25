@@ -1,7 +1,5 @@
 package tech.toshitworks.attendancechahiye.presentation.components.analysis
 
-import android.app.DatePickerDialog
-import android.widget.DatePicker
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,7 +27,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -37,6 +34,7 @@ import kotlinx.coroutines.launch
 import tech.toshitworks.attendancechahiye.domain.model.AnalyticsModel
 import tech.toshitworks.attendancechahiye.domain.model.AttendanceModel
 import tech.toshitworks.attendancechahiye.domain.model.AttendanceStats
+import tech.toshitworks.attendancechahiye.presentation.components.dialogs.PickDateDialog
 import tech.toshitworks.attendancechahiye.presentation.screen.analytics_screen.AnalyticsScreenEvents
 import tech.toshitworks.attendancechahiye.presentation.screen.analytics_screen.AnalyticsScreenState
 import java.text.SimpleDateFormat
@@ -56,7 +54,6 @@ fun AnalysisForSubject(
     attendanceList: List<AttendanceModel>
 ) {
     val calendar = Calendar.getInstance()
-    val context = LocalContext.current
     val isOverall = analyticsModel.subject == null
     val attendanceListFiltered = if (!isOverall) attendanceList.filter {
         it.subject == analyticsModel.subject
@@ -67,12 +64,15 @@ fun AnalysisForSubject(
         mutableStateOf(false)
     }
     val isDatePickerOpen = remember {
-        mutableStateOf(false)
+        mutableStateOf(Pair(false,""))
     }
     val fromDate: MutableState<String?> = remember {
         mutableStateOf(null)
     }
     val toDate: MutableState<String?> = remember {
+        mutableStateOf(null)
+    }
+    val attendanceStats: MutableState<AttendanceStats?> = remember {
         mutableStateOf(null)
     }
     Column(
@@ -102,7 +102,7 @@ fun AnalysisForSubject(
                         analyticsModel.eligibilityOfEndSem
                     )
                 else
-                    Box{
+                    Box {
 
                     }
             }
@@ -141,14 +141,14 @@ fun AnalysisForSubject(
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = if (fromDate.value!=null) fromDate.value!! else "From Date: ?",
+                        text = if (fromDate.value != null) fromDate.value!! else "From Date: ?",
                         style = MaterialTheme.typography.bodyLarge.copy(
                             fontWeight = FontWeight.Bold
                         )
                     )
                     IconButton(
                         onClick = {
-                            isDatePickerOpen.value = true
+                            isDatePickerOpen.value = Pair(true,"from")
 
                         }
                     ) {
@@ -166,17 +166,17 @@ fun AnalysisForSubject(
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = if (toDate.value!=null) toDate.value!! else "To Date: ?",
+                        text = if (toDate.value != null) toDate.value!! else "To Date: ?",
                         style = MaterialTheme.typography.bodyLarge.copy(
                             fontWeight = FontWeight.Bold
                         )
                     )
                     IconButton(
                         onClick = {
-                            isDatePickerOpen.value = true
+                            isDatePickerOpen.value = Pair(true,"to")
 
                         },
-                        enabled = fromDate.value!=null
+                        enabled = fromDate.value != null
                     ) {
                         Icon(
                             imageVector = Icons.Default.CalendarMonth,
@@ -184,11 +184,12 @@ fun AnalysisForSubject(
                         )
                     }
                 }
-                val aS = AttendanceStats(0,0,0.0)
-                val totalPresent = if (state.filteredAttendanceByDate == aS) "?" else state.filteredAttendanceByDate.totalPresent.toString()
-                val totalLectures = if (state.filteredAttendanceByDate == aS) "?" else state.filteredAttendanceByDate.totalLectures.toString()
+                val aS = attendanceStats.value == null
+                val totalPresent = if (aS) "?" else attendanceStats.value!!.totalPresent.toString()
+                val totalLectures =
+                    if (aS) "?" else attendanceStats.value!!.totalLectures.toString()
                 val percentage = if (totalPresent == "?") "?"
-                else String.format(Locale.US,"%.2f",state.filteredAttendanceByDate.attendancePercentage)
+                else String.format(Locale.US, "%.2f", attendanceStats.value!!.attendancePercentage)
                 Text(
                     modifier = Modifier
                         .weight(1f)
@@ -247,39 +248,30 @@ fun AnalysisForSubject(
                 sheetState.hide()
             }
         }
-        if (isDatePickerOpen.value){
-            val datePicker = DatePickerDialog(
-                context,
-                { _: DatePicker, year: Int, month: Int, day: Int ->
-                    val formattedDate = String.format(
-                        Locale.US,
-                        "%04d-%02d-%02d",
-                        year,
-                        month + 1,
-                        day
-                    )
-                    isDatePickerOpen.value = false
-                    if (fromDate.value==null) fromDate.value = formattedDate else{
-                        toDate.value = formattedDate
-                        onEvent(AnalyticsScreenEvents.OnDateRangeAttendance(
-                            analyticsModel.subject,
-                            fromDate.value!!,
-                            toDate.value!!
-                        ))
-                    }
-                },
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)
-            )
+        if (isDatePickerOpen.value.first) {
+            val isFrom = isDatePickerOpen.value.second == "from"
             val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-            val minDate = if (fromDate.value!=null) dateFormat.parse(fromDate.value!!)?.time ?: 0L else state.startDate
+            val minDate = if (isFrom) state.startDate else dateFormat.parse(fromDate.value!!)?.time ?: 0L
             val today = calendar.timeInMillis
             val endDate = state.endDate
-            val maxDate =   if (today > endDate) state.endDate else today
-            datePicker.datePicker.minDate = minDate
-            datePicker.datePicker.maxDate = maxDate
-            datePicker.show()
+            val maxDate = if (isFrom) if (toDate.value==null) if (today > endDate) state.endDate else today else dateFormat.parse(toDate.value!!)?.time ?: 0L else today
+            PickDateDialog(
+                minDate = minDate,
+                maxDate = maxDate
+            ) {date->
+                if (isDatePickerOpen.value.second=="from") fromDate.value = date else if (isDatePickerOpen.value.second=="to") toDate.value = date
+                if (fromDate.value != null && toDate.value != null){
+                    onEvent(AnalyticsScreenEvents.OnDateRangeAttendance(
+                        analyticsModel.subject,
+                        fromDate.value!!,
+                        toDate.value!!,
+                    ) {
+                        attendanceStats.value = it
+                    }
+                    )
+                }
+                isDatePickerOpen.value = Pair(false,"")
+            }
         }
     }
 }
