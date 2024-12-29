@@ -6,13 +6,14 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import tech.toshitworks.attendancechahiye.data.repository.AnalyticsRepoImpl
 import tech.toshitworks.attendancechahiye.data.repository.AttendanceRepoImpl
-import tech.toshitworks.attendancechahiye.data.repository.CsvWorkRepository
+import tech.toshitworks.attendancechahiye.domain.repository.CsvWorkRepository
 import tech.toshitworks.attendancechahiye.data.repository.CsvWorkRepositoryImpl
 import tech.toshitworks.attendancechahiye.data.repository.DataStoreRepoImpl
 import tech.toshitworks.attendancechahiye.data.repository.DayRepositoryImpl
 import tech.toshitworks.attendancechahiye.data.repository.EventRepoImpl
 import tech.toshitworks.attendancechahiye.data.repository.MarkAttendanceImpl
 import tech.toshitworks.attendancechahiye.data.repository.NoteRepositoryImpl
+import tech.toshitworks.attendancechahiye.data.repository.NotificationWorkRepoImpl
 import tech.toshitworks.attendancechahiye.data.repository.PeriodRepositoryImpl
 import tech.toshitworks.attendancechahiye.data.repository.SemesterRepoImpl
 import tech.toshitworks.attendancechahiye.data.repository.SubjectRepoImpl
@@ -24,10 +25,13 @@ import tech.toshitworks.attendancechahiye.domain.repository.DayRepository
 import tech.toshitworks.attendancechahiye.domain.repository.EventRepository
 import tech.toshitworks.attendancechahiye.domain.repository.MarkAttendance
 import tech.toshitworks.attendancechahiye.domain.repository.NoteRepository
+import tech.toshitworks.attendancechahiye.domain.repository.NotificationService
+import tech.toshitworks.attendancechahiye.domain.repository.NotificationWorkRepository
 import tech.toshitworks.attendancechahiye.domain.repository.PeriodRepository
 import tech.toshitworks.attendancechahiye.domain.repository.SemesterRepository
 import tech.toshitworks.attendancechahiye.domain.repository.SubjectRepository
 import tech.toshitworks.attendancechahiye.domain.repository.TimetableRepository
+import tech.toshitworks.attendancechahiye.services.NotificationServiceImpl
 import javax.inject.Singleton
 
 @Module
@@ -105,5 +109,17 @@ abstract class RepositoryModule {
     abstract fun bindCsvWorkRepository(
         csvWorkRepositoryImpl: CsvWorkRepositoryImpl
     ): CsvWorkRepository
+
+    @Singleton
+    @Binds
+    abstract fun bindNotificationWorkRepository(
+        notificationWorkRepositoryImpl: NotificationWorkRepoImpl
+    ): NotificationWorkRepository
+
+    @Singleton
+    @Binds
+    abstract fun bindNotificationRepository(
+        notificationServiceImpl: NotificationServiceImpl
+    ): NotificationService
 
 }
