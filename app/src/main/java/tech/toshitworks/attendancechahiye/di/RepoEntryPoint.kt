@@ -6,6 +6,7 @@ import dagger.hilt.components.SingletonComponent
 import tech.toshitworks.attendancechahiye.domain.repository.AttendanceRepository
 import tech.toshitworks.attendancechahiye.domain.repository.EventRepository
 import tech.toshitworks.attendancechahiye.domain.repository.NoteRepository
+import tech.toshitworks.attendancechahiye.domain.repository.NotificationService
 import tech.toshitworks.attendancechahiye.domain.repository.SubjectRepository
 import tech.toshitworks.attendancechahiye.domain.repository.TimetableRepository
 
@@ -17,5 +18,5 @@ interface RepoEntryPoint {
     fun timetableRepository(): TimetableRepository
     fun notesRepository(): NoteRepository
     fun eventsRepository(): EventRepository
-
+    fun notificationRepository(): NotificationService
 }
