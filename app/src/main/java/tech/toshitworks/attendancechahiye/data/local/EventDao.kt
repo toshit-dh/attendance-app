@@ -1,13 +1,23 @@
 package tech.toshitworks.attendancechahiye.data.local
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Query
+import androidx.room.Upsert
+import kotlinx.coroutines.flow.Flow
 import tech.toshitworks.attendancechahiye.data.entity.EventEntity
 
 @Dao
 interface EventDao {
 
     @Query("SELECT * from event")
-    suspend fun getEvents(): List<EventEntity>
+    fun getEvents(): Flow<List<EventEntity>>
+
+    @Upsert
+    suspend fun addEvent(event: EventEntity)
+
+    @Delete
+    suspend fun deleteEvent(event: EventEntity)
+
 
 }
