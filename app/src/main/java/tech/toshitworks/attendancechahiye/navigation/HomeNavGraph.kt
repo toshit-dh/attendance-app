@@ -6,6 +6,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import tech.toshitworks.attendancechahiye.presentation.screen.settings_screen.SettingsScreen
 import tech.toshitworks.attendancechahiye.presentation.screen.analytics_screen.AnalyticsScreen
 import tech.toshitworks.attendancechahiye.presentation.screen.analytics_screen.AnalyticsScreenViewModel
 import tech.toshitworks.attendancechahiye.presentation.screen.edit_attendance_screen.EditAttendanceScreen
@@ -19,6 +20,7 @@ import tech.toshitworks.attendancechahiye.presentation.screen.home_screen.HomeSc
 import tech.toshitworks.attendancechahiye.presentation.screen.notes_screen.NotesScreen
 import tech.toshitworks.attendancechahiye.presentation.screen.notes_screen.NotesScreenViewModel
 import tech.toshitworks.attendancechahiye.presentation.screen.notification_screen.NotificationScreen
+import tech.toshitworks.attendancechahiye.presentation.screen.settings_screen.SettingScreenViewModel
 import tech.toshitworks.attendancechahiye.presentation.screen.today_attendance_screen.TodayAttendanceScreen
 import tech.toshitworks.attendancechahiye.presentation.screen.today_attendance_screen.TodayAttendanceScreenViewModel
 
@@ -38,6 +40,7 @@ fun NavHomeGraph(
                 TodayAttendanceScreen(
                     modifier,
                     viewModel,
+                    navController
                 )
             }
             composable(route = ScreenRoutes.AnalyticsScreen.route) {
@@ -52,7 +55,8 @@ fun NavHomeGraph(
                 val viewModel: EditScreenViewModel = hiltViewModel()
                 EditInfoScreen(
                     modifier,
-                    viewModel
+                    viewModel,
+                    homeScreenViewModel
                 )
             }
             composable(route = ScreenRoutes.NotesScreen.route){
@@ -73,6 +77,13 @@ fun NavHomeGraph(
                 ExportScreen(
                     modifier,
                     homeScreenViewModel
+                )
+            }
+            composable(route = ScreenRoutes.SettingsScreen.route){
+                val viewModel: SettingScreenViewModel = hiltViewModel()
+                SettingsScreen(
+                    modifier,
+                    viewModel
                 )
             }
             composable(route = ScreenRoutes.EditAttendanceScreen.route){
