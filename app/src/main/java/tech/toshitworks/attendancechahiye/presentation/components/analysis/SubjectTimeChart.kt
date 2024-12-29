@@ -1,18 +1,27 @@
 package tech.toshitworks.attendancechahiye.presentation.components.analysis
 
-import androidx.compose.foundation.clickable
+import androidx.compose.animation.animateColor
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,6 +41,19 @@ fun SubjectTimeChart(
    analyticsModel: AnalyticsModel,
    subjectAnalyticsModel: List<AnalyticsModel>,
 ){
+    val streakQuotes = listOf(
+        "Rock bottom. Start climbing.",
+        "Every streak starts with one.",
+        "Consistency builds strength.",
+        "Momentum is building—keep it up!",
+        "Laying strong foundations.",
+        "Halfway to greatness!",
+        "Discipline is turning into habit.",
+        "You're creating excellence.",
+        "Champions are made like this.",
+        "You're on the brink of a breakthrough!",
+        "Perfect 10—unstoppable! Don't let this fall"
+    )
 
     val slices = subjectAnalyticsModel.mapIndexed {idx,it->
         PieChartData.Slice(
@@ -116,42 +138,80 @@ fun SubjectTimeChart(
                                     fontWeight = FontWeight.Bold
                                 )
                             )
-                            Text(
-                                text = "Current:  5 🎯"
-                            )
-                            Text(
-                                text = "Longest:  8 🎯"
-                            )
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = "Current:"
+                                )
+                                Text(
+                                    text = "${analyticsModel.streak!!.first}    \uD83C\uDFAF"
+                                )
+                            }
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = "Longest:"
+                                )
+                                Text(
+                                    text = "  ${analyticsModel.streak!!.second}    \uD83C\uDFAF"
+                                )
+                            }
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth(),
                                 horizontalArrangement = Arrangement.Center
                             ) {
-                                Card(
-                                    modifier = Modifier
-                                        .padding(6.dp)
-                                        .clickable {
-
-                                        },
-                                    colors = CardDefaults.cardColors(
-                                        containerColor = MaterialTheme.colorScheme.primary,
-                                        contentColor = MaterialTheme.colorScheme.background
-                                    ),
-                                ) {
-                                    Column(
-                                        modifier = Modifier
-                                            .padding(6.dp)
-                                    ) {
-                                        Text(
-                                            text = "View Streak"
-                                        )
-                                    }
-                                }
+                                val index = if (analyticsModel.streak!!.first>=10) 10
+                                else analyticsModel.streak.first
+                                ScrollingTextAnimation(
+                                    text = streakQuotes[index]
+                                )
                             }
                         }
                     }
                 }
             }
         }
+    }
+}
+
+@Composable
+fun ScrollingTextAnimation(text: String) {
+    val infiniteTransition = rememberInfiniteTransition(label = "animation")
+    val offsetX by infiniteTransition.animateFloat(
+        initialValue = -200f,
+        targetValue = 180f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 3000, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "animation"
+    )
+    val color by infiniteTransition.animateColor(
+        initialValue = Color.Red, // Starting color
+        targetValue = Color.Green, // Final color
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 1000, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "colorAnimation"
+    )
+    Box(modifier = Modifier.fillMaxWidth()) {
+        Text(
+            text = text,
+            modifier = Modifier
+                .offset(x = offsetX.dp),
+            style = MaterialTheme.typography.bodyLarge.copy(
+                fontWeight = FontWeight.Bold,
+                color = color
+            ),
+            maxLines = 2
+        )
     }
 }

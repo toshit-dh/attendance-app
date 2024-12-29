@@ -3,12 +3,12 @@ package tech.toshitworks.attendancechahiye.presentation.screen.analytics_screen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import tech.toshitworks.attendancechahiye.domain.model.AttendanceModel
 import tech.toshitworks.attendancechahiye.domain.model.AttendanceStats
 import tech.toshitworks.attendancechahiye.domain.repository.AnalyticsRepository
 import tech.toshitworks.attendancechahiye.domain.repository.AttendanceRepository
@@ -53,15 +53,20 @@ class AnalyticsScreenViewModel @Inject constructor(
                     null
                 }
             } ?: 0L
-            val attendance = attendanceRepository.getAllAttendance().first()
-            val analyticList =
-                analyticsRepository.getAnalysis(semester.startDate, semester.midTermDate, semester.endDate)
+            val analyticList = async {
+                analyticsRepository.getAnalysis(
+                    semester.startDate,
+                    semester.midTermDate,
+                    semester.endDate
+                )
+            }
+            val attendance = async { attendanceRepository.getAllAttendance().first() }
             _state.update {
                 it.copy(
                     isLoading = false,
-                    analyticsList = analyticList,
-                    attendanceList = attendance,
-                    filteredAttendanceList = attendance,
+                    analyticsList = analyticList.await(),
+                    attendanceList = attendance.await(),
+                    filteredAttendanceList = attendance.await(),
                     startDate = minDate,
                     endDate = maxDate
                 )
@@ -69,25 +74,26 @@ class AnalyticsScreenViewModel @Inject constructor(
         }
     }
 
-    fun onEvent(event: AnalyticsScreenEvents){
-        when(event){
+    fun onEvent(event: AnalyticsScreenEvents) {
+        when (event) {
             is AnalyticsScreenEvents.OnDateRangeAttendance -> {
                 val filteredAttendance = _state.value.attendanceList.filter {
-                    val subject =  if (event.subjectModel == null) true else it.subject == event.subjectModel
+                    val subject =
+                        if (event.subjectModel == null) true else it.subject == event.subjectModel
                     val itDate = LocalDate.parse(it.date)
                     val fromDateParsed = LocalDate.parse(event.fromDate)
                     val toDateParsed = LocalDate.parse(event.toDate)
                     subject && itDate in fromDateParsed..toDateParsed
-                }.fold(AttendanceStats(0,0,0.0)) { acc: AttendanceStats, attendanceModel ->
+                }.fold(AttendanceStats(0, 0, 0.0)) { acc: AttendanceStats, attendanceModel ->
 
-                    val subject =  event.subjectModel == null
+                    val subject = event.subjectModel == null
                     val totalLectures =
                         if (subject)
-                            if (attendanceModel.subject?.isAttendanceCounted==true) acc.totalLectures + 1 else acc.totalLectures
+                            if (attendanceModel.subject?.isAttendanceCounted == true) acc.totalLectures + 1 else acc.totalLectures
                         else acc.totalLectures + 1
                     val totalPresent =
                         if (subject)
-                            if (attendanceModel.subject?.isAttendanceCounted==true) if (attendanceModel.isPresent) acc.totalPresent + 1 else acc.totalPresent else acc.totalPresent
+                            if (attendanceModel.subject?.isAttendanceCounted == true) if (attendanceModel.isPresent) acc.totalPresent + 1 else acc.totalPresent else acc.totalPresent
                         else if (attendanceModel.isPresent) acc.totalPresent + 1 else acc.totalPresent
                     AttendanceStats(
                         totalPresent = totalPresent,

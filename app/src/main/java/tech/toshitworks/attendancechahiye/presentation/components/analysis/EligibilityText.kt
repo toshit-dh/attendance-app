@@ -51,7 +51,7 @@ fun EligibilityAnalysis(
                     modifier = Modifier.fillMaxWidth(),
                     text = "Mid Term Eligibility",
                     textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.titleMedium.copy(
+                    style = MaterialTheme.typography.titleLarge.copy(
                         fontWeight = FontWeight.Bold
                     )
                 )
@@ -76,7 +76,7 @@ fun EligibilityAnalysis(
                     modifier = Modifier.fillMaxWidth(),
                     text = "End Sem Eligibility",
                     textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.titleMedium.copy(
+                    style = MaterialTheme.typography.titleLarge.copy(
                         fontWeight = FontWeight.Bold
                     )
                 )
@@ -108,7 +108,7 @@ private fun MidTermText(
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "Now?: "
+                text = "Now?: ",
             )
             if (!eligibilityOfMidterm.isEligibleForNow)
                 Text(
