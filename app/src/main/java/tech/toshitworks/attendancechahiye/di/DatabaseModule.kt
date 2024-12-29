@@ -26,6 +26,56 @@ val MIGRATION_2_3 = object : Migration(2,3) {
     }
 }
 
+val MIGRATION_3_4 = object : Migration(3,4) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("""
+            CREATE TABLE event_new (
+                id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                date TEXT NOT NULL,
+                subject_id INTEGER NOT NULL,
+                content TEXT NOT NULL,
+                notificationWorkId BLOB,
+                FOREIGN KEY(subject_id) REFERENCES subjects(id) ON DELETE CASCADE
+            )
+        """)
+
+
+        // Drop the old table
+        db.execSQL("DROP TABLE event")
+
+        // Rename the new table to the original table name
+        db.execSQL("ALTER TABLE event_new RENAME TO event")
+
+        db.execSQL("CREATE INDEX IF NOT EXISTS index_event_subject_id ON event(subject_id)")
+    }
+}
+
+
+val MIGRATION_4_5 = object : Migration(4,5) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        // Create a new temporary table with the updated schema
+        db.execSQL("""
+            CREATE TABLE event_new (
+                id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                date TEXT NOT NULL,
+                subject_id INTEGER NOT NULL,
+                content TEXT NOT NULL,
+                notificationWorkId TEXT,
+                FOREIGN KEY(subject_id) REFERENCES subjects(id) ON DELETE CASCADE
+            )
+        """)
+
+
+        // Drop the old table
+        db.execSQL("DROP TABLE event")
+
+        // Rename the new table to the original table name
+        db.execSQL("ALTER TABLE event_new RENAME TO event")
+
+        db.execSQL("CREATE INDEX IF NOT EXISTS index_event_subject_id ON event(subject_id)")
+    }
+}
+
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -43,6 +93,8 @@ object DatabaseModule {
     )
         .addMigrations(MIGRATION_1_2)
         .addMigrations(MIGRATION_2_3)
+        .addMigrations(MIGRATION_3_4)
+        .addMigrations(MIGRATION_4_5)
         .build()
 
     @Provides
