@@ -1,22 +1,32 @@
 package tech.toshitworks.attendancechahiye.presentation.components.bars
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import tech.toshitworks.attendancechahiye.navigation.ScreenRoutes
+import tech.toshitworks.attendancechahiye.presentation.screen.home_screen.HomeScreenEvents
 import tech.toshitworks.attendancechahiye.presentation.screen.home_screen.HomeScreenStates
 import java.util.Locale
 
 @Composable
 fun TopAppBarTitle(
     state: HomeScreenStates,
+    onEvent: (HomeScreenEvents) -> Unit,
     screen: String?
-){
+) {
     val style = MaterialTheme.typography.titleLarge.copy(
         fontSize = 20.sp,
         fontWeight = FontWeight.Bold,
@@ -24,8 +34,11 @@ fun TopAppBarTitle(
     )
     when (screen) {
         ScreenRoutes.TodayAttendance.route -> {
+            val text = if (state.dayList.find {
+                    it.name == state.todayDate
+                } == null) "Enjoy Holiday" else "Add Attendance: ${state.todayDay}"
             Text(
-                text = "Add Attendance: ${state.todayDay}",
+                text = text,
                 style = style,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center
@@ -39,9 +52,11 @@ fun TopAppBarTitle(
                     it.subjectModel == subject
                 }
                 val isOverall = subject == null
-                val lc = if (isOverall) state.attendanceStats!!.totalLectures else sAttendance!!.lecturesTaken
-                val lp = if (isOverall) state.attendanceStats!!.totalPresent else sAttendance!!.lecturesPresent
-                val percentage = String.format(Locale.US,"%.2f",lp.toFloat()*100/lc.toFloat())
+                val lc =
+                    if (isOverall) state.attendanceStats!!.totalLectures else sAttendance!!.lecturesTaken
+                val lp =
+                    if (isOverall) state.attendanceStats!!.totalPresent else sAttendance!!.lecturesPresent
+                val percentage = String.format(Locale.US, "%.2f", lp.toFloat() * 100 / lc.toFloat())
                 Text(
                     text =
                     if (state.analysisSubject != null)
@@ -51,7 +66,7 @@ fun TopAppBarTitle(
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center
                 )
-            }else {
+            } else {
                 Text(
                     text = "Overall  ? / ?  ?%",
                     style = style,
@@ -71,12 +86,40 @@ fun TopAppBarTitle(
         }
 
         ScreenRoutes.EditInfoScreen.route -> {
-            Text(
-                text = "Edit Info",
-                style = style,
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center
-            )
+            val editInfo = state.editInfo
+            val editList = state.editList
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                IconButton(
+                    onClick = {
+                        onEvent(HomeScreenEvents.OnEditTypeChange(-1))
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                        contentDescription = "back info"
+                    )
+                }
+                Text(
+                    text = editList[editInfo],
+                    style = style,
+                    textAlign = TextAlign.Center
+                )
+                IconButton(
+                    onClick = {
+                        onEvent(HomeScreenEvents.OnEditTypeChange(1))
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Default.ArrowForward,
+                        contentDescription = "forward info"
+                    )
+                }
+            }
         }
 
         ScreenRoutes.NotesScreen.route -> {
@@ -109,6 +152,15 @@ fun TopAppBarTitle(
         ScreenRoutes.NotificationScreen.route -> {
             Text(
                 text = "Notifications",
+                style = style,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center
+            )
+        }
+
+        ScreenRoutes.SettingsScreen.route -> {
+            Text(
+                text = "Settings",
                 style = style,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center

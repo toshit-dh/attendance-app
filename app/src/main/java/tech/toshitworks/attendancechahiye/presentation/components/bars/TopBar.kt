@@ -31,7 +31,8 @@ fun TopBar(
         title = {
             TopAppBarTitle(
                 state = state,
-                screen = screen
+                screen = screen,
+                onEvent = onEvent
             )
         },
         colors = TopAppBarDefaults.topAppBarColors(
