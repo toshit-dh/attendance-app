@@ -2,4 +2,7 @@
     <string name="app_name">AttendanceChahiye</string>
     <string name="widget_text">Attendance Stats</string>"
     <string name="widget_text_2">Mark Attendance</string>
+    <string name="channel_id">event_channel</string>
+    <string name="notification_channel">Event Reminders</string>
+    <string name="notification_description">Notification channel for event reminders</string>
 </resources>
