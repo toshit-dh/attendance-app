@@ -2,6 +2,7 @@ package tech.toshitworks.attendancechahiye.presentation.screen.export_screen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -14,7 +15,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -23,7 +23,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import tech.toshitworks.attendancechahiye.presentation.screen.home_screen.HomeScreenEvents
 import tech.toshitworks.attendancechahiye.presentation.screen.home_screen.HomeScreenViewModel
 
@@ -38,7 +37,6 @@ fun ExportScreen(
         "Timetable",
         "Attendance",
         "Events",
-        "Notes"
     )
     val selectedItems: MutableState<List<String>> = remember {
         mutableStateOf(emptyList())
@@ -84,11 +82,46 @@ fun ExportScreen(
                             if (it) {
                                 selectedItems.value += s
                             } else {
+                                if (s == "Attendance") selectedItems.value -= "Notes"
                                 selectedItems.value -= s
                             }
                         }
                     )
                 }
+                if (s == "Attendance" && selectedItems.value.contains(s))
+                    Row (
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ){
+                        Spacer(modifier = Modifier
+                            .weight(0.2f)
+                            .fillMaxWidth()
+                        )
+                        Row (
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(2f)
+                            , verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ){
+                            Text(
+                                text = "Notes"
+                            )
+                            Checkbox(
+                                checked = selectedItems.value.contains("Notes"),
+                                onCheckedChange = {
+                                    if (it) {
+                                        selectedItems.value += "Notes"
+                                    } else {
+                                        selectedItems.value -= "Notes"
+                                    }
+                                }
+                            )
+                        }
+                    }
             }
         }
         item {
@@ -104,7 +137,7 @@ fun ExportScreen(
                     enabled = selectedItems.value.isNotEmpty()
                 ) {
                     Text(
-                        text = "Export ${selectedItems.value.drop(1)}",
+                        text = "Export ${selectedItems.value}",
                         style = MaterialTheme.typography.titleMedium.copy(
                             fontWeight = FontWeight.Bold,),
                         textAlign = TextAlign.Center
