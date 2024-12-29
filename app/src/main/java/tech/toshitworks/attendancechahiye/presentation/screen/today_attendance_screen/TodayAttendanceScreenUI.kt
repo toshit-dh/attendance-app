@@ -1,10 +1,26 @@
 package tech.toshitworks.attendancechahiye.presentation.screen.today_attendance_screen
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
+import tech.toshitworks.attendancechahiye.R
+import tech.toshitworks.attendancechahiye.navigation.ScreenRoutes
 import tech.toshitworks.attendancechahiye.presentation.components.today_attendance.TimetableForDay
 import java.time.LocalDate
 
@@ -12,7 +28,8 @@ import java.time.LocalDate
 @Composable
 fun TodayAttendanceScreen(
     modifier: Modifier = Modifier,
-    viewModel: TodayAttendanceScreenViewModel
+    viewModel: TodayAttendanceScreenViewModel,
+    navController: NavHostController
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val onEvent = viewModel::onEvent
@@ -42,6 +59,45 @@ fun TodayAttendanceScreen(
                     date = state.date,
                     day = state.day!!
                 )
+            }else {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(8.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.studying),
+                        contentDescription = "studying"
+                    )
+                    Spacer(
+                        modifier = Modifier.height(6.dp)
+                    )
+                    Text(
+                        modifier = Modifier
+                            .padding(35.dp),
+                        text = "Working days drain your energy; holidays recharge it—use that energy to study and stay ahead",
+                        style = MaterialTheme.typography.titleLarge.copy(
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
+                    Spacer(
+                        modifier = Modifier.height(6.dp)
+                    )
+                    ElevatedButton(
+                        onClick = {
+                            navController.navigate(ScreenRoutes.EventsScreen.route)
+                        }
+                    ) {
+                        Text(
+                            text = "View Upcoming Events",
+                            style = MaterialTheme.typography.titleLarge.copy(
+                                fontWeight = FontWeight.Bold
+                            )
+                        )
+                    }
+                }
             }
         }
     }
