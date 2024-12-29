@@ -20,6 +20,7 @@ class MainActivity : ComponentActivity() {
         val splashScreen = installSplashScreen()
         setContent {
             AttendanceChahiyeTheme {
+                val screen = intent.getStringExtra("screen")
                 val splashScreenViewModel: SplashScreenViewModel = hiltViewModel()
                 val isLoading by splashScreenViewModel.isLoading.collectAsState()
                 val screenRoute by splashScreenViewModel.screenRoute.collectAsState()
@@ -27,7 +28,7 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 NavGraph(
                     navController = navController,
-                    startDestination = screenRoute
+                    startDestination = screen?:screenRoute
                 )
             }
         }
