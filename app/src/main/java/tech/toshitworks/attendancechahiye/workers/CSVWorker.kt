@@ -88,7 +88,7 @@ class CSVWorker(
     }
 
     private suspend fun fetchEventsTable(): List<EventModel> = withContext(Dispatchers.IO) {
-        eventsRepository.getEvents()
+        eventsRepository.getEvents().first()
     }
 
     private fun createCsvFile(
