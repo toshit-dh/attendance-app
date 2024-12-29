@@ -13,8 +13,9 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import tech.toshitworks.attendancechahiye.data.repository.CsvWorkRepository
+import tech.toshitworks.attendancechahiye.domain.repository.CsvWorkRepository
 import tech.toshitworks.attendancechahiye.domain.repository.AttendanceRepository
+import tech.toshitworks.attendancechahiye.domain.repository.DayRepository
 import tech.toshitworks.attendancechahiye.domain.repository.SubjectRepository
 import tech.toshitworks.attendancechahiye.utils.SnackBarWorkerEvent
 import java.time.LocalDate
@@ -28,7 +29,8 @@ class HomeScreenViewModel @Inject constructor(
     private val subjectRepository: SubjectRepository,
     attendanceRepository: AttendanceRepository,
     private val csvWorkRepository: CsvWorkRepository,
-    private val workManager: WorkManager
+    private val workManager: WorkManager,
+    private val dayRepository: DayRepository
 ) : ViewModel() {
 
     private val today: LocalDate = LocalDate.now()
@@ -58,9 +60,11 @@ class HomeScreenViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             val subjectList = subjectRepository.getSubjects()
+            val dayList = dayRepository.getDays()
             _state.update {
                 it.copy(
                     subjectList = subjectList,
+                    dayList = dayList,
                     todayDate = date,
                     todayDay = day,
                     isLoading = false
@@ -161,7 +165,6 @@ class HomeScreenViewModel @Inject constructor(
                                     csvWorkerState = "Export failed..."
                                 )
                             }
-                            println(wi.outputData.getString("error"))
                             viewModelScope.launch {
                                 _event.emit(
                                     SnackBarWorkerEvent.ShowSnackBarForCSVWorker(
@@ -195,6 +198,16 @@ class HomeScreenViewModel @Inject constructor(
                             }
                         }
                     }
+                }
+            }
+
+            is HomeScreenEvents.OnEditTypeChange -> {
+                _state.update {
+                    val current = _state.value.editInfo
+                    val ifNext = event.change == 1
+                    it.copy(
+                        editInfo = if (ifNext) (current+1)%3 else (current-1+3)%3
+                    )
                 }
             }
         }
