@@ -1,4 +1,4 @@
-package tech.toshitworks.attendancechahiye.data.repository
+package tech.toshitworks.attendancechahiye.domain.repository
 
 import java.util.UUID
 
