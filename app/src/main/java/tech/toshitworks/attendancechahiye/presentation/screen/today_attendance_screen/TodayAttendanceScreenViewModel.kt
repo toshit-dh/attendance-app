@@ -41,7 +41,6 @@ class TodayAttendanceScreenViewModel @Inject constructor(
     private val day = today.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault())
 
     init {
-        markAttendance.markAttendance()
         viewModelScope.launch {
             val subjectList = subjectRepository.getSubjects()
             val dayList = dayRepository.getDays()
