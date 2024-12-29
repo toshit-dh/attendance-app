@@ -32,7 +32,7 @@ class SplashScreenViewModel @Inject constructor(
                 3 -> ScreenRoutes.HomeScreen.route
                 else -> ScreenRoutes.OnBoardingScreen.route
             }
-            delay(500)
+            delay(200)
             _isLoading.value = false
         }
     }
