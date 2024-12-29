@@ -13,21 +13,23 @@ import tech.toshitworks.attendancechahiye.domain.repository.AttendanceRepository
 import tech.toshitworks.attendancechahiye.domain.repository.TimetableRepository
 import java.time.LocalDate
 
+private const val TAG = "MarkAttendance"
+
+
 class MarkAttendanceWorker(
     ctx: Context,
     params: WorkerParameters,
     private val attendanceRepository: AttendanceRepository,
     private val timetableRepository: TimetableRepository
 ) : CoroutineWorker(ctx, params) {
-    private val TAG = "MarkAttendance"
     override suspend fun doWork(): Result {
         return withContext(Dispatchers.IO) {
             delay(500)
             return@withContext try {
                 val currentDate = LocalDate.now().toString()
                 val currentDay = LocalDate.now().dayOfWeek.toString()
-                val timetable = timetableRepository.getTimetableForDay(currentDay)
-                timetable.first().forEach {
+                val timetable = timetableRepository.getTimetableForDay(currentDay).first()
+                timetable.forEach {
                     try {
                         attendanceRepository.insertAttendance(
                             AttendanceModel(
