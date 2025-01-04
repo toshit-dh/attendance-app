@@ -44,7 +44,7 @@ fun NoteCard(
                         .weight(1f)
                         .fillMaxWidth(),
                     text = subject.name,
-                    color = colors.random(),
+                    color = colors().random(),
                     style = MaterialTheme.typography.titleLarge,
                     textAlign = TextAlign.Center
                 )
@@ -53,7 +53,7 @@ fun NoteCard(
                         .weight(1f)
                         .fillMaxWidth(),
                     text = "Day: ${day.name}",
-                    color = colors[day.id!!.toInt()],
+                    color = colors()[day.id!!.toInt()],
                     textAlign = TextAlign.Center
                 )
                 Text(

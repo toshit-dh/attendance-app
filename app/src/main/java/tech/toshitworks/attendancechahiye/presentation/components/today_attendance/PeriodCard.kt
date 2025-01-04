@@ -72,45 +72,47 @@ fun PeriodCard(
             modifier = Modifier
                 .padding(4.dp)
         ) {
-            IconButton(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .height(25.dp)
-                    .width(25.dp),
-                onClick = onEditIconClick
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Edit,
-                    contentDescription = "edit"
-                )
-            }
-            IconButton(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .offset(y = 40.dp)
-                    .height(25.dp)
-                    .width(25.dp),
-                onClick = {
-                    onEvent(
-                        TodayAttendanceScreenEvents.OnDeletePeriod(
-                            tt,
-                            AttendanceModel(
-                                day = day,
-                                subject = tt.subject,
-                                period = tt.period,
-                                date = date,
-                                isPresent = attendanceModel?.isPresent ?: false,
-                                deleted = true
-                            ),
-                            toInsert = attendanceModel == null
-                        )
+            if (!deleted) {
+                IconButton(
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .height(25.dp)
+                        .width(25.dp),
+                    onClick = onEditIconClick
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = "edit"
                     )
                 }
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = "delete"
-                )
+                IconButton(
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .offset(y = 40.dp)
+                        .height(25.dp)
+                        .width(25.dp),
+                    onClick = {
+                            onEvent(
+                                TodayAttendanceScreenEvents.OnDeletePeriod(
+                                    tt,
+                                    AttendanceModel(
+                                        day = day,
+                                        subject = tt.subject,
+                                        period = tt.period,
+                                        date = date,
+                                        isPresent = attendanceModel?.isPresent ?: false,
+                                        deleted = true
+                                    ),
+                                    toInsert = attendanceModel == null
+                                )
+                            )
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "delete"
+                    )
+                }
             }
             if (deleted)
                 IconButton(
@@ -119,20 +121,20 @@ fun PeriodCard(
                         .zIndex(1f)
                         .border(3.dp, Color.White, RoundedCornerShape(16.dp)),
                     onClick = {
-                        onEvent(
-                            TodayAttendanceScreenEvents.OnDeletePeriod(
-                                tt,
-                                AttendanceModel(
-                                    day = day,
-                                    subject = tt.subject,
-                                    period = tt.period,
-                                    date = date,
-                                    isPresent = attendanceModel?.isPresent ?: false,
-                                    deleted = false
-                                ),
-                                toInsert = false
+                            onEvent(
+                                TodayAttendanceScreenEvents.OnDeletePeriod(
+                                    tt,
+                                    AttendanceModel(
+                                        day = day,
+                                        subject = tt.subject,
+                                        period = tt.period,
+                                        date = date,
+                                        isPresent = attendanceModel?.isPresent ?: false,
+                                        deleted = false
+                                    ),
+                                    toInsert = false
+                                )
                             )
-                        )
                     },
                 ) {
                     Icon(
@@ -141,7 +143,7 @@ fun PeriodCard(
                             .width(50.dp),
                         imageVector = Icons.Default.Restore,
                         tint = Color.Red,
-                        contentDescription = "delete"
+                        contentDescription = "restore"
                     )
                 }
             Row(
@@ -183,27 +185,78 @@ fun PeriodCard(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     if (attendanceModel == null || !attendanceModel.isPresent)
-                        AttendanceButton("P", attendanceModel, onEvent, tt, date, day, deleted)
+                        AttendanceButton("P",deleted){
+                            if (attendanceModel == null)
+                                onEvent(
+                                    TodayAttendanceScreenEvents.OnAddAttendance(
+                                        AttendanceModel(
+                                            day = day,
+                                            subject = tt.subject,
+                                            date = date,
+                                            isPresent = true,
+                                            period = tt.period
+                                        )
+                                    )
+                                )
+                            else
+                                onEvent(
+                                    TodayAttendanceScreenEvents.OnUpdateAttendance(
+                                        AttendanceModel(
+                                            day = day,
+                                            subject = tt.subject,
+                                            date = date,
+                                            isPresent = true,
+                                            period = tt.period
+                                        )
+                                    )
+                                )
+                        }
                     Spacer(modifier = Modifier.height(3.dp))
                     if (attendanceModel == null || attendanceModel.isPresent)
-                        AttendanceButton("A", attendanceModel, onEvent, tt, date, day, deleted)
+                        AttendanceButton("A",deleted){
+                            if (attendanceModel == null)
+                                onEvent(
+                                    TodayAttendanceScreenEvents.OnAddAttendance(
+                                        AttendanceModel(
+                                            day = day,
+                                            subject = tt.subject,
+                                            date = date,
+                                            isPresent = false,
+                                            period = tt.period
+                                        )
+                                    )
+                                )
+                            else
+                                onEvent(
+                                    TodayAttendanceScreenEvents.OnUpdateAttendance(
+                                        AttendanceModel(
+                                            day = day,
+                                            subject = tt.subject,
+                                            date = date,
+                                            isPresent = false,
+                                            period = tt.period
+                                        )
+                                    )
+                                )
+                        }
                     Spacer(modifier = Modifier.height(3.dp))
                     if (attendanceModel != null)
                         Row(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(16.dp))
                         ) {
-                            IconButton(
-                                onClick = {
-                                    addNoteDialogOpen.value = true
-                                    attendanceIdOfNote.value = attendanceModel.id
+                            if (!deleted)
+                                IconButton(
+                                    onClick = {
+                                        addNoteDialogOpen.value = true
+                                        attendanceIdOfNote.value = attendanceModel.id
+                                    }
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Email,
+                                        contentDescription = "note"
+                                    )
                                 }
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Email,
-                                    contentDescription = "note"
-                                )
-                            }
                         }
 
                 }

@@ -1,6 +1,5 @@
 package tech.toshitworks.attendancechahiye.presentation.components.analysis
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,10 +14,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -51,9 +48,10 @@ fun EligibilityAnalysis(
                     modifier = Modifier.fillMaxWidth(),
                     text = "Mid Term Eligibility",
                     textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.titleLarge.copy(
+                    style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight.Bold
-                    )
+                    ),
+                    maxLines = 1
                 )
                 if (midTermDateProvided)
                     MidTermText(eligibilityOfMidterm!!)
@@ -76,7 +74,7 @@ fun EligibilityAnalysis(
                     modifier = Modifier.fillMaxWidth(),
                     text = "End Sem Eligibility",
                     textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.titleLarge.copy(
+                    style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight.Bold
                     )
                 )

@@ -12,11 +12,16 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.ParagraphStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import tech.toshitworks.attendancechahiye.domain.model.DayModel
 import tech.toshitworks.attendancechahiye.domain.model.PeriodModel
@@ -41,9 +46,31 @@ fun SelectSubjectDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
-                text = "Add subject to a period \n" +
-                        periodModel.startTime +
-                        "\n ${dayModel.name}"
+                modifier = Modifier.fillMaxWidth(),
+                text = buildAnnotatedString {
+                    withStyle(
+                        style = ParagraphStyle(
+                            textAlign = TextAlign.Center
+                        )
+                    ) {
+                        append("Add subject to period")
+                    }
+                    withStyle(
+                        style = ParagraphStyle(
+                            textAlign = TextAlign.Center
+                        )
+                    )
+                    {
+                        append(periodModel.startTime)
+                    }
+                    withStyle(
+                        style = ParagraphStyle(
+                            textAlign = TextAlign.Center
+                        )
+                    ) {
+                        append(dayModel.name)
+                    }
+                }
             )
         },
         text = {
@@ -58,6 +85,9 @@ fun SelectSubjectDialog(
                         .fillMaxWidth()
                         .clickable { isSubjectDropDownOpen.value = true }
                         .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(8.dp)),
+                    colors = TextFieldDefaults.colors().copy(
+                        disabledTextColor = MaterialTheme.colorScheme.primary
+                    ),
                     enabled = false
                 )
                 DropdownMenu(

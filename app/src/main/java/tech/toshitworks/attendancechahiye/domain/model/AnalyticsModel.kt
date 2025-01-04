@@ -9,6 +9,7 @@ data class AnalyticsModel(
     val analysisByWeek: List<AnalyticsByWeek>,
     val analysisByMonth: List<AnalyticsByMonth>,
     val streak: Pair<Int,Int>?,
+    val periodAnalysis: List<PeriodAnalysis>? = null,
     val eligibilityOfMidterm: EligibilityData?,
     val eligibilityOfEndSem: EligibilityData?
 )

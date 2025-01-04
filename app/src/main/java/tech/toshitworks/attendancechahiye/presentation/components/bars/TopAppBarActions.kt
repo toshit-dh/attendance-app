@@ -4,6 +4,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.SearchOff
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -44,6 +46,18 @@ fun TopAppBarActions(
                 Icon(
                     imageVector = if (!state.isSubjectSearchOpen) Icons.Default.Search else Icons.Default.SearchOff,
                     contentDescription = "search subject for analysis"
+                )
+            }
+        }
+        ScreenRoutes.NotesScreen.route -> {
+            IconButton(
+                onClick = {
+                    onEvent(HomeScreenEvents.OnNoteFilterRowVisibilityChange)
+                }
+            ) {
+                Icon(
+                    imageVector = if (state.isFilterRowVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                    contentDescription = "filter visibility"
                 )
             }
         }

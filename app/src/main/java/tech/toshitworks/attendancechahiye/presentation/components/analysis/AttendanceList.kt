@@ -1,5 +1,6 @@
 package tech.toshitworks.attendancechahiye.presentation.components.analysis
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -23,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import tech.toshitworks.attendancechahiye.domain.model.AttendanceModel
 import tech.toshitworks.attendancechahiye.domain.model.SubjectModel
 import tech.toshitworks.attendancechahiye.utils.colors
+import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,7 +45,7 @@ fun AttendanceList(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                val text = subject?.name?:"Overall"
+                val text = subject?.name ?: "Overall"
                 Text(
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -54,11 +57,13 @@ fun AttendanceList(
                     verticalArrangement = Arrangement.spacedBy(6.dp),
                     contentPadding = PaddingValues(8.dp)
                 ) {
-                    itemsIndexed(attendanceList) {idx,it->
-                        Card (
+                    items(attendanceList.sortedByDescending {
+                        LocalDate.parse(it.date)
+                    }) {
+                        Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                        ){
+                        ) {
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -68,15 +73,18 @@ fun AttendanceList(
                                 Text(
                                     modifier = Modifier.weight(1f),
                                     text = it.subject!!.name,
-                                    color = colors.random()
+                                    color = colors().random()
+                                )
+                                Text(
+                                    modifier = Modifier.weight(2f).fillMaxWidth(),
+                                    text = "${it.date} - ${it.day!!.name.slice(0..2)}",
+                                    textAlign = TextAlign.Center
                                 )
                                 Text(
                                     modifier = Modifier.weight(1f),
-                                    text = it.date
-                                )
-                                Text(
                                     text = if (it.isPresent) "Present" else "Absent",
-                                    color = if (it.isPresent) Color.Green else Color.Red
+                                    color = if (it.isPresent) Color.Green else Color.Red,
+                                    textAlign = TextAlign.End
                                 )
                             }
                         }

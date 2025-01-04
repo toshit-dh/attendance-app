@@ -3,8 +3,8 @@ package tech.toshitworks.attendancechahiye.presentation.components.analysis
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -41,23 +41,23 @@ fun TrendAnalysis(
     val maxLecturesPresent = analyticsByWeek.maxOf {
         it.lecturesPresent
     }
-    val points = listOf(Point(0f,0f)) +  analyticsByWeek.mapIndexed { idx, it ->
+    val points = analyticsByWeek.mapIndexed { idx, it ->
         Point(
-            (idx+1).toFloat(),
+            (idx).toFloat(),
             it.lecturesPresent.toFloat()
         )
     }
-    val endDay = analyticsByWeek.last().yearWeek.split('-')
-    val (_,end) = getWeek(endDay[0].toInt(),endDay[1].toInt())
+    val xLabel = List(points.size){ idx->
+        val yearWeek = analyticsByWeek[idx].yearWeek.split('-')
+        val (start, end) = getWeek(yearWeek[0].toInt(),yearWeek[1].toInt())
+        start.toString().substring(5)
+    }
     val xAxisData = AxisData.Builder()
-        .axisStepSize(40.dp)
+        .axisStepSize(45.dp)
         .backgroundColor(Color.White)
         .steps(points.size-1)
         .labelData { i ->
-            if (i==points.size-1) return@labelData end.toString().substring(5)
-            val yearWeek = analyticsByWeek[i].yearWeek.split('-')
-            val (start, _) = getWeek(yearWeek[0].toInt(),yearWeek[1].toInt())
-            start.toString().substring(5)
+            xLabel[i]
         }
         .labelAndAxisLinePadding(15.dp)
         .build()
@@ -106,8 +106,7 @@ fun TrendAnalysis(
             Box {
                 LineChart(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(300.dp)
+                        .fillMaxSize()
                         .clip(RoundedCornerShape(16.dp)),
                     lineChartData = lineChartData
                 )

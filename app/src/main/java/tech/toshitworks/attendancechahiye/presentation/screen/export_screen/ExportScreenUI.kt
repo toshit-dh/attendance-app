@@ -12,8 +12,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,15 +25,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import tech.toshitworks.attendancechahiye.presentation.screen.home_screen.HomeScreenEvents
-import tech.toshitworks.attendancechahiye.presentation.screen.home_screen.HomeScreenViewModel
+import kotlinx.coroutines.delay
+import tech.toshitworks.attendancechahiye.utils.SnackBarWorkerEvent
 
 @Composable
 fun ExportScreen(
     modifier: Modifier,
-    homeScreenViewModel: HomeScreenViewModel
+    snackBarHostState: SnackbarHostState,
+    viewModel: ExportScreenViewModel,
 ) {
-    val onEvent = homeScreenViewModel::onEvent
+    val onExport = viewModel::onExport
     val list = listOf(
         "Subjects",
         "Timetable",
@@ -40,6 +43,19 @@ fun ExportScreen(
     )
     val selectedItems: MutableState<List<String>> = remember {
         mutableStateOf(emptyList())
+    }
+    LaunchedEffect(true) {
+        viewModel.snackBarEvent.collect {
+            when(it){
+                is SnackBarWorkerEvent.ShowSnackBarForCSVWorker -> {
+                    snackBarHostState.showSnackbar(
+                        it.message
+                    )
+                    delay(500)
+                    snackBarHostState.currentSnackbarData?.dismiss()
+                }
+            }
+        }
     }
     LazyColumn(
         modifier = modifier
@@ -132,7 +148,7 @@ fun ExportScreen(
             ) {
                 Button(
                     onClick = {
-                        onEvent(HomeScreenEvents.OnExportClick(selectedItems.value))
+                        onExport(selectedItems.value)
                     },
                     enabled = selectedItems.value.isNotEmpty()
                 ) {

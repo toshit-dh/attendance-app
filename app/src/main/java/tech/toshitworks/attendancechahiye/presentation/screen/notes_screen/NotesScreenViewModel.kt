@@ -10,7 +10,9 @@ import kotlinx.coroutines.launch
 import tech.toshitworks.attendancechahiye.domain.repository.DayRepository
 import tech.toshitworks.attendancechahiye.domain.repository.NoteRepository
 import tech.toshitworks.attendancechahiye.domain.repository.PeriodRepository
+import tech.toshitworks.attendancechahiye.domain.repository.SemesterRepository
 import tech.toshitworks.attendancechahiye.domain.repository.SubjectRepository
+import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
@@ -18,7 +20,8 @@ class NotesScreenViewModel @Inject constructor(
     private val noteRepository: NoteRepository,
     private val subjectRepository: SubjectRepository,
     private val periodRepository: PeriodRepository,
-    private val dayRepository: DayRepository
+    private val dayRepository: DayRepository,
+    private val semesterRepository: SemesterRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(NotesScreenStates())
@@ -30,13 +33,15 @@ class NotesScreenViewModel @Inject constructor(
             val subjects = subjectRepository.getSubjects().filter {
                 it.name != "Lunch" && it.name != "No Period"
             }
-
             val periods = periodRepository.getAllPeriods()
             val days = dayRepository.getDays()
+            val semester = semesterRepository.getSemester()
             _state.value = state.value.copy(
                 subjects = subjects,
                 periods = periods,
                 days = days,
+                startDate = semester.startDate,
+                endDate = semester.endDate,
                 notes = notes,
                 filteredNotes = notes,
                 subjectFilter = subjects.map {
@@ -58,19 +63,18 @@ class NotesScreenViewModel @Inject constructor(
             val filteredNotes = _state.value.notes.filter { note ->
                 val matchesSubject = currentState.subjectFilter.isEmpty() ||
                         note.attendance.subjectId in currentState.subjectFilter
-
                 val matchesPeriod =
                     currentState.periodFilter.isEmpty() ||
                             note.attendance.periodId in currentState.periodFilter
+                val noteDate = LocalDate.parse(note.attendance.date)
                 val matchesDate =
-                    currentState.datesFilter.isEmpty() ||
-                            note.attendance.date in currentState.datesFilter
+                            !noteDate.isBefore(currentState.datesFilter.first) && !noteDate.isAfter(currentState.datesFilter.second)
                 val matchesDay =
                     currentState.dayFilter.isEmpty() ||
                             note.attendance.dayId in currentState.dayFilter
                 val matchesAttend =
-                    currentState.attend == null ||
-                            note.attendance.isPresent == currentState.attend
+                    (currentState.attend.first && note.attendance.isPresent)
+                            || (currentState.attend.second && !note.attendance.isPresent)
                 matchesSubject && matchesPeriod && matchesDate && matchesDay && matchesAttend
             }
             currentState.copy(filteredNotes = filteredNotes)
@@ -87,12 +91,7 @@ class NotesScreenViewModel @Inject constructor(
 
                     is Filters.Date -> {
                         _state.update {
-                            val newDatesFilter = if (filter.date in it.datesFilter) {
-                                it.datesFilter - filter.date
-                            } else {
-                                it.datesFilter + filter.date
-                            }
-                            it.copy(datesFilter = newDatesFilter)
+                            it.copy(datesFilter = filter.dates)
                         }
                     }
 

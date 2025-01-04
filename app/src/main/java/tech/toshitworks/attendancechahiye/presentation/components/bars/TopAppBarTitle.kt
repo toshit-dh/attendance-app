@@ -35,7 +35,7 @@ fun TopAppBarTitle(
     when (screen) {
         ScreenRoutes.TodayAttendance.route -> {
             val text = if (state.dayList.find {
-                    it.name == state.todayDate
+                    it.name == state.todayDay
                 } == null) "Enjoy Holiday" else "Add Attendance: ${state.todayDay}"
             Text(
                 text = text,

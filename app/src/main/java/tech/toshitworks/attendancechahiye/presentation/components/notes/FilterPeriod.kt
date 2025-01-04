@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -12,6 +13,8 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -37,7 +40,7 @@ fun FilterPeriod(
     }
     Column(
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Row(
@@ -63,33 +66,39 @@ fun FilterPeriod(
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            val text = periods.find {
-                selectedPeriods[0] == it.id
-            }!!.id.toString()
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                text = "$text ...",
-                textAlign = TextAlign.Center
-            )
-            Box {
-                if (expanded.value)
-                    LazyColumn (
-                        modifier = Modifier
-                            .zIndex(1f)
-                    ){
-                        items(periods) { pm ->
+            LazyColumn (
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.Start
+            ){
+                items(periods.filter {
+                    it.startTime != "empty"
+                            && it.id in selectedPeriods
+                }) {
+                    Text(
+                        text = it.startTime,
+                    )
+                }
+            }
+            DropdownMenu(
+                expanded = expanded.value,
+                onDismissRequest = {
+                    expanded.value = false
+                }
+            ) {
+                periods.forEach {
+                    DropdownMenuItem(
+                        text = {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 Text(
-                                    text = pm.id.toString(),
+                                    text = it.id.toString(),
                                 )
-                                if (pm.id !in selectedPeriods)
+                                if (it.id !in selectedPeriods)
                                     IconButton(
                                         onClick = {
-                                            onEvent(NotesScreenEvents.OnChangeFilter(Filters.Period(pm.id)))
+                                            onEvent(NotesScreenEvents.OnChangeFilter(Filters.Period(it.id)))
                                         }
                                     ) {
                                         Icon(
@@ -100,7 +109,7 @@ fun FilterPeriod(
                                 else
                                     IconButton(
                                         onClick = {
-                                            onEvent(NotesScreenEvents.OnChangeFilter(Filters.Period(pm.id)))
+                                            onEvent(NotesScreenEvents.OnChangeFilter(Filters.Period(it.id)))
                                         }
                                     ) {
                                         Icon(
@@ -109,8 +118,12 @@ fun FilterPeriod(
                                         )
                                     }
                             }
+                        },
+                        onClick = {
+
                         }
-                    }
+                    )
+                }
             }
         }
     }

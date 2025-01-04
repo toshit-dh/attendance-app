@@ -1,12 +1,12 @@
 package tech.toshitworks.attendancechahiye.navigation
 
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import tech.toshitworks.attendancechahiye.presentation.screen.settings_screen.SettingsScreen
 import tech.toshitworks.attendancechahiye.presentation.screen.analytics_screen.AnalyticsScreen
 import tech.toshitworks.attendancechahiye.presentation.screen.analytics_screen.AnalyticsScreenViewModel
 import tech.toshitworks.attendancechahiye.presentation.screen.edit_attendance_screen.EditAttendanceScreen
@@ -16,11 +16,14 @@ import tech.toshitworks.attendancechahiye.presentation.screen.edit_info_screen.E
 import tech.toshitworks.attendancechahiye.presentation.screen.events_screen.EventsScreen
 import tech.toshitworks.attendancechahiye.presentation.screen.events_screen.EventsScreenViewModel
 import tech.toshitworks.attendancechahiye.presentation.screen.export_screen.ExportScreen
-import tech.toshitworks.attendancechahiye.presentation.screen.home_screen.HomeScreenViewModel
+import tech.toshitworks.attendancechahiye.presentation.screen.export_screen.ExportScreenViewModel
+import tech.toshitworks.attendancechahiye.presentation.screen.home_screen.HomeScreenEvents
+import tech.toshitworks.attendancechahiye.presentation.screen.home_screen.HomeScreenStates
 import tech.toshitworks.attendancechahiye.presentation.screen.notes_screen.NotesScreen
 import tech.toshitworks.attendancechahiye.presentation.screen.notes_screen.NotesScreenViewModel
 import tech.toshitworks.attendancechahiye.presentation.screen.notification_screen.NotificationScreen
 import tech.toshitworks.attendancechahiye.presentation.screen.settings_screen.SettingScreenViewModel
+import tech.toshitworks.attendancechahiye.presentation.screen.settings_screen.SettingsScreen
 import tech.toshitworks.attendancechahiye.presentation.screen.today_attendance_screen.TodayAttendanceScreen
 import tech.toshitworks.attendancechahiye.presentation.screen.today_attendance_screen.TodayAttendanceScreenViewModel
 
@@ -28,8 +31,10 @@ import tech.toshitworks.attendancechahiye.presentation.screen.today_attendance_s
 fun NavHomeGraph(
     modifier: Modifier,
     navController: NavHostController,
+    snackBarHostState: SnackbarHostState,
     startDestination: String,
-    homeScreenViewModel: HomeScreenViewModel
+    homeScreenStates: HomeScreenStates,
+    homeScreenEvents: (HomeScreenEvents)->Unit
 ) {
         NavHost(
             navController = navController,
@@ -47,8 +52,12 @@ fun NavHomeGraph(
                 val viewModel: AnalyticsScreenViewModel = hiltViewModel()
                 AnalyticsScreen(
                     modifier,
+                    navController,
                     viewModel,
-                    homeScreenViewModel
+                    homeScreenStates.subjectList,
+                    homeScreenStates.isSubjectSearchOpen,
+                    homeScreenStates.analysisSubject,
+                    homeScreenEvents
                 )
             }
             composable(route = ScreenRoutes.EditInfoScreen.route){
@@ -56,14 +65,16 @@ fun NavHomeGraph(
                 EditInfoScreen(
                     modifier,
                     viewModel,
-                    homeScreenViewModel
+                    snackBarHostState,
+                    homeScreenStates.editInfo
                 )
             }
             composable(route = ScreenRoutes.NotesScreen.route){
                 val viewModel: NotesScreenViewModel = hiltViewModel()
                 NotesScreen(
                     modifier,
-                    viewModel
+                    viewModel,
+                    homeScreenStates.isFilterRowVisible
                 )
             }
             composable(route = ScreenRoutes.EventsScreen.route){
@@ -74,9 +85,11 @@ fun NavHomeGraph(
                 )
             }
             composable(route = ScreenRoutes.ExportScreen.route){
+                val viewModel: ExportScreenViewModel = hiltViewModel()
                 ExportScreen(
                     modifier,
-                    homeScreenViewModel
+                    snackBarHostState,
+                    viewModel
                 )
             }
             composable(route = ScreenRoutes.SettingsScreen.route){
@@ -91,7 +104,10 @@ fun NavHomeGraph(
                 EditAttendanceScreen(
                     modifier,
                     viewModel,
-                    homeScreenViewModel
+                    homeScreenStates.isAddExtraAttendanceDialogOpen,
+                    homeScreenStates.isEditAttendanceDatePickerOpen,
+                    homeScreenStates.editAttendanceDate,
+                    homeScreenEvents
                 )
             }
             composable(route = ScreenRoutes.NotificationScreen.route){

@@ -23,7 +23,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -37,14 +36,11 @@ import androidx.compose.ui.unit.dp
 import tech.toshitworks.attendancechahiye.domain.model.DayModel
 import tech.toshitworks.attendancechahiye.domain.model.PeriodModel
 import tech.toshitworks.attendancechahiye.presentation.components.dialogs.SelectSubjectDialog
-import tech.toshitworks.attendancechahiye.presentation.screen.edit_info_screen.EditInfoScreenEvents
 import tech.toshitworks.attendancechahiye.presentation.screen.edit_info_screen.EditInfoScreenStates
-import kotlin.reflect.KFunction1
 
 @Composable
 fun TimetableInfo(
     state: EditInfoScreenStates,
-    onEvent: KFunction1<EditInfoScreenEvents, Unit>,
 ) {
     val isUpdatePeriodDialogOpen = remember {
         mutableStateOf(false)
@@ -57,9 +53,6 @@ fun TimetableInfo(
     }
     val index: MutableState<Int?> = remember {
         mutableStateOf(null)
-    }
-    val snackBarHostState = remember {
-        SnackbarHostState()
     }
     if (!state.isLoading) {
         Column(

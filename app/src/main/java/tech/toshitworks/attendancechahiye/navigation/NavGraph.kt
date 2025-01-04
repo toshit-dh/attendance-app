@@ -18,11 +18,12 @@ import tech.toshitworks.attendancechahiye.presentation.screen.timetable_screen.T
 @Composable
 fun NavGraph(
     navController: NavHostController,
-    startDestination: String
+    startDestination: String,
+    homeStartDestination: String?
 ){
     NavHost(
         navController = navController,
-        startDestination = startDestination
+        startDestination = startDestination,
     ){
         composable(route = ScreenRoutes.OnBoardingScreen.route){
             val viewModel: OnBoardingScreenViewModel = hiltViewModel()
@@ -39,6 +40,7 @@ fun NavGraph(
         composable(route = ScreenRoutes.HomeScreen.route){
             val viewModel: HomeScreenViewModel = hiltViewModel()
             HomeScreen(
+                homeStartDestination,
                 viewModel
             )
         }

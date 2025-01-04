@@ -13,6 +13,7 @@ import tech.toshitworks.attendancechahiye.domain.repository.AttendanceRepository
 import tech.toshitworks.attendancechahiye.domain.repository.PeriodRepository
 import tech.toshitworks.attendancechahiye.domain.repository.SemesterRepository
 import tech.toshitworks.attendancechahiye.domain.repository.SubjectRepository
+import tech.toshitworks.attendancechahiye.presentation.screen.today_attendance_screen.TodayAttendanceScreenEvents
 import java.text.SimpleDateFormat
 import java.util.Locale
 import javax.inject.Inject
@@ -28,12 +29,17 @@ class EditAttendanceScreenViewModel @Inject constructor(
     private val _state = MutableStateFlow(EditAttendanceScreenStates())
     val state = combine(
         _state,
-        attendanceRepository.getAllAttendance(),
+        attendanceRepository.getPlusDeletedAttendance(),
+        attendanceRepository.getOverallAttendance(),
         attendanceRepository.getAttendancePercentage(),
     ){
-        state,attendance,stats ->
+        state,attendance,attendanceBySubject,stats ->
         state.copy(
             attendance = attendance,
+            filteredAttendance = attendance.filter { am->
+            am.date == _state.value.date
+        },
+            attendanceBySubject = attendanceBySubject,
             attendanceStats = stats
         )
     }.stateIn(
@@ -86,11 +92,30 @@ class EditAttendanceScreenViewModel @Inject constructor(
                     )
                 }
             }
-            is EditAttendanceScreenEvents.OnUpdateAttendance -> {
+
+            is EditAttendanceScreenEvents.OnAddExtraAttendance -> {
+                viewModelScope.launch {
+                        attendanceRepository.insertAttendance(event.attendanceModel)
+                }
+
+            }
+        }
+    }
+    fun attendanceEvent(event: TodayAttendanceScreenEvents){
+        when(event){
+            is TodayAttendanceScreenEvents.OnAddAttendance -> {}
+            is TodayAttendanceScreenEvents.OnAddNote -> {}
+            is TodayAttendanceScreenEvents.OnDeletePeriod -> {
                 viewModelScope.launch {
                     attendanceRepository.updateAttendanceByDate(event.attendanceModel)
                 }
             }
+            is TodayAttendanceScreenEvents.OnUpdateAttendance -> {
+                viewModelScope.launch {
+                    attendanceRepository.updateAttendanceByDate(event.attendanceModel)
+                }
+            }
+            is TodayAttendanceScreenEvents.OnUpdatePeriod -> {}
         }
     }
 }

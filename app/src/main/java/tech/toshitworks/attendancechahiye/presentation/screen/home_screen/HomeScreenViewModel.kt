@@ -2,22 +2,16 @@ package tech.toshitworks.attendancechahiye.presentation.screen.home_screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.work.WorkInfo
-import androidx.work.WorkManager
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import tech.toshitworks.attendancechahiye.domain.repository.CsvWorkRepository
 import tech.toshitworks.attendancechahiye.domain.repository.AttendanceRepository
 import tech.toshitworks.attendancechahiye.domain.repository.DayRepository
 import tech.toshitworks.attendancechahiye.domain.repository.SubjectRepository
-import tech.toshitworks.attendancechahiye.utils.SnackBarWorkerEvent
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
@@ -28,8 +22,6 @@ import javax.inject.Inject
 class HomeScreenViewModel @Inject constructor(
     private val subjectRepository: SubjectRepository,
     attendanceRepository: AttendanceRepository,
-    private val csvWorkRepository: CsvWorkRepository,
-    private val workManager: WorkManager,
     private val dayRepository: DayRepository
 ) : ViewModel() {
 
@@ -53,9 +45,6 @@ class HomeScreenViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = HomeScreenStates()
     )
-
-    private val _event = MutableSharedFlow<SnackBarWorkerEvent>()
-    val event = _event.asSharedFlow()
 
     init {
         viewModelScope.launch {
@@ -117,96 +106,20 @@ class HomeScreenViewModel @Inject constructor(
                 }
             }
 
-            is HomeScreenEvents.OnExportClick -> {
-                val uuid = csvWorkRepository.enqueueCsvWorker(event.tables)
-                workManager.getWorkInfoByIdLiveData(uuid).observeForever { wi ->
-                    when (wi?.state) {
-                        WorkInfo.State.ENQUEUED -> {
-                            _state.update {
-                                it.copy(
-                                    csvWorkerState = "Export started..."
-                                )
-                            }
-                        }
-
-                        WorkInfo.State.RUNNING -> {
-                            _state.update {
-                                it.copy(
-                                    csvWorkerState = "Export running..."
-                                )
-                            }
-                            viewModelScope.launch {
-                                _event.emit(
-                                    SnackBarWorkerEvent.ShowSnackBarForCSVWorker(
-                                        "Export running..."
-                                    )
-                                )
-                            }
-                        }
-
-                        WorkInfo.State.SUCCEEDED -> {
-                            _state.update {
-                                it.copy(
-                                    csvWorkerState = "Export Succeeded..."
-                                )
-                            }
-                            viewModelScope.launch {
-                                _event.emit(
-                                    SnackBarWorkerEvent.ShowSnackBarForCSVWorker(
-                                        "Export succeeded..."
-                                    )
-                                )
-                            }
-                        }
-
-                        WorkInfo.State.FAILED -> {
-                            _state.update {
-                                it.copy(
-                                    csvWorkerState = "Export failed..."
-                                )
-                            }
-                            viewModelScope.launch {
-                                _event.emit(
-                                    SnackBarWorkerEvent.ShowSnackBarForCSVWorker(
-                                        "Export failed..."
-                                    )
-                                )
-                            }
-                        }
-
-                        WorkInfo.State.BLOCKED -> {
-                            _state.update {
-                                it.copy(
-                                    csvWorkerState = "Export blocked..."
-                                )
-                            }
-                        }
-
-                        WorkInfo.State.CANCELLED -> {
-                            _state.update {
-                                it.copy(
-                                    csvWorkerState = "Export cancelled..."
-                                )
-                            }
-                        }
-
-                        null -> {
-                            _state.update {
-                                it.copy(
-                                    csvWorkerState = "Export error..."
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-
             is HomeScreenEvents.OnEditTypeChange -> {
                 _state.update {
                     val current = _state.value.editInfo
                     val ifNext = event.change == 1
                     it.copy(
                         editInfo = if (ifNext) (current+1)%3 else (current-1+3)%3
+                    )
+                }
+            }
+
+            HomeScreenEvents.OnNoteFilterRowVisibilityChange -> {
+                _state.update {
+                    it.copy(
+                        isFilterRowVisible = !_state.value.isFilterRowVisible
                     )
                 }
             }

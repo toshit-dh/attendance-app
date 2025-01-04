@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AttendanceChahiye</string>
+    <string name="app_name">Attendo</string>
     <string name="widget_text">Attendance Stats</string>"
     <string name="widget_text_2">Mark Attendance</string>
     <string name="channel_id">event_channel</string>

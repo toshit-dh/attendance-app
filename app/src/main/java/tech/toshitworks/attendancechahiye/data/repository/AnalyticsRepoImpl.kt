@@ -4,13 +4,14 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.first
-import tech.toshitworks.attendancechahiye.domain.model.EligibilityData
 import tech.toshitworks.attendancechahiye.data.local.AnalyticsDao
 import tech.toshitworks.attendancechahiye.domain.model.AnalyticsByDay
 import tech.toshitworks.attendancechahiye.domain.model.AnalyticsByMonth
 import tech.toshitworks.attendancechahiye.domain.model.AnalyticsByWeek
 import tech.toshitworks.attendancechahiye.domain.model.AnalyticsModel
 import tech.toshitworks.attendancechahiye.domain.model.AttendanceModel
+import tech.toshitworks.attendancechahiye.domain.model.EligibilityData
+import tech.toshitworks.attendancechahiye.domain.model.PeriodAnalysis
 import tech.toshitworks.attendancechahiye.domain.repository.AnalyticsRepository
 import tech.toshitworks.attendancechahiye.domain.repository.AttendanceRepository
 import tech.toshitworks.attendancechahiye.domain.repository.DayRepository
@@ -38,7 +39,6 @@ class AnalyticsRepoImpl @Inject constructor(
         }
         return dayCount
     }
-
     private fun calculateEligibility(
         lecturesConducted: Int,
         lecturesPresent: Int,
@@ -129,6 +129,35 @@ class AnalyticsRepoImpl @Inject constructor(
         return Pair(current,longest)
     }
 
+    private fun combineWeeks(analyticsList: List<AnalyticsByWeek>): List<AnalyticsByWeek> {
+        val result = mutableListOf<AnalyticsByWeek>()
+        var previousWeek: AnalyticsByWeek? = null
+        var isChanged = false
+        for (i in analyticsList.indices) {
+            val current = analyticsList[i]
+            val currentYear = current.yearWeek.substring(0, 4)
+            val currentWeek = current.yearWeek.substring(5).toInt()
+            if (currentWeek == 0 && previousWeek != null) {
+                result[result.lastIndex] = result.last().copy(
+                    lecturesConducted = previousWeek.lecturesConducted + current.lecturesConducted,
+                    lecturesPresent = previousWeek.lecturesPresent + current.lecturesPresent,
+                    yearWeek = "$currentYear-01"
+                )
+                isChanged = true
+            } else if (isChanged){
+                val incrementedWeek = "$currentYear-${(current.yearWeek.substring(5).toInt()+1).toString().padStart(2, '0')}"
+                result.add(current.copy(
+                    yearWeek = incrementedWeek
+                ))
+            }
+            else{
+                result.add(current)
+            }
+            previousWeek = current
+        }
+        return result
+    }
+
     override suspend fun getAnalysis(
         startDate: String,
         midTermDate: String?,
@@ -137,6 +166,7 @@ class AnalyticsRepoImpl @Inject constructor(
         val subjects = async { subjectRepository.getSubjects() }.await().dropLastWhile {
             it.name == "Lunch" || it.name == "No Period"
         }
+        val periodAnalysisD = async { analyticsDao.getPeriodAnalysis() }
         val days = async { dayRepository.getDays() }.await()
         val analyticsD = async { analyticsDao.getAnalysis() }
         val analyticsByDayD = async { analyticsDao.getAnalysisByDay() }
@@ -216,13 +246,13 @@ class AnalyticsRepoImpl @Inject constructor(
                             lecturesPresent = it.lecturesPresent
                         )
                     },
-                    analysisByWeek = sABW.map {
+                    analysisByWeek = combineWeeks(sABW.map {
                         AnalyticsByWeek(
                             yearWeek = it.yearWeek,
                             lecturesConducted = it.lecturesConducted,
                             lecturesPresent = it.lecturesPresent
                         )
-                    },
+                    }),
                     analysisByMonth = sABM.map {
                         AnalyticsByMonth(
                             yearMonth = it.yearMonth,
@@ -235,7 +265,7 @@ class AnalyticsRepoImpl @Inject constructor(
                     eligibilityOfEndSem = eligibilityOfEndSem
                 )
             }
-
+            val periodAnalysis = periodAnalysisD.await()
             listOf(
                 AnalyticsModel(
                     subject = null,
@@ -250,13 +280,13 @@ class AnalyticsRepoImpl @Inject constructor(
                             lecturesPresent = it.lecturesPresent
                         )
                     },
-                    analysisByWeek = analyticsByWeek.map {
+                    analysisByWeek = combineWeeks(analyticsByWeek.map {
                         AnalyticsByWeek(
                             yearWeek = it.yearWeek,
                             lecturesConducted = it.lecturesConducted,
                             lecturesPresent = it.lecturesPresent
                         )
-                    },
+                    }),
                     analysisByMonth = analyticsByMonth.map {
                         AnalyticsByMonth(
                             yearMonth = it.yearMonth,
@@ -265,6 +295,15 @@ class AnalyticsRepoImpl @Inject constructor(
                         )
                     },
                     streak = null,
+                    periodAnalysis = periodAnalysis.map {
+                        PeriodAnalysis(
+                            periodId = it.periodId,
+                            startTime = it.startTime,
+                            endTime = it.endTime,
+                            lecturesConducted = it.lecturesConducted,
+                            lecturesPresent = it.lecturesPresent
+                        )
+                    },
                     eligibilityOfMidterm = null,
                     eligibilityOfEndSem = null
                 ),

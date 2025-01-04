@@ -12,8 +12,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -23,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import tech.toshitworks.attendancechahiye.domain.model.SubjectModel
+import java.time.LocalDate
 import java.util.Calendar
 import java.util.Locale
 
@@ -33,13 +36,16 @@ fun AddExtraAttendanceDialog(
     endDate: Long,
     subjectList: List<SubjectModel>,
     onDismiss: () -> Unit,
-    onAddAttendance: (SubjectModel,String,Boolean) -> Unit,
+    onAddAttendance: (SubjectModel,String,String,Boolean) -> Unit,
 ) {
     val subject: MutableState<SubjectModel?> = remember {
         mutableStateOf(null)
     }
     val date: MutableState<String?> = remember {
         mutableStateOf(null)
+    }
+    val dayString = remember {
+        mutableStateOf<String?>(null)
     }
     val isSubjectDropDownOpen = remember {
         mutableStateOf(false)
@@ -73,6 +79,9 @@ fun AddExtraAttendanceDialog(
                             "Add Subject"
                         )
                     },
+                    colors = TextFieldDefaults.colors().copy(
+                        disabledTextColor = MaterialTheme.colorScheme.primary
+                    ),
                     enabled = false
                 )
                 DropdownMenu(
@@ -106,6 +115,7 @@ fun AddExtraAttendanceDialog(
                                         month + 1,
                                         day
                                     )
+                                    dayString.value = LocalDate.parse(formattedDate).dayOfWeek.name.lowercase().replaceFirstChar { it.uppercase() }
                                     date.value = formattedDate
                                 },
                                 calendar.get(Calendar.YEAR),
@@ -127,6 +137,9 @@ fun AddExtraAttendanceDialog(
                             "Add Date"
                         )
                     },
+                    colors = TextFieldDefaults.colors().copy(
+                        disabledTextColor = MaterialTheme.colorScheme.primary
+                    ),
                     enabled = false
                 )
                 Row(
@@ -150,9 +163,9 @@ fun AddExtraAttendanceDialog(
         confirmButton = {
             Button(
                 onClick = {
-                    onAddAttendance(subject.value!!,date.value!!,isPresent.value)
+                    onAddAttendance(subject.value!!,date.value!!,dayString.value!!,isPresent.value)
                 },
-                enabled = subject.value != null && date.value != null
+                enabled = subject.value != null && date.value != null && dayString.value != null
             ) {
                 Text("Add")
             }

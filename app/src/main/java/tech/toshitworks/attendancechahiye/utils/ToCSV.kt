@@ -44,7 +44,8 @@ fun List<AttendanceModel>.toAttendanceCSV(notes: List<NoteModel>?): String {
     stringBuilder.append("ID,Date,Day,Period,Subject,IsPresent,Note\n")
     for (attendance in this) {
         val note = notes?.find { it.attendanceId == attendance.id }
-        stringBuilder.append("${attendance.id},${attendance.date},${attendance.day!!.name},${attendance.period.startTime}-${attendance.period.endTime},${attendance.subject!!.name()},${if (attendance.isPresent) "Present" else "Absent"},${note?.content() ?: ""}\n")
+        val periodText = if (attendance.period.startTime=="empty" && attendance.period.endTime=="empty") "" else "${attendance.period.startTime}-${attendance.period.endTime}"
+        stringBuilder.append("${attendance.id},${attendance.date},${attendance.day!!.name},$periodText,${attendance.subject!!.name()},${if (attendance.isPresent) "Present" else "Absent"},${note?.content() ?: ""}\n")
     }
     return stringBuilder.toString()
 }

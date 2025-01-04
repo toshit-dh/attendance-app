@@ -3,7 +3,6 @@ package tech.toshitworks.attendancechahiye.presentation.components.notes
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
@@ -13,16 +12,18 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import tech.toshitworks.attendancechahiye.presentation.screen.notes_screen.Filters
 import tech.toshitworks.attendancechahiye.presentation.screen.notes_screen.NotesScreenEvents
 import tech.toshitworks.attendancechahiye.presentation.screen.notes_screen.NotesScreenStates
 
 @Composable
 fun FiltersRow(
+    modifier: Modifier,
     states: NotesScreenStates,
     onEvent: (NotesScreenEvents) -> Unit
 ) {
     LazyRow(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .border(
                 width = 1.dp,
@@ -88,7 +89,8 @@ fun FiltersRow(
                         .fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
-                    FilterDate(
+                    FilterAttend(
+                        byAttendance = states.attend,
                         onEvent = onEvent
                     )
                 }
@@ -102,9 +104,29 @@ fun FiltersRow(
                         .fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
-                    FilterAttend(
-                        onEvent = onEvent
-                    )
+                    FilterFromDate(
+                        startDate = states.datesFilter.first,
+                        minStartDate = states.startDate
+                    ){
+                        onEvent(NotesScreenEvents.OnChangeFilter(Filters.Date(Pair(it,states.datesFilter.second))))
+                    }
+                }
+            }
+        }
+        item {
+            Card {
+                Column(
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    FilterToDate(
+                        startDate = states.datesFilter.second,
+                        minStartDate = states.startDate
+                    ){
+                        onEvent(NotesScreenEvents.OnChangeFilter(Filters.Date(Pair(states.datesFilter.first,it))))
+                    }
                 }
             }
         }

@@ -2,22 +2,30 @@ package tech.toshitworks.attendancechahiye.presentation.screen.edit_attendance_s
 
 import android.app.DatePickerDialog
 import android.widget.DatePicker
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import tech.toshitworks.attendancechahiye.R
 import tech.toshitworks.attendancechahiye.domain.model.AttendanceModel
 import tech.toshitworks.attendancechahiye.domain.model.DayModel
 import tech.toshitworks.attendancechahiye.presentation.components.dialogs.AddExtraAttendanceDialog
 import tech.toshitworks.attendancechahiye.presentation.components.edit_attendance.TimetableForEdit
 import tech.toshitworks.attendancechahiye.presentation.screen.home_screen.HomeScreenEvents
-import tech.toshitworks.attendancechahiye.presentation.screen.home_screen.HomeScreenViewModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
@@ -27,13 +35,14 @@ import java.util.Locale
 fun EditAttendanceScreen(
     modifier: Modifier,
     viewModel: EditAttendanceScreenViewModel,
-    homeScreenViewModel: HomeScreenViewModel
+    isAddExtraAttendanceDialogOpen: Boolean,
+    isEditAttendanceDatePickerOpen: Boolean,
+    editAttendanceDate: String?,
+    homeScreenEvents: (HomeScreenEvents)->Unit
 ) {
-    val homeScreenState by homeScreenViewModel.state.collectAsStateWithLifecycle()
-    val homeScreenEvents = homeScreenViewModel::onEvent
-    val isAddExtraAttendanceDialogOpen = homeScreenState.isAddExtraAttendanceDialogOpen
     val state by viewModel.state.collectAsStateWithLifecycle()
     val onEvent = viewModel::onEvent
+    val attendanceOnEvent = viewModel::attendanceEvent
     val context = LocalContext.current
     val calendar = Calendar.getInstance()
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
@@ -55,19 +64,37 @@ fun EditAttendanceScreen(
                 modifier = Modifier
                     .weight(10f)
             ) {
-                if (homeScreenState.editAttendanceDate != null) {
+                if (editAttendanceDate != null) {
                     TimetableForEdit(
                         state = state,
-                        onEvent = onEvent,
-                        onEditIconClick = {
-
-                        },
-                        date = homeScreenState.editAttendanceDate!!,
+                        onEvent = attendanceOnEvent,
+                        date = editAttendanceDate,
                         day = DayModel(name = day)
                     )
+                }else{
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Image(
+                            painter = painterResource(R.drawable.img_tasks),
+                            contentDescription = "image"
+                        )
+                        Text(
+                            modifier = Modifier
+                                .padding(35.dp),
+                            text = "Select a date to edit attendance by clicking calendar icon or click + button to add extra attendance",
+                            style = MaterialTheme.typography.titleLarge.copy(
+                                fontWeight = FontWeight.Bold
+                            ),
+                            textAlign = TextAlign.Justify
+                        )
+                    }
                 }
             }
-            if (homeScreenState.isEditAttendanceDatePickerOpen){
+            if (isEditAttendanceDatePickerOpen){
                 val datePicker = DatePickerDialog(
                     context,
                     { _: DatePicker, year: Int, month: Int, day: Int ->
@@ -102,18 +129,20 @@ fun EditAttendanceScreen(
                     onDismiss = {
                         homeScreenEvents(HomeScreenEvents.OnAddExtraAttendanceClick)
                     }
-                ) {sm,date,isPresent->
+                ) {sm,date,day,isPresent->
                     val period = state.periods.find {
                         it.startTime == "empty" && it.endTime == "empty"
                     }!!
-                    onEvent(EditAttendanceScreenEvents.OnUpdateAttendance(
+                    onEvent(EditAttendanceScreenEvents.OnAddExtraAttendance(
                         AttendanceModel(
+                            day = DayModel(name = day),
                             subject = sm,
                             date = date,
                             isPresent = isPresent,
                             period = period
                         )
                     ))
+                    homeScreenEvents(HomeScreenEvents.OnAddExtraAttendanceClick)
                 }
         }
 }

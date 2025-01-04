@@ -1,5 +1,6 @@
 package tech.toshitworks.attendancechahiye.presentation.components.edit_screen
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,16 +28,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import tech.toshitworks.attendancechahiye.presentation.components.dialogs.AddSubjectDialog
-import tech.toshitworks.attendancechahiye.presentation.screen.edit_info_screen.EditInfoScreenEvents
 import tech.toshitworks.attendancechahiye.presentation.screen.edit_info_screen.EditInfoScreenStates
-import kotlin.reflect.KFunction1
+import tech.toshitworks.attendancechahiye.utils.colors
 
 @Composable
 fun SubjectInfo(
     state: EditInfoScreenStates,
-    onEvent: KFunction1<EditInfoScreenEvents, Unit>,
-
-    ) {
+) {
     val isAddSubjectDialogOpen = remember { mutableStateOf(false) }
     Column(
         modifier = Modifier.fillMaxHeight()
@@ -75,24 +73,30 @@ fun SubjectInfo(
                         .padding(8.dp)
                         .fillMaxWidth()
                 ) {
-                    Row (
+                    Row(
                         modifier = Modifier
                             .fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
-                    ){
+                    ) {
                         Column(
-                            modifier = Modifier.padding(16.dp)
+                            modifier = Modifier
+                                .padding(16.dp)
                                 .weight(4f)
                         ) {
-                            Text(text = sm.name, textAlign = TextAlign.Center, overflow = TextOverflow.Ellipsis)
+                            Text(
+                                text = sm.name,
+                                textAlign = TextAlign.Center,
+                                overflow = TextOverflow.Ellipsis,
+                                color = colors().random()
+                            )
                             Row {
                                 Text("Faculty Name: ")
                                 Text(text = sm.facultyName, overflow = TextOverflow.Ellipsis)
                             }
                             Row {
                                 Text("Is Attendance Counted? ")
-                                Text(text = if (sm.isAttendanceCounted )"Yes" else "No")
+                                Text(text = if (sm.isAttendanceCounted) "Yes" else "No")
                             }
                         }
                         IconButton(
@@ -102,8 +106,10 @@ fun SubjectInfo(
 
                             }
                         ) {
-                            Icon(imageVector = Icons.Default.Delete,
-                                contentDescription = "delete subject")
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = "delete subject"
+                            )
                         }
                     }
                 }

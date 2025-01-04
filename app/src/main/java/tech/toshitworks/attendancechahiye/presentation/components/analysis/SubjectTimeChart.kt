@@ -59,7 +59,7 @@ fun SubjectTimeChart(
         PieChartData.Slice(
             it.subject!!.name,
             it.lecturesPresent.toFloat(),
-            colors[(idx) % colors.size]
+            colors()[(idx) % colors().size]
         )
     }
     val pieChartConfig = PieChartConfig(

@@ -1,5 +1,6 @@
 package tech.toshitworks.attendancechahiye.presentation.screen.edit_attendance_screen
 
+import tech.toshitworks.attendancechahiye.domain.model.AttendanceBySubject
 import tech.toshitworks.attendancechahiye.domain.model.AttendanceModel
 import tech.toshitworks.attendancechahiye.domain.model.AttendanceStats
 import tech.toshitworks.attendancechahiye.domain.model.PeriodModel
@@ -16,5 +17,6 @@ data class EditAttendanceScreenStates(
     val periods: List<PeriodModel> = listOf(),
     val attendanceStats: AttendanceStats = AttendanceStats(0,0,0.0),
     val filteredAttendance: List<AttendanceModel> = listOf(),
-    val attendance: List<AttendanceModel> = listOf()
+    val attendance: List<AttendanceModel> = listOf(),
+    val attendanceBySubject: List<AttendanceBySubject> = listOf()
 )

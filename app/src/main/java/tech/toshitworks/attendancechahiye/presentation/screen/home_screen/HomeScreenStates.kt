@@ -9,6 +9,7 @@ data class HomeScreenStates(
     val isLoading: Boolean = true,
     val isAddExtraAttendanceDialogOpen: Boolean = false,
     val isEditAttendanceDatePickerOpen: Boolean = false,
+    val isFilterRowVisible: Boolean = true,
     val isSubjectSearchOpen: Boolean = false,
     val attendanceStats: AttendanceStats? = null,
     val attendanceBySubject: List<AttendanceBySubject> = emptyList(),
@@ -24,5 +25,4 @@ data class HomeScreenStates(
         "Timetable"
     ),
     val editInfo: Int = 0,
-    val csvWorkerState: String = ""
 )

@@ -19,31 +19,33 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
+import tech.toshitworks.attendancechahiye.domain.model.SubjectModel
+import tech.toshitworks.attendancechahiye.navigation.ScreenRoutes
 import tech.toshitworks.attendancechahiye.presentation.components.analysis.AnalysisForSubject
 import tech.toshitworks.attendancechahiye.presentation.screen.home_screen.HomeScreenEvents
-import tech.toshitworks.attendancechahiye.presentation.screen.home_screen.HomeScreenViewModel
 import tech.toshitworks.attendancechahiye.utils.colors
 
 @Composable
 fun AnalyticsScreen(
     modifier: Modifier,
+    navController: NavHostController,
     viewModel: AnalyticsScreenViewModel,
-    homeScreenViewModel: HomeScreenViewModel
+    subjectList: List<SubjectModel>,
+    isSubjectSearchOpen: Boolean,
+    analysisSubject: SubjectModel?,
+    homeScreenEvents: (HomeScreenEvents)->Unit,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val onEvent = viewModel::onEvent
-    val homeScreenState by homeScreenViewModel.state.collectAsStateWithLifecycle()
-    val homeScreenEvents = homeScreenViewModel::onEvent
-    val subjectList = homeScreenState.subjectList.filter {
+    val filteredSubjectList = subjectList.filter {
         it.name != "Lunch" && it.name != "No Period"
     }
-    val isSubjectSearchOpen = homeScreenState.isSubjectSearchOpen
-    val subject = homeScreenState.analysisSubject
     val getWeek = viewModel::getWeekDateRange
     if (!state.isLoading) {
         val analysisList = state.analyticsList
         val analysisModel = analysisList.find {
-            it.subject == subject
+            it.subject == analysisSubject
         }?:analysisList[0]
         val subjectAnalysis = analysisList.drop(1).filter {
             it.subject!!.isAttendanceCounted
@@ -56,12 +58,15 @@ fun AnalyticsScreen(
             if (!isSubjectSearchOpen)
                 AnalysisForSubject(
                     state = state,
+                    homeScreenEvents = homeScreenEvents,
                     onEvent = onEvent,
                     analyticsModel = analysisModel,
                     subjectAnalysis = subjectAnalysis,
                     getWeek = getWeek,
                     attendanceList = attendanceList
-                )
+                ){
+                    navController.navigate(ScreenRoutes.EditInfoScreen.route)
+                }
             else
                 LazyColumn(
                     modifier = Modifier
@@ -89,13 +94,13 @@ fun AnalyticsScreen(
                                     text = "Overall",
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
-                                    color = colors.random(),
+                                    color = colors().random(),
                                     fontWeight = FontWeight.Bold
                                 )
                             }
                         }
                     }
-                    items(subjectList){
+                    items(filteredSubjectList){
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -116,7 +121,7 @@ fun AnalyticsScreen(
                                    text = it.name,
                                    maxLines = 1,
                                    overflow = TextOverflow.Ellipsis,
-                                   color = colors.random(),
+                                   color = colors().random(),
                                    fontWeight = FontWeight.Bold
                                )
                                 Text(

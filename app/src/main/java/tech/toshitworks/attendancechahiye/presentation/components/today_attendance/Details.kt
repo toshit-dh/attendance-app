@@ -1,5 +1,6 @@
 package tech.toshitworks.attendancechahiye.presentation.components.today_attendance
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,7 +30,7 @@ fun Details(
     am: AttendanceModel?,
     editedSubject: SubjectModel?
 ) {
-    val random = colors.random()
+    val random = colors().random()
     val initials = tm.subject.facultyName.split(" ")
     var initial1 = ' '
     var initial2 = ' '

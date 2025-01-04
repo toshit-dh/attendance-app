@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import tech.toshitworks.attendancechahiye.domain.model.AnalyticsByDay
 import tech.toshitworks.attendancechahiye.domain.model.AnalyticsByMonth
 import tech.toshitworks.attendancechahiye.domain.model.AnalyticsByWeek
+import tech.toshitworks.attendancechahiye.utils.colors
 
 @Composable
 fun AnalysisByTime(
@@ -48,7 +49,7 @@ fun AnalysisByTime(
                             modifier = Modifier
                                 .fillMaxWidth(),
                             text = "Lectures By Day",
-                            style = MaterialTheme.typography.titleLarge.copy(
+                            style = MaterialTheme.typography.titleMedium.copy(
                                 fontWeight = FontWeight.Bold
                             ),
                             textAlign = TextAlign.Center
@@ -61,10 +62,16 @@ fun AnalysisByTime(
                                     modifier = Modifier
                                         .fillMaxWidth(),
                                     horizontalArrangement = Arrangement.SpaceBetween
+
                                 ) {
-                                    Text(text = it.day.name)
+                                    val color = colors().random()
                                     Text(
-                                        text = "${it.lecturesPresent} / ${it.lecturesConducted}"
+                                        text = it.day.name,
+                                        color = color
+                                    )
+                                    Text(
+                                        text = "${it.lecturesPresent} / ${it.lecturesConducted}",
+                                        color = color
                                     )
                                 }
                             }
@@ -77,7 +84,7 @@ fun AnalysisByTime(
                             modifier = Modifier
                                 .fillMaxWidth(),
                             text = "Lectures By Week",
-                            style = MaterialTheme.typography.titleLarge.copy(
+                            style = MaterialTheme.typography.titleMedium.copy(
                                 fontWeight = FontWeight.Bold
                             ),
                             textAlign = TextAlign.Center
@@ -91,9 +98,14 @@ fun AnalysisByTime(
                                         .fillMaxWidth(),
                                     horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
-                                    Text(text = it.yearWeek)
+                                    val color = colors().random()
                                     Text(
-                                        text = "${it.lecturesPresent} / ${it.lecturesConducted}"
+                                        text = it.yearWeek,
+                                        color = color
+                                    )
+                                    Text(
+                                        text = "${it.lecturesPresent} / ${it.lecturesConducted}",
+                                        color = color
                                     )
                                 }
                             }
@@ -105,7 +117,7 @@ fun AnalysisByTime(
                             modifier = Modifier
                                 .fillMaxWidth(),
                             text = "Lectures By Month",
-                            style = MaterialTheme.typography.titleLarge.copy(
+                            style = MaterialTheme.typography.titleMedium.copy(
                                 fontWeight = FontWeight.Bold
                             ),
                             textAlign = TextAlign.Center
@@ -119,9 +131,14 @@ fun AnalysisByTime(
                                         .fillMaxWidth(),
                                     horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
-                                    Text(text = it.yearMonth)
+                                    val color = colors().random()
                                     Text(
-                                        text = "${it.lecturesPresent} / ${it.lecturesConducted}"
+                                        text = it.yearMonth,
+                                        color = color
+                                    )
+                                    Text(
+                                        text = "${it.lecturesPresent} / ${it.lecturesConducted}",
+                                        color = color
                                     )
                                 }
                             }

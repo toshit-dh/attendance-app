@@ -1,15 +1,15 @@
 package tech.toshitworks.attendancechahiye.data.local
 
 import androidx.room.Dao
-import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
+import androidx.room.Upsert
 import tech.toshitworks.attendancechahiye.data.entity.SemesterEntity
 
 @Dao
 interface SemesterDao {
 
-    @Insert
+    @Upsert
     suspend fun insertSemester(semester: SemesterEntity)
 
     @Query("SELECT * FROM semester")

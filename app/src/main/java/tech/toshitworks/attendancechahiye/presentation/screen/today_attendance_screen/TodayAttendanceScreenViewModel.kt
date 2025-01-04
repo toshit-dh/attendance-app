@@ -32,7 +32,6 @@ class TodayAttendanceScreenViewModel @Inject constructor(
     private val dayRepository: DayRepository,
     private val noteRepository: NoteRepository,
     private val semesterRepository: SemesterRepository,
-    markAttendance: MarkAttendance
 ) : ViewModel() {
 
     private val today: LocalDate = LocalDate.now()

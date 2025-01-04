@@ -25,6 +25,9 @@ interface AttendanceDao {
     @Query("SELECT * FROM attendance WHERE deleted = false")
     fun getAllAttendance(): Flow<List<AttendanceEntity>>
 
+    @Query("SELECT * FROM attendance")
+    fun getPlusDeletedAttendance(): Flow<List<AttendanceEntity>>
+
 
 
     @Query("""

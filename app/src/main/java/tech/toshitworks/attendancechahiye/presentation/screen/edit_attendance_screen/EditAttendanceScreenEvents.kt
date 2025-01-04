@@ -2,9 +2,8 @@ package tech.toshitworks.attendancechahiye.presentation.screen.edit_attendance_s
 
 import tech.toshitworks.attendancechahiye.domain.model.AttendanceModel
 
-sealed class EditAttendanceScreenEvents {
+sealed class EditAttendanceScreenEvents  {
 
-    data class OnDateSelected(val date: String): EditAttendanceScreenEvents()
-    data class OnUpdateAttendance(val attendanceModel: AttendanceModel): EditAttendanceScreenEvents()
-
+    data class OnDateSelected(val date: String) : EditAttendanceScreenEvents()
+    data class OnAddExtraAttendance(val attendanceModel: AttendanceModel) : EditAttendanceScreenEvents()
 }

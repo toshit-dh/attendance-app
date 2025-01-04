@@ -23,10 +23,11 @@ class AttendanceRepoImpl @Inject constructor(
     private val dayRepository: DayRepository
 ) : AttendanceRepository {
     override suspend fun insertAttendance(attendance: AttendanceModel) {
+        val dayId = dayRepository.getDayByName(attendance.day!!.name).id!!
         attendanceDao.insertAttendance(
             AttendanceEntity(
                 id = attendance.id,
-                dayId = attendance.day!!.id!!,
+                dayId = dayId,
                 subjectId = attendance.subject!!.id,
                 periodId = attendance.period.id,
                 date = attendance.date,
@@ -51,6 +52,7 @@ class AttendanceRepoImpl @Inject constructor(
     }
 
     override suspend fun updateAttendanceByDate(attendance: AttendanceModel) {
+        println(attendance)
         attendanceDao.updateAttendanceByDate(
             date = attendance.date,
             subjectId = attendance.subject!!.id,
@@ -70,6 +72,22 @@ class AttendanceRepoImpl @Inject constructor(
                     date = ae.date,
                     isPresent = ae.isPresent,
                     period = periodRepository.getPeriodById(ae.periodId)
+                )
+            }
+        }
+    }
+
+    override fun getPlusDeletedAttendance(): Flow<List<AttendanceModel>> {
+        return attendanceDao.getPlusDeletedAttendance().map {l->
+            l.map {ae->
+                AttendanceModel(
+                    id = ae.id,
+                    day = dayRepository.getDayById(ae.dayId),
+                    subject = subjectRepository.getSubjectById(ae.subjectId),
+                    date = ae.date,
+                    isPresent = ae.isPresent,
+                    period = periodRepository.getPeriodById(ae.periodId),
+                    deleted = ae.deleted
                 )
             }
         }

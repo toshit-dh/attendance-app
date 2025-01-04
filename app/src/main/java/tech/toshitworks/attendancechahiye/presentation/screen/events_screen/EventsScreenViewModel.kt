@@ -18,6 +18,7 @@ import tech.toshitworks.attendancechahiye.domain.repository.SubjectRepository
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
@@ -54,7 +55,7 @@ class EventsScreenViewModel @Inject constructor(
         }
         currentState.copy(
             isLoading = false,
-            eventList = events,
+            eventList = sortedEvents.reversed(),
             activeEvents = activeEvents,
             pastEvents = pastEvents,
             upcomingEvents = futureEvents
@@ -90,13 +91,16 @@ class EventsScreenViewModel @Inject constructor(
                         ))
                         return@launch
                     }
+                    val id = (LocalTime.now().toNanoOfDay()/ 1_000_000).toInt()
                     val time = dataStoreRepository.readNotificationTime().first()
                     val eventLocal = event.event.dateLocal!!.atStartOfDay()
                     val currentTime = LocalDateTime.now()
                     val difference = Duration.between(currentTime,eventLocal)
                     val addedDifference = difference.toMillis() + time*1000
                     val uuid = notificationWorkRepository.enqueueNotificationWorker(
+                        id,
                         "Event Reminder",
+                        event.event.subjectModel.name,
                         event.event.content,
                         event.channelID!!,
                         addedDifference

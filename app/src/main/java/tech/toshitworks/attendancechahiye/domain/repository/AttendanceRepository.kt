@@ -15,6 +15,8 @@ interface AttendanceRepository {
 
     fun getAllAttendance(): Flow<List<AttendanceModel>>
 
+    fun getPlusDeletedAttendance(): Flow<List<AttendanceModel>>
+
     fun getAttendancePercentage(): Flow<AttendanceStats>
 
     fun getAttendancePercentageBySubject(): Flow<List<AttendanceBySubject>>

@@ -11,10 +11,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.RemoveRedEye
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -37,6 +39,7 @@ import tech.toshitworks.attendancechahiye.domain.model.AttendanceStats
 import tech.toshitworks.attendancechahiye.presentation.components.dialogs.PickDateDialog
 import tech.toshitworks.attendancechahiye.presentation.screen.analytics_screen.AnalyticsScreenEvents
 import tech.toshitworks.attendancechahiye.presentation.screen.analytics_screen.AnalyticsScreenState
+import tech.toshitworks.attendancechahiye.presentation.screen.home_screen.HomeScreenEvents
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.Calendar
@@ -47,11 +50,13 @@ import kotlin.reflect.KFunction2
 @Composable
 fun AnalysisForSubject(
     state: AnalyticsScreenState,
+    homeScreenEvents: (HomeScreenEvents) -> Unit,
     onEvent: (AnalyticsScreenEvents) -> Unit,
     analyticsModel: AnalyticsModel,
     subjectAnalysis: List<AnalyticsModel>,
     getWeek: KFunction2<Int, Int, Pair<LocalDate, LocalDate>>,
-    attendanceList: List<AttendanceModel>
+    attendanceList: List<AttendanceModel>,
+    onNavigation: () -> Unit
 ) {
     val calendar = Calendar.getInstance()
     val isOverall = analyticsModel.subject == null
@@ -64,7 +69,7 @@ fun AnalysisForSubject(
         mutableStateOf(false)
     }
     val isDatePickerOpen = remember {
-        mutableStateOf(Pair(false,""))
+        mutableStateOf(Pair(false, ""))
     }
     val fromDate: MutableState<String?> = remember {
         mutableStateOf(null)
@@ -102,16 +107,73 @@ fun AnalysisForSubject(
                         analyticsModel.eligibilityOfEndSem
                     )
                 else
-                    Box {
-
+                    Card(
+                        modifier = Modifier
+                            .fillMaxSize()
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(8.dp),
+                            verticalArrangement = Arrangement.SpaceBetween,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                text = "Attendance is not counted for this subject",
+                                style = MaterialTheme.typography.titleMedium.copy(
+                                    fontWeight = FontWeight.Bold
+                                ),
+                                textAlign = TextAlign.Center
+                            )
+                            Text(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                text = "No attendance worries! Enjoy your studies!",
+                                style = MaterialTheme.typography.bodyLarge,
+                                textAlign = TextAlign.Center,
+                            )
+                            Text(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                text = "Explore other subjects or activities to stay engaged!",
+                                style = MaterialTheme.typography.bodyLarge,
+                                textAlign = TextAlign.Center,
+                            )
+                                Text(
+                                    text = "Edit the subject to include attendance",
+                                    textAlign = TextAlign.Justify
+                                )
+                            Button(
+                                onClick = {
+                                    homeScreenEvents(
+                                        HomeScreenEvents.OnEditTypeChange(1)
+                                    )
+                                    onNavigation()
+                                }
+                            ) {
+                                Text(
+                                    text = "Click Here To Edit"
+                                )
+                            }
+                        }
                     }
             }
         else
-            Box(
+            Card(
                 modifier = Modifier
                     .weight(3f)
+                    .fillMaxSize()
             ) {
-
+                Column (
+                    modifier = Modifier
+                        .padding(8.dp)
+                ) {
+                    PeriodAnalysis(
+                        analyticsModel.periodAnalysis!!
+                    )
+                }
             }
         Box(
             modifier = Modifier
@@ -148,7 +210,7 @@ fun AnalysisForSubject(
                     )
                     IconButton(
                         onClick = {
-                            isDatePickerOpen.value = Pair(true,"from")
+                            isDatePickerOpen.value = Pair(true, "from")
 
                         }
                     ) {
@@ -173,7 +235,7 @@ fun AnalysisForSubject(
                     )
                     IconButton(
                         onClick = {
-                            isDatePickerOpen.value = Pair(true,"to")
+                            isDatePickerOpen.value = Pair(true, "to")
 
                         },
                         enabled = fromDate.value != null
@@ -215,7 +277,11 @@ fun AnalysisForSubject(
                     .fillMaxWidth()
             ) {
                 Text(
-                    text = "View List"
+                    text = "View List",
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = LocalContentColor.current
+                    )
                 )
                 IconButton(
                     onClick = {
@@ -251,16 +317,21 @@ fun AnalysisForSubject(
         if (isDatePickerOpen.value.first) {
             val isFrom = isDatePickerOpen.value.second == "from"
             val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-            val minDate = if (isFrom) state.startDate else dateFormat.parse(fromDate.value!!)?.time ?: 0L
+            val minDate =
+                if (isFrom) state.startDate else dateFormat.parse(fromDate.value!!)?.time ?: 0L
             val today = calendar.timeInMillis
             val endDate = state.endDate
-            val maxDate = if (isFrom) if (toDate.value==null) if (today > endDate) state.endDate else today else dateFormat.parse(toDate.value!!)?.time ?: 0L else today
+            val maxDate =
+                if (isFrom) if (toDate.value == null) if (today > endDate) state.endDate else today else dateFormat.parse(
+                    toDate.value!!
+                )?.time ?: 0L else today
             PickDateDialog(
                 minDate = minDate,
                 maxDate = maxDate
-            ) {date->
-                if (isDatePickerOpen.value.second=="from") fromDate.value = date else if (isDatePickerOpen.value.second=="to") toDate.value = date
-                if (fromDate.value != null && toDate.value != null){
+            ) { date ->
+                if (isDatePickerOpen.value.second == "from") fromDate.value =
+                    date else if (isDatePickerOpen.value.second == "to") toDate.value = date
+                if (fromDate.value != null && toDate.value != null) {
                     onEvent(AnalyticsScreenEvents.OnDateRangeAttendance(
                         analyticsModel.subject,
                         fromDate.value!!,
@@ -270,7 +341,7 @@ fun AnalysisForSubject(
                     }
                     )
                 }
-                isDatePickerOpen.value = Pair(false,"")
+                isDatePickerOpen.value = Pair(false, "")
             }
         }
     }

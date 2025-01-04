@@ -2,6 +2,7 @@ package tech.toshitworks.attendancechahiye.data.local
 
 import androidx.room.Dao
 import androidx.room.Query
+import tech.toshitworks.attendancechahiye.data.dto.PeriodAnalysis
 import tech.toshitworks.attendancechahiye.data.entity.AnalyticsByDay
 import tech.toshitworks.attendancechahiye.data.entity.AnalyticsByMonth
 import tech.toshitworks.attendancechahiye.data.entity.AnalyticsByWeek
@@ -9,6 +10,20 @@ import tech.toshitworks.attendancechahiye.data.entity.AnalyticsEntity
 
 @Dao
 interface AnalyticsDao {
+
+    @Query("""
+        SELECT a.period_id AS periodId
+        ,p.startTime AS startTime,
+        p.endTime AS endTime,
+        SUM(CASE WHEN a.id AND isAttendanceCounted = 1 THEN 1 ELSE 0 END) AS lecturesConducted, 
+        SUM(CASE WHEN a.is_present AND isAttendanceCounted = 1 THEN 1 ELSE 0 END) AS lecturesPresent
+        FROM attendance a
+        INNER JOIN subjects s ON s.id = a.subject_id
+        INNER JOIN periods p ON p.id = a.period_id
+        WHERE deleted = false AND s.isAttendanceCounted = true
+        GROUP BY period_id
+    """)
+    suspend fun getPeriodAnalysis(): List<PeriodAnalysis>
 
     @Query(
         """
@@ -21,8 +36,8 @@ interface AnalyticsDao {
         FROM attendance a
         JOIN subjects s ON s.id = a.subject_id
         JOIN days d ON d.id = a.day_id
+        WHERE a.deleted = false
         GROUP BY d.id
-
     """
     )
     suspend fun getAnalysisByDay(): List<AnalyticsByDay>
@@ -36,6 +51,7 @@ interface AnalyticsDao {
             SUM(CASE WHEN a.is_present = 1 AND s.isAttendanceCounted = 1 THEN 1 ELSE 0 END) AS lecturesPresent
         FROM attendance a
         JOIN subjects s ON s.id = a.subject_id
+        WHERE a.deleted = false
         GROUP BY strftime('%Y-%W', a.date)  
     """
     )
@@ -50,6 +66,7 @@ interface AnalyticsDao {
             SUM(CASE WHEN a.is_present = 1 AND s.isAttendanceCounted = 1 THEN 1 ELSE 0 END) AS lecturesPresent
         FROM attendance a
         JOIN subjects s ON s.id = a.subject_id
+        WHERE a.deleted = false
         GROUP BY strftime('%Y-%m', a.date) 
     """
     )
@@ -63,6 +80,7 @@ interface AnalyticsDao {
             SUM(CASE WHEN a.is_present AND isAttendanceCounted = 1 THEN 1 ELSE 0 END) AS lecturesPresent
         FROM attendance a
         JOIN subjects s ON s.id = a.subject_id
+        WHERE a.deleted = false
     """
     )
     suspend fun getAnalysis(): AnalyticsEntity
@@ -78,7 +96,7 @@ interface AnalyticsDao {
         FROM attendance a
         JOIN subjects s ON s.id = a.subject_id
         JOIN days d ON d.id = a.day_id
-        WHERE s.name = :subjectName
+        WHERE s.name = :subjectName AND a.deleted = false
         GROUP BY d.id
 
     """
@@ -94,7 +112,7 @@ interface AnalyticsDao {
             SUM(CASE WHEN a.is_present = 1  THEN 1 ELSE 0 END) AS lecturesPresent
         FROM attendance a
         JOIN subjects s ON s.id = a.subject_id
-        WHERE s.name = :subjectName
+        WHERE s.name = :subjectName AND a.deleted = false
         GROUP BY strftime('%Y-%W', a.date)  
     """
     )
@@ -109,7 +127,7 @@ interface AnalyticsDao {
             SUM(CASE WHEN a.is_present = 1 THEN 1 ELSE 0 END) AS lecturesPresent
         FROM attendance a
         JOIN subjects s ON s.id = a.subject_id
-        WHERE s.name = :subjectName
+        WHERE s.name = :subjectName AND a.deleted = false
         GROUP BY strftime('%Y-%m', a.date)
     """
     )
@@ -123,7 +141,7 @@ interface AnalyticsDao {
             SUM(CASE WHEN a.is_present = 1 THEN 1 ELSE 0 END) AS lecturesPresent
         FROM attendance a
         JOIN subjects s ON s.id = a.subject_id
-        WHERE s.name = :subjectName
+        WHERE s.name = :subjectName AND a.deleted = false
     """
     )
     suspend fun getAnalysisOfSubject(subjectName: String): AnalyticsEntity

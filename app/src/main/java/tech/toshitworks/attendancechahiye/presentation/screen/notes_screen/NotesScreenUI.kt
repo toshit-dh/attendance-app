@@ -17,9 +17,11 @@ import tech.toshitworks.attendancechahiye.presentation.components.notes.NoteCard
 @Composable
 fun NotesScreen(
     modifier: Modifier,
-    viewModel: NotesScreenViewModel
+    viewModel: NotesScreenViewModel,
+    isFilterRowVisible: Boolean
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+
     val onEvent = viewModel::onEvent
     if(!state.isLoading)
         Column(
@@ -28,12 +30,16 @@ fun NotesScreen(
                 .padding(8.dp),
             verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
-            FiltersRow(
-                states = state,
-                onEvent = onEvent
-            )
+            if (isFilterRowVisible)
+                FiltersRow(
+                    modifier = Modifier
+                        .weight(3f),
+                    states = state,
+                    onEvent = onEvent
+                )
             LazyColumn(
-                modifier = Modifier,
+                modifier = Modifier
+                    .weight(8f),
                 verticalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 items(state.filteredNotes) {
