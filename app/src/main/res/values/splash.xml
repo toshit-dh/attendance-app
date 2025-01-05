@@ -4,6 +4,6 @@
         <item name="windowSplashScreenBackground">#FF1D0F11</item>
         <item name="android:windowSplashScreenAnimatedIcon">@drawable/bg</item>
         <item name="windowSplashScreenAnimationDuration">200</item>
-        <item name="postSplashScreenTheme">@style/Theme.AttendanceChahiye</item>
+        <item name="postSplashScreenTheme">@style/Theme.Attendo</item>
     </style>
 </resources>

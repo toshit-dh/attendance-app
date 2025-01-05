@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "tech.toshitworks.attendancechahiye"
+    namespace = "tech.toshitworks.attendo"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "tech.toshitworks.attendancechahiye"
+        applicationId = "tech.toshitworks.attendo"
         minSdk = 31
         targetSdk = 34
         versionCode = 1
