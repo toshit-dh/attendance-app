@@ -22,6 +22,7 @@ import tech.toshitworks.attendo.presentation.screen.home_screen.HomeScreenStates
 import tech.toshitworks.attendo.presentation.screen.notes_screen.NotesScreen
 import tech.toshitworks.attendo.presentation.screen.notes_screen.NotesScreenViewModel
 import tech.toshitworks.attendo.presentation.screen.notification_screen.NotificationScreen
+import tech.toshitworks.attendo.presentation.screen.notification_screen.NotificationScreenViewModel
 import tech.toshitworks.attendo.presentation.screen.settings_screen.SettingScreenViewModel
 import tech.toshitworks.attendo.presentation.screen.settings_screen.SettingsScreen
 import tech.toshitworks.attendo.presentation.screen.today_attendance_screen.TodayAttendanceScreen
@@ -112,8 +113,10 @@ fun NavHomeGraph(
                 )
             }
             composable(route = ScreenRoutes.NotificationScreen.route){
+                val viewModel: NotificationScreenViewModel = hiltViewModel()
                 NotificationScreen(
-                    modifier
+                    modifier,
+                    viewModel
                 )
             }
         }

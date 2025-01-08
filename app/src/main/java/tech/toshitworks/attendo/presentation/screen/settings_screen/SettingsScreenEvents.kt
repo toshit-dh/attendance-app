@@ -4,4 +4,6 @@ sealed class SettingsScreenEvents {
 
     data class OnNotificationTimeChange(val time: Long): SettingsScreenEvents()
 
+    data class OnDoMarkAttendanceChange(val doMarkAttendance: Boolean): SettingsScreenEvents()
+
 }

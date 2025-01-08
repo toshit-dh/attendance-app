@@ -34,7 +34,10 @@ val description by lazy {
                 "Subjects which are not counted in attendance will have their seperate attendance",
         "Edit Attendance Here. You can add any extra periods for any subject\n" +
                 "Also you can edit attendance here",
-        "Notes",
-        "Events",
+        "You can view notes here. \n" +
+                "Use the filter row to add filters on notes. \n" +
+                "Click the visibility icon to toggle the visibility of filter row.",
+        "You can add Events here. \n" +
+                "You can turn event notification on or off by clicking bell icon",
     )
 }

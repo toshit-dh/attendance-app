@@ -20,6 +20,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import tech.toshitworks.attendo.presentation.components.edit_screen.SemesterInfo
 import tech.toshitworks.attendo.presentation.components.edit_screen.SubjectInfo
 import tech.toshitworks.attendo.presentation.components.edit_screen.TimetableInfo
+import tech.toshitworks.attendo.presentation.components.indicators.LoadingIndicator
 import tech.toshitworks.attendo.utils.SnackBarEditEvent
 
 @Composable
@@ -133,4 +134,6 @@ fun EditInfoScreen(
             }
         }
     }
+    else
+        LoadingIndicator(modifier)
 }

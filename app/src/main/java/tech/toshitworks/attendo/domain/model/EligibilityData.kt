@@ -4,5 +4,6 @@ data class EligibilityData(
     val isEligibleForNow: Boolean,
     val isEligibleInFuture: Boolean,
     val bunkLectures: Int,
-    val moreLectures: Int
+    val moreLectures: Int,
+    val isDone: Boolean
 )

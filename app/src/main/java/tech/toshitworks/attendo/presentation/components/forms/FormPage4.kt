@@ -20,6 +20,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -95,6 +96,9 @@ fun FormPage4(
                 }
                 .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(8.dp)),
             singleLine = true,
+            colors = TextFieldDefaults.colors().copy(
+                disabledTextColor = MaterialTheme.colorScheme.primary
+            ),
             enabled = false
         )
         Spacer(modifier = Modifier.height(16.dp))
@@ -118,6 +122,9 @@ fun FormPage4(
                 }
                 .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(8.dp)),
             singleLine = true,
+            colors = TextFieldDefaults.colors().copy(
+                disabledTextColor = MaterialTheme.colorScheme.primary
+            ),
             enabled = false
         )
         Spacer(modifier = Modifier.height(16.dp))

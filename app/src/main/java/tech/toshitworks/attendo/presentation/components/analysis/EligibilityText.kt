@@ -14,6 +14,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -29,12 +30,11 @@ fun EligibilityAnalysis(
 ) {
     val midTermDateProvided = eligibilityOfMidterm != null
     val endSemDateProvided = eligibilityOfEndSem != null
-
-    Row (
+    Row(
         modifier = Modifier
             .fillMaxSize(),
         horizontalArrangement = Arrangement.spacedBy(6.dp)
-    ){
+    ) {
         Card(
             Modifier
                 .weight(1f)
@@ -98,58 +98,75 @@ private fun MidTermText(
         modifier = Modifier
             .fillMaxSize(),
     ) {
-        Column(
-            modifier = Modifier
-                .weight(3f)
-                .fillMaxSize()
-                .padding(6.dp),
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = "Now?: ",
-            )
-            if (!eligibilityOfMidterm.isEligibleForNow)
+        if (!eligibilityOfMidterm.isDone) {
+            Column(
+                modifier = Modifier
+                    .weight(3f)
+                    .fillMaxSize()
+                    .padding(6.dp),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
                 Text(
-                    text = "Future?: "
+                    text = "Now?: ",
                 )
-            Text(
-                text = "Bunk: "
-            )
-            Text(
-                text = "Attend: "
-            )
-        }
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxSize()
-                .padding(6.dp),
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-            Icon(
-                imageVector = if (eligibilityOfMidterm.isEligibleForNow) Icons.Default.Check else Icons.Default.Close,
-                tint = if (eligibilityOfMidterm.isEligibleForNow) Color.Green else Color.Red,
-                contentDescription = "eligible?"
-            )
-            if (!eligibilityOfMidterm.isEligibleForNow)
+                if (!eligibilityOfMidterm.isEligibleForNow)
+                    Text(
+                        text = "Future?: "
+                    )
+                Text(
+                    text = "Bunk: "
+                )
+                Text(
+                    text = "Attend: "
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxSize()
+                    .padding(6.dp),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
                 Icon(
-                    imageVector = if (eligibilityOfMidterm.isEligibleInFuture) Icons.Default.Check else Icons.Default.Close,
-                    tint = if (eligibilityOfMidterm.isEligibleInFuture) Color.Green else Color.Red,
+                    imageVector = if (eligibilityOfMidterm.isEligibleForNow) Icons.Default.Check else Icons.Default.Close,
+                    tint = if (eligibilityOfMidterm.isEligibleForNow) Color.Green else Color.Red,
                     contentDescription = "eligible?"
                 )
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = "${eligibilityOfMidterm.bunkLectures}",
-                textAlign = TextAlign.Center,
-                maxLines = 1
-            )
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = "${eligibilityOfMidterm.moreLectures}",
-                textAlign = TextAlign.Center,
-                maxLines = 1
-            )
+                if (!eligibilityOfMidterm.isEligibleForNow)
+                    Icon(
+                        imageVector = if (eligibilityOfMidterm.isEligibleInFuture) Icons.Default.Check else Icons.Default.Close,
+                        tint = if (eligibilityOfMidterm.isEligibleInFuture) Color.Green else Color.Red,
+                        contentDescription = "eligible?"
+                    )
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "${eligibilityOfMidterm.bunkLectures}",
+                    textAlign = TextAlign.Center,
+                    maxLines = 1
+                )
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "${eligibilityOfMidterm.moreLectures}",
+                    textAlign = TextAlign.Center,
+                    maxLines = 1
+                )
+            }
+        } else {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Mid Term Is Over",
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.Bold
+                    )
+                )
+            }
         }
+
     }
 }
 
@@ -161,67 +178,83 @@ private fun EndSemText(
         modifier = Modifier
             .fillMaxSize(),
     ) {
-        Column(
-            modifier = Modifier
-                .weight(3f)
-                .fillMaxSize()
-                .padding(6.dp),
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = "Now?: ",
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            if (!eligibilityOfEndSem.isEligibleForNow)
+        if (!eligibilityOfEndSem.isDone) {
+            Column(
+                modifier = Modifier
+                    .weight(3f)
+                    .fillMaxSize()
+                    .padding(6.dp),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
                 Text(
-                    text = "Future?: ",
+                    text = "Now?: ",
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-            Text(
-                text = "Bunk: ",
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            Text(
-                text = "Attend: ",
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-        }
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxSize()
-                .padding(6.dp),
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-            Icon(
-                imageVector = if (eligibilityOfEndSem.isEligibleForNow) Icons.Default.Check else Icons.Default.Close,
-                tint = if (eligibilityOfEndSem.isEligibleForNow) Color.Green else Color.Red,
-                contentDescription = "eligible?"
-            )
-            if (!eligibilityOfEndSem.isEligibleForNow)
+                if (!eligibilityOfEndSem.isEligibleForNow)
+                    Text(
+                        text = "Future?: ",
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                Text(
+                    text = "Bunk: ",
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Text(
+                    text = "Attend: ",
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxSize()
+                    .padding(6.dp),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
                 Icon(
-                    imageVector = if (eligibilityOfEndSem.isEligibleInFuture) Icons.Default.Check else Icons.Default.Close,
-                    tint = if (eligibilityOfEndSem.isEligibleInFuture) Color.Green else Color.Red,
+                    imageVector = if (eligibilityOfEndSem.isEligibleForNow) Icons.Default.Check else Icons.Default.Close,
+                    tint = if (eligibilityOfEndSem.isEligibleForNow) Color.Green else Color.Red,
                     contentDescription = "eligible?"
                 )
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = "${eligibilityOfEndSem.bunkLectures}",
-                textAlign = TextAlign.Center,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = "${eligibilityOfEndSem.moreLectures}",
-                textAlign = TextAlign.Center,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+                if (!eligibilityOfEndSem.isEligibleForNow)
+                    Icon(
+                        imageVector = if (eligibilityOfEndSem.isEligibleInFuture) Icons.Default.Check else Icons.Default.Close,
+                        tint = if (eligibilityOfEndSem.isEligibleInFuture) Color.Green else Color.Red,
+                        contentDescription = "eligible?"
+                    )
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "${eligibilityOfEndSem.bunkLectures}",
+                    textAlign = TextAlign.Center,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "${eligibilityOfEndSem.moreLectures}",
+                    textAlign = TextAlign.Center,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+        } else {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Term End Is Done",
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.Bold
+                    )
+                )
+            }
         }
     }
 }

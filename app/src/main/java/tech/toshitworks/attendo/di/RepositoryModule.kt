@@ -13,6 +13,7 @@ import tech.toshitworks.attendo.data.repository.DayRepositoryImpl
 import tech.toshitworks.attendo.data.repository.EventRepoImpl
 import tech.toshitworks.attendo.data.repository.MarkAttendanceImpl
 import tech.toshitworks.attendo.data.repository.NoteRepositoryImpl
+import tech.toshitworks.attendo.data.repository.NotificationRepoImpl
 import tech.toshitworks.attendo.data.repository.NotificationWorkRepoImpl
 import tech.toshitworks.attendo.data.repository.PeriodRepositoryImpl
 import tech.toshitworks.attendo.data.repository.SemesterRepoImpl
@@ -25,6 +26,7 @@ import tech.toshitworks.attendo.domain.repository.DayRepository
 import tech.toshitworks.attendo.domain.repository.EventRepository
 import tech.toshitworks.attendo.domain.repository.MarkAttendance
 import tech.toshitworks.attendo.domain.repository.NoteRepository
+import tech.toshitworks.attendo.domain.repository.NotificationRepository
 import tech.toshitworks.attendo.domain.repository.NotificationService
 import tech.toshitworks.attendo.domain.repository.NotificationWorkRepository
 import tech.toshitworks.attendo.domain.repository.PeriodRepository
@@ -97,6 +99,12 @@ abstract class RepositoryModule {
     abstract fun bindEventRepository(
         eventRepoImpl: EventRepoImpl
     ): EventRepository
+
+    @Singleton
+    @Binds
+    abstract fun bindNotificationService(
+        notificationRepoImpl: NotificationRepoImpl
+    ): NotificationRepository
 
     @Singleton
     @Binds

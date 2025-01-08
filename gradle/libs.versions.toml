@@ -10,6 +10,7 @@ glance = "1.1.1"
 glanceAppwidget = "1.1.1"
 hiltAndroid = "2.49"
 hiltCompiler = "1.2.0"
+jetpackLoading = "1.1.0"
 kotlin = "2.0.0"
 coreKtx = "1.15.0"
 junit = "4.13.2"
@@ -50,6 +51,7 @@ exoplayer = { module = "com.google.android.exoplayer:exoplayer", version.ref = "
 google-accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanistPager" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroid" }
+jetpack-loading = { module = "com.github.MahboubehSeyedpour:jetpack-loading", version.ref = "jetpackLoading" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

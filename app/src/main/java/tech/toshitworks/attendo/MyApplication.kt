@@ -13,13 +13,23 @@ class MyApplication : Application() {
     }
 
     private fun createNotificationChannel() {
-        val name = getString(R.string.notification_channel)
-        val descriptionText = getString(R.string.notification_description)
+
         val importance = NotificationManager.IMPORTANCE_DEFAULT
-        val channel = NotificationChannel(getString(R.string.channel_id), name, importance).apply {
-            description = descriptionText
+
+        val eventName = getString(R.string.event_notification_channel)
+        val eventDescriptionText = getString(R.string.event_notification_description)
+        val eventChannel = NotificationChannel(getString(R.string.event_channel_id),eventName, importance).apply {
+            description = eventDescriptionText
         }
+
+        val markName = getString(R.string.mark_notification_channel)
+        val markDescriptionText = getString(R.string.mark_notification_description)
+        val markChannel = NotificationChannel(getString(R.string.mark_channel_id),markName, importance).apply {
+            description = markDescriptionText
+        }
+
         val notificationManager = getSystemService(NotificationManager::class.java)
-        notificationManager.createNotificationChannel(channel)
+        notificationManager.createNotificationChannel(eventChannel)
+        notificationManager.createNotificationChannel(markChannel)
     }
 }

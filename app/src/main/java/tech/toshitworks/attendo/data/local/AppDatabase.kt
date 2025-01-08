@@ -8,6 +8,7 @@ import tech.toshitworks.attendo.data.entity.AttendanceEntity
 import tech.toshitworks.attendo.data.entity.DayEntity
 import tech.toshitworks.attendo.data.entity.EventEntity
 import tech.toshitworks.attendo.data.entity.NoteEntity
+import tech.toshitworks.attendo.data.entity.NotificationEntity
 import tech.toshitworks.attendo.data.entity.PeriodEntity
 import tech.toshitworks.attendo.data.entity.SubjectEntity
 import tech.toshitworks.attendo.data.entity.TimetableEntity
@@ -23,9 +24,10 @@ import javax.inject.Singleton
         TimetableEntity::class,
         SemesterEntity::class,
         NoteEntity::class,
-        EventEntity::class
+        EventEntity::class,
+        NotificationEntity::class
     ],
-    version = 5,
+    version = 6,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
@@ -41,6 +43,8 @@ abstract class AttendanceDatabase : RoomDatabase() {
     abstract fun noteDao(): NoteDao
     abstract fun analyticsDao(): AnalyticsDao
     abstract fun eventDao(): EventDao
+    abstract fun notificationDao(): NotificationDao
+
     companion object {
         const val DATABASE_NAME = "attendance_database"
     }

@@ -23,6 +23,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import tech.toshitworks.attendo.R
 import tech.toshitworks.attendo.navigation.ScreenRoutes
+import tech.toshitworks.attendo.presentation.components.indicators.LoadingIndicator
 import tech.toshitworks.attendo.presentation.components.notes.FiltersRow
 import tech.toshitworks.attendo.presentation.components.notes.NoteCard
 
@@ -99,5 +100,7 @@ fun NotesScreen(
                 }
             }
         }
+    else
+        LoadingIndicator(modifier)
 }
 

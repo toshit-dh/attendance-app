@@ -1,11 +1,14 @@
 package tech.toshitworks.attendo.data.repository
 
+import android.util.Log
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import androidx.work.workDataOf
 import tech.toshitworks.attendo.domain.repository.MarkAttendance
 import tech.toshitworks.attendo.workers.MarkAttendanceWorker
 import java.time.Duration
 import java.time.LocalTime
+import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -22,9 +25,21 @@ class MarkAttendanceImpl @Inject constructor(
         }
         return durationUntilTarget.toMillis()
     }
-    override fun markAttendance() {
+    override fun markAttendance(channelId: String): UUID? {
+        val inputData = workDataOf(
+            "channelId" to channelId,
+        )
+        val initialDelay = calculateDelayFor1155PM()
+        if (initialDelay <= 0) {
+            Log.e("MarkAttendanceImpl", "Calculated delay is invalid: $initialDelay")
+            return null
+        }
         val markAttendanceWorkRequest = PeriodicWorkRequestBuilder<MarkAttendanceWorker>(24,TimeUnit.HOURS)
-            .setInitialDelay(calculateDelayFor1155PM(),TimeUnit.MILLISECONDS)
-        workManager.enqueue(markAttendanceWorkRequest.build())
+            .setInputData(inputData)
+            .setInitialDelay(initialDelay,TimeUnit.MILLISECONDS)
+            .build()
+
+        workManager.enqueue(markAttendanceWorkRequest)
+        return markAttendanceWorkRequest.id
     }
 }

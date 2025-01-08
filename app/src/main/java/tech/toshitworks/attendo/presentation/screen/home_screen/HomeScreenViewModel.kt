@@ -6,11 +6,15 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import tech.toshitworks.attendo.R
 import tech.toshitworks.attendo.domain.repository.AttendanceRepository
+import tech.toshitworks.attendo.domain.repository.DataStoreRepository
 import tech.toshitworks.attendo.domain.repository.DayRepository
+import tech.toshitworks.attendo.domain.repository.MarkAttendance
 import tech.toshitworks.attendo.domain.repository.SubjectRepository
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -22,7 +26,9 @@ import javax.inject.Inject
 class HomeScreenViewModel @Inject constructor(
     private val subjectRepository: SubjectRepository,
     attendanceRepository: AttendanceRepository,
-    private val dayRepository: DayRepository
+    private val dataStoreRepository: DataStoreRepository,
+    private val dayRepository: DayRepository,
+    markAttendance: MarkAttendance
 ) : ViewModel() {
 
     private val today: LocalDate = LocalDate.now()
@@ -58,6 +64,11 @@ class HomeScreenViewModel @Inject constructor(
                     todayDay = day,
                     isLoading = false
                 )
+            }
+            if (!dataStoreRepository.readMarkAttendance()) {
+                dataStoreRepository.saveMarkAttendance(true)
+                val uuid = markAttendance.markAttendance("mark_attendance_channel")
+                dataStoreRepository.saveDoMarkAttendanceUUID(uuid.toString())
             }
         }
     }
@@ -111,7 +122,7 @@ class HomeScreenViewModel @Inject constructor(
                     val current = _state.value.editInfo
                     val ifNext = event.change == 1
                     it.copy(
-                        editInfo = if (ifNext) (current+1)%3 else (current-1+3)%3
+                        editInfo = if (ifNext) (current + 1) % 3 else (current - 1 + 3) % 3
                     )
                 }
             }

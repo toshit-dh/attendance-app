@@ -2,7 +2,10 @@
     <string name="app_name">Attendo</string>
     <string name="widget_text">Attendance Stats</string>"
     <string name="widget_text_2">Mark Attendance</string>
-    <string name="channel_id">event_channel</string>
-    <string name="notification_channel">Event Reminders</string>
-    <string name="notification_description">Notification channel for event reminders</string>
+    <string name="event_channel_id">event_channel</string>
+    <string name="mark_channel_id">mark_attendance_channel</string>
+    <string name="event_notification_channel">Event Reminders</string>
+    <string name="mark_notification_channel">Mark Attendance</string>"
+    <string name="event_notification_description">Notification channel for event reminders</string>
+    <string name="mark_notification_description">Notification channel for mark attendance</string>
 </resources>

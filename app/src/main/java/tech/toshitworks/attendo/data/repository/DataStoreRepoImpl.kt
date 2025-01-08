@@ -6,6 +6,9 @@ import androidx.datastore.preferences.core.edit
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import tech.toshitworks.attendo.data.datastore.do_mark_attendance
+import tech.toshitworks.attendo.data.datastore.do_mark_attendance_uuid
+import tech.toshitworks.attendo.data.datastore.is_mark_attendance
 import tech.toshitworks.attendo.data.datastore.notification_time_select
 import tech.toshitworks.attendo.data.datastore.screen_selection
 import tech.toshitworks.attendo.domain.repository.DataStoreRepository
@@ -25,6 +28,17 @@ class DataStoreRepoImpl @Inject constructor(
         return preferences[screen_selection] ?: 0
     }
 
+    override suspend fun saveMarkAttendance(markAttendance: Boolean) {
+        datastore.edit {
+            it[is_mark_attendance] = markAttendance
+        }
+    }
+
+    override suspend fun readMarkAttendance(): Boolean {
+        val preferences = datastore.data.first()
+        return preferences[is_mark_attendance] ?: false
+    }
+
     override suspend fun saveNotificationTime(time: Long) {
         datastore.edit {
             it[notification_time_select] = time
@@ -36,5 +50,30 @@ class DataStoreRepoImpl @Inject constructor(
             it[notification_time_select] ?: 0
         }
         return preferences
+    }
+
+    override suspend fun saveDoMarkAttendance(doMarkAttendance: Boolean) {
+        datastore.edit {
+            it[do_mark_attendance] = doMarkAttendance
+        }
+    }
+
+    override fun readDoMarkAttendance(): Flow<Boolean> {
+        val preferences = datastore.data.map {
+            it[do_mark_attendance] ?: true
+        }
+        return preferences
+    }
+
+    override suspend fun saveDoMarkAttendanceUUID(uuid: String) {
+        datastore.edit {
+            it[do_mark_attendance_uuid] = uuid
+        }
+    }
+
+    override suspend fun readDoMarkAttendanceUUID(): String {
+        val preferences = datastore.data.first()
+        return preferences[do_mark_attendance_uuid] ?: ""
+
     }
 }

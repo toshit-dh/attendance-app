@@ -75,7 +75,7 @@ fun NavigationDrawer(
                             .fillMaxWidth()
                             .height(250.dp),
                         painter = painterResource(
-                            R.drawable.bg
+                            R.drawable.img
                         ),
                         contentDescription = "background"
                     )

@@ -17,6 +17,7 @@ import tech.toshitworks.attendo.domain.model.EventModel
 import tech.toshitworks.attendo.presentation.components.dialogs.AddEventDialog
 import tech.toshitworks.attendo.presentation.components.events.EventList
 import tech.toshitworks.attendo.presentation.components.events.NoUpcomingEvents
+import tech.toshitworks.attendo.presentation.components.indicators.LoadingIndicator
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -36,7 +37,7 @@ fun EventsScreen(
     val event = remember {
         mutableStateOf<EventModel?>(null)
     }
-    val channelID = stringResource(R.string.channel_id)
+    val channelID = stringResource(R.string.event_channel_id)
     if (!state.isLoading) {
         Column(
             modifier = modifier
@@ -87,4 +88,6 @@ fun EventsScreen(
             }
         }
     }
+    else
+        LoadingIndicator(modifier)
 }

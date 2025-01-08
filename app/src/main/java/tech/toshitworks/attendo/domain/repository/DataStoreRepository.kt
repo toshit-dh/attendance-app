@@ -8,8 +8,21 @@ interface DataStoreRepository {
 
     suspend fun readScreenSelection(): Int
 
+    suspend fun saveMarkAttendance(markAttendance: Boolean)
+
+    suspend fun readMarkAttendance(): Boolean
+
     suspend fun saveNotificationTime(time: Long)
 
     fun readNotificationTime(): Flow<Long>
+
+    suspend fun saveDoMarkAttendance(doMarkAttendance: Boolean)
+
+    fun readDoMarkAttendance(): Flow<Boolean>
+
+    suspend fun saveDoMarkAttendanceUUID(uuid: String)
+
+    suspend fun readDoMarkAttendanceUUID(): String
+
 
 }

@@ -22,6 +22,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import tech.toshitworks.attendo.R
 import tech.toshitworks.attendo.navigation.ScreenRoutes
+import tech.toshitworks.attendo.presentation.components.indicators.LoadingIndicator
 import tech.toshitworks.attendo.presentation.components.today_attendance.TimetableForDay
 import java.time.LocalDate
 
@@ -103,6 +104,8 @@ fun TodayAttendanceScreen(
             }
         }
     }
+    else
+        LoadingIndicator(modifier)
 }
 
 

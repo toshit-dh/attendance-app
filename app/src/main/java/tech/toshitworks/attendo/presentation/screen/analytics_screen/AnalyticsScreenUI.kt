@@ -23,6 +23,7 @@ import androidx.navigation.NavHostController
 import tech.toshitworks.attendo.domain.model.SubjectModel
 import tech.toshitworks.attendo.navigation.ScreenRoutes
 import tech.toshitworks.attendo.presentation.components.analysis.AnalysisForSubject
+import tech.toshitworks.attendo.presentation.components.indicators.LoadingIndicator
 import tech.toshitworks.attendo.presentation.screen.home_screen.HomeScreenEvents
 import tech.toshitworks.attendo.utils.colors
 
@@ -136,5 +137,7 @@ fun AnalyticsScreen(
         }
 
     }
+    else
+        LoadingIndicator(modifier)
 }
 

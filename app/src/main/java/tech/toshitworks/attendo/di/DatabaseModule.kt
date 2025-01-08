@@ -76,6 +76,20 @@ val MIGRATION_4_5 = object : Migration(4,5) {
     }
 }
 
+val MIGRATION_5_6 = object : Migration(5,6){
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("""
+            CREATE TABLE notification (
+                id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                title TEXT NOT NULL,
+                sub_text TEXT NOT NULL,
+                message TEXT NOT NULL,
+                timestamp INTEGER NOT NULL
+            )
+        """)
+    }
+}
+
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -95,6 +109,7 @@ object DatabaseModule {
         .addMigrations(MIGRATION_2_3)
         .addMigrations(MIGRATION_3_4)
         .addMigrations(MIGRATION_4_5)
+        .addMigrations(MIGRATION_5_6)
         .build()
 
     @Provides
@@ -123,6 +138,9 @@ object DatabaseModule {
 
     @Provides
     fun providesEventDao(database: AttendanceDatabase) = database.eventDao()
+
+    @Provides
+    fun providesNotificationDao(database: AttendanceDatabase) = database.notificationDao()
 
 
 }

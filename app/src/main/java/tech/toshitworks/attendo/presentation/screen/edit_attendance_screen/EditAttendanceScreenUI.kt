@@ -25,6 +25,7 @@ import tech.toshitworks.attendo.domain.model.AttendanceModel
 import tech.toshitworks.attendo.domain.model.DayModel
 import tech.toshitworks.attendo.presentation.components.dialogs.AddExtraAttendanceDialog
 import tech.toshitworks.attendo.presentation.components.edit_attendance.TimetableForEdit
+import tech.toshitworks.attendo.presentation.components.indicators.LoadingIndicator
 import tech.toshitworks.attendo.presentation.screen.home_screen.HomeScreenEvents
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -145,5 +146,7 @@ fun EditAttendanceScreen(
                     homeScreenEvents(HomeScreenEvents.OnAddExtraAttendanceClick)
                 }
         }
+    else
+        LoadingIndicator(modifier)
 }
 
