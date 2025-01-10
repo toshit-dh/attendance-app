@@ -6,4 +6,6 @@ sealed class SettingsScreenEvents {
 
     data class OnDoMarkAttendanceChange(val doMarkAttendance: Boolean): SettingsScreenEvents()
 
+    data class OnThemeChange(val themeState: Int): SettingsScreenEvents()
+
 }

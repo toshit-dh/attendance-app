@@ -4,6 +4,7 @@ import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import tech.toshitworks.attendo.domain.repository.AttendanceRepository
+import tech.toshitworks.attendo.domain.repository.DataStoreRepository
 import tech.toshitworks.attendo.domain.repository.DayRepository
 import tech.toshitworks.attendo.domain.repository.EventRepository
 import tech.toshitworks.attendo.domain.repository.NoteRepository
@@ -22,6 +23,7 @@ interface RepoEntryPoint {
     fun timetableRepository(): TimetableRepository
     fun notesRepository(): NoteRepository
     fun eventsRepository(): EventRepository
+    fun dataStoreRepository(): DataStoreRepository
     fun notificationRepository(): NotificationRepository
     fun notificationWorkRepository(): NotificationWorkRepository
     fun notificationService(): NotificationService

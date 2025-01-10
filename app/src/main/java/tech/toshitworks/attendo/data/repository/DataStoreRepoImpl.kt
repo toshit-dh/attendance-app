@@ -11,8 +11,10 @@ import tech.toshitworks.attendo.data.datastore.do_mark_attendance_uuid
 import tech.toshitworks.attendo.data.datastore.is_mark_attendance
 import tech.toshitworks.attendo.data.datastore.notification_time_select
 import tech.toshitworks.attendo.data.datastore.screen_selection
+import tech.toshitworks.attendo.data.datastore.theme_state
 import tech.toshitworks.attendo.domain.repository.DataStoreRepository
 import javax.inject.Inject
+
 
 class DataStoreRepoImpl @Inject constructor(
     private val datastore: DataStore<Preferences>
@@ -75,5 +77,17 @@ class DataStoreRepoImpl @Inject constructor(
         val preferences = datastore.data.first()
         return preferences[do_mark_attendance_uuid] ?: ""
 
+    }
+
+    override suspend fun saveThemeState(themeState: Int) {
+        datastore.edit {
+            it[theme_state] = themeState
+        }
+    }
+
+    override fun readThemeState(): Flow<Int> {
+        return datastore.data.map {
+            it[theme_state] ?: 0
+        }
     }
 }

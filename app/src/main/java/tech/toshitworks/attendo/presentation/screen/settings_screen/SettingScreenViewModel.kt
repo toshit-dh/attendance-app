@@ -7,6 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -26,12 +27,14 @@ class SettingScreenViewModel @Inject constructor(
     val state = combine(
         _state,
         dataStoreRepository.readNotificationTime(),
-        dataStoreRepository.readDoMarkAttendance()
-    ) { state, time, doMark ->
+        dataStoreRepository.readDoMarkAttendance(),
+        dataStoreRepository.readThemeState()
+    ) { state, time, doMark,theme ->
         state.copy(
             isLoading = false,
             notificationTime = time,
-            doMarkAttendance = doMark
+            doMarkAttendance = doMark,
+            themeState = theme
         )
     }.stateIn(
         scope = viewModelScope,
@@ -67,6 +70,18 @@ class SettingScreenViewModel @Inject constructor(
                     _state.update {
                         it.copy(
                             doMarkAttendance = event.doMarkAttendance
+                        )
+                    }
+                }
+            }
+
+            is SettingsScreenEvents.OnThemeChange -> {
+                viewModelScope.launch {
+                    dataStoreRepository.saveThemeState(event.themeState)
+                    println(dataStoreRepository.readThemeState().first())
+                    _state.update {
+                        it.copy(
+                            themeState = event.themeState
                         )
                     }
                 }

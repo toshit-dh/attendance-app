@@ -24,5 +24,9 @@ interface DataStoreRepository {
 
     suspend fun readDoMarkAttendanceUUID(): String
 
+    suspend fun saveThemeState(themeState: Int)
+
+    fun readThemeState(): Flow<Int>
+
 
 }
