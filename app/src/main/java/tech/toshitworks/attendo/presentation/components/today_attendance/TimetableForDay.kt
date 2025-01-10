@@ -43,12 +43,13 @@ fun TimetableForDay(
     val period: MutableState<PeriodModel?> = remember {
         mutableStateOf(null)
     }
-    val editedSubjectOuter: MutableState<SubjectModel?> = remember {
-        mutableStateOf(null)
-    }
     val attendanceModelOuter: MutableState<AttendanceModel?> = remember {
         mutableStateOf(null)
     }
+    val editedSubjectOuter: MutableState<SubjectModel?> = remember {
+        mutableStateOf(null)
+    }
+
     Column {
         LazyColumn(
             contentPadding = PaddingValues(8.dp)

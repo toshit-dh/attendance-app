@@ -6,4 +6,6 @@ sealed class EditAttendanceScreenEvents  {
 
     data class OnDateSelected(val date: String) : EditAttendanceScreenEvents()
     data class OnAddExtraAttendance(val attendanceModel: AttendanceModel) : EditAttendanceScreenEvents()
+    data class OnNoteClick(val attendanceId: Long): EditAttendanceScreenEvents()
+    data class OnUpdateSubject(val attendanceModel: AttendanceModel): EditAttendanceScreenEvents()
 }

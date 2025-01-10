@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -24,6 +25,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import tech.toshitworks.attendo.R
 import tech.toshitworks.attendo.presentation.components.indicators.LoadingIndicator
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.util.Date
+import java.util.Locale
 
 @Composable
 fun NotificationScreen(
@@ -38,23 +43,44 @@ fun NotificationScreen(
                 .padding(8.dp)
         ) {
             if (state.first.isNotEmpty())
-                LazyColumn {
+                LazyColumn (
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                ){
                     items(state.first){
-                        Card {
-                            Column {
-                                Row {
+                        Card(
+                            modifier = Modifier
+                                .fillMaxSize()
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .padding(8.dp),
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
                                     Text(
                                         text = it.title,
+                                        style = MaterialTheme.typography.titleLarge.copy(
+                                            fontWeight = FontWeight.Bold
+                                        )
                                     )
                                     Text(
-                                        text = it.subText
+                                        text = it.subText,
+                                        style = MaterialTheme.typography.titleMedium.copy(
+                                            fontWeight = FontWeight.Bold
+                                        )
                                     )
                                 }
                                 Text(
-                                    text = it.message
+                                    text = it.message,
                                 )
+                                val date = Date(it.timestamp)
+                                val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
+                                val formattedDate = formatter.format(date)
                                 Text(
-                                    text = it.timestamp.toString()
+                                    text = "Date and Time: $formattedDate"
                                 )
                             }
                         }

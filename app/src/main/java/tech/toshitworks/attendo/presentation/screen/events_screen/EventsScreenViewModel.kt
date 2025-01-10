@@ -15,6 +15,7 @@ import tech.toshitworks.attendo.domain.repository.EventRepository
 import tech.toshitworks.attendo.domain.repository.NotificationWorkRepository
 import tech.toshitworks.attendo.domain.repository.SemesterRepository
 import tech.toshitworks.attendo.domain.repository.SubjectRepository
+import tech.toshitworks.attendo.navigation.ScreenRoutes
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -28,7 +29,7 @@ class EventsScreenViewModel @Inject constructor(
     private val subjectRepository: SubjectRepository,
     private val eventRepository: EventRepository,
     private val dataStoreRepository: DataStoreRepository,
-    private val notificationWorkRepository: NotificationWorkRepository
+    private val notificationWorkRepository: NotificationWorkRepository,
 ): ViewModel() {
     private val today: LocalDate = LocalDate.now()
     private val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
@@ -99,6 +100,7 @@ class EventsScreenViewModel @Inject constructor(
                     val addedDifference = difference.toMillis() + time*1000
                     val uuid = notificationWorkRepository.enqueueNotificationWorker(
                         id,
+                        ScreenRoutes.EventsScreen,
                         "Event Reminder",
                         event.event.subjectModel.name,
                         event.event.content,

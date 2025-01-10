@@ -13,16 +13,24 @@ class NotificationWorker(
 ): CoroutineWorker(context, workParams) {
 
     override suspend fun doWork(): Result {
-        val repoEntryPoint = EntryPointAccessors.fromApplication(applicationContext,RepoEntryPoint::class.java)
-        val notifWorkRepo = repoEntryPoint.notificationWorkRepository()
-        val notifRepo = repoEntryPoint.notificationRepository()
         return try {
+            val repoEntryPoint = EntryPointAccessors.fromApplication(applicationContext,RepoEntryPoint::class.java)
+            val notifWorkRepo = repoEntryPoint.notificationService()
+            val notifRepo = repoEntryPoint.notificationRepository()
             val id = inputData.getInt("id",1)
             val title = inputData.getString("title")!!
             val subText = inputData.getString("subText")!!
             val content = inputData.getString("content")!!
             val channelId = inputData.getString("channelId")!!
-            notifWorkRepo.showNotification(id,title,subText,content,channelId)
+            val screen = inputData.getString("screen")!!
+            notifWorkRepo.showNotification(
+                id,
+                screen,
+                title,
+                subText,
+                content,
+                channelId
+            )
             notifRepo.insertNotification(NotificationModel(
                 title = title,
                 subText = subText,

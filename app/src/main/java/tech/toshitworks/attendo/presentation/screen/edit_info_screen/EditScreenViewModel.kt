@@ -65,9 +65,6 @@ class EditScreenViewModel @Inject constructor(
             EditInfoScreenEvents.OnSaveSemester -> {
                 viewModelScope.launch {
                     if (_state.value.semesterModel!! == _state.value.changedSemesterModel) {
-                        println(_state.value.semesterModel)
-                        println(_state.value.changedSemesterModel)
-                        println(_state.value.semesterModel == _state.value.changedSemesterModel)
                         _snackBarEvent.emit(
                             SnackBarEditEvent.ShowSnackBarForNoChange()
                         )

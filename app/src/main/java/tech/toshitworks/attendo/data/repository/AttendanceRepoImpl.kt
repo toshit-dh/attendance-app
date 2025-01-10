@@ -52,7 +52,6 @@ class AttendanceRepoImpl @Inject constructor(
     }
 
     override suspend fun updateAttendanceByDate(attendance: AttendanceModel) {
-        println(attendance)
         attendanceDao.updateAttendanceByDate(
             date = attendance.date,
             subjectId = attendance.subject!!.id,

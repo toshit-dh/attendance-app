@@ -28,6 +28,11 @@ class NoteRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getNoteByAttendanceId(attendanceId: Long): NoteModel? {
+        val note =  noteDao.getNoteByAttendanceId(attendanceId)
+        return note?.toModel()
+    }
+
     override fun getNoteByAttendances(attendanceId: List<Long>): Flow<List<NoteModel>> {
         return noteDao.getNotesForAttendances(attendanceId).map {
             it.map {ne->

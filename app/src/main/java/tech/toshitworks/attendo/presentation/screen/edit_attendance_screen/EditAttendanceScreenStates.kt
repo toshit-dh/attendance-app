@@ -3,6 +3,7 @@ package tech.toshitworks.attendo.presentation.screen.edit_attendance_screen
 import tech.toshitworks.attendo.domain.model.AttendanceBySubject
 import tech.toshitworks.attendo.domain.model.AttendanceModel
 import tech.toshitworks.attendo.domain.model.AttendanceStats
+import tech.toshitworks.attendo.domain.model.NoteModel
 import tech.toshitworks.attendo.domain.model.PeriodModel
 import tech.toshitworks.attendo.domain.model.SubjectModel
 
@@ -18,5 +19,6 @@ data class EditAttendanceScreenStates(
     val attendanceStats: AttendanceStats = AttendanceStats(0,0,0.0),
     val filteredAttendance: List<AttendanceModel> = listOf(),
     val attendance: List<AttendanceModel> = listOf(),
-    val attendanceBySubject: List<AttendanceBySubject> = listOf()
+    val attendanceBySubject: List<AttendanceBySubject> = listOf(),
+    val note: NoteModel? = null
 )

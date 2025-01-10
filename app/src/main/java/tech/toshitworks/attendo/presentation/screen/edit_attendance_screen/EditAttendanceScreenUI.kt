@@ -68,6 +68,7 @@ fun EditAttendanceScreen(
                 if (editAttendanceDate != null) {
                     TimetableForEdit(
                         state = state,
+                        onEditEvent = onEvent,
                         onEvent = attendanceOnEvent,
                         date = editAttendanceDate,
                         day = DayModel(name = day)

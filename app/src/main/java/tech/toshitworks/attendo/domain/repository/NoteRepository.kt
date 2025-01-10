@@ -12,6 +12,8 @@ interface NoteRepository {
 
     suspend fun getAllNotes(): List<NoteModel>
 
+    suspend fun getNoteByAttendanceId(attendanceId: Long): NoteModel?
+
     fun getNoteByAttendances(attendanceId: List<Long>): Flow<List<NoteModel>>
 
     fun getNotesForTodayAttendance(): Flow<List<NoteModel>>

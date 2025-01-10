@@ -9,7 +9,9 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import tech.toshitworks.attendo.domain.model.AttendanceModel
 import tech.toshitworks.attendo.domain.repository.AttendanceRepository
+import tech.toshitworks.attendo.domain.repository.NoteRepository
 import tech.toshitworks.attendo.domain.repository.PeriodRepository
 import tech.toshitworks.attendo.domain.repository.SemesterRepository
 import tech.toshitworks.attendo.domain.repository.SubjectRepository
@@ -23,7 +25,8 @@ class EditAttendanceScreenViewModel @Inject constructor(
     private val semesterRepository: SemesterRepository,
     private val subjectRepository: SubjectRepository,
     private val periodRepository: PeriodRepository,
-    private val attendanceRepository: AttendanceRepository
+    private val attendanceRepository: AttendanceRepository,
+    private val noteRepository: NoteRepository
 ): ViewModel(){
 
     private val _state = MutableStateFlow(EditAttendanceScreenStates())
@@ -99,12 +102,42 @@ class EditAttendanceScreenViewModel @Inject constructor(
                 }
 
             }
+
+            is EditAttendanceScreenEvents.OnNoteClick -> {
+                viewModelScope.launch {
+                    val note = noteRepository.getNoteByAttendanceId(
+                        event.attendanceId
+                    )
+                    _state.update {
+                        it.copy(
+                            note = note
+                        )
+                    }
+                }
+            }
+
+            is EditAttendanceScreenEvents.OnUpdateSubject -> {
+                viewModelScope.launch {
+                    attendanceRepository.updateAttendanceByDate(
+                        AttendanceModel(
+                            subject = event.attendanceModel.subject,
+                            period = event.attendanceModel.period,
+                            date = state.value.date!!,
+                            isPresent = event.attendanceModel.isPresent
+                        )
+                    )
+                }
+            }
         }
     }
     fun attendanceEvent(event: TodayAttendanceScreenEvents){
         when(event){
             is TodayAttendanceScreenEvents.OnAddAttendance -> {}
-            is TodayAttendanceScreenEvents.OnAddNote -> {}
+            is TodayAttendanceScreenEvents.OnAddNote -> {
+                viewModelScope.launch {
+                    noteRepository.insertNote(event.noteModel)
+                }
+            }
             is TodayAttendanceScreenEvents.OnDeletePeriod -> {
                 viewModelScope.launch {
                     attendanceRepository.updateAttendanceByDate(event.attendanceModel)

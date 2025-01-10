@@ -17,7 +17,6 @@ class EventRepoImpl @Inject constructor(
     override fun getEvents(): Flow<List<EventModel>> {
         return eventDao.getEvents().map { ee ->
             ee.map {
-                println(it.notificationWorkId == null)
                 val subject = subjectRepository.getSubjectById(it.subjectId)!!
                 EventModel(
                     id = it.id,

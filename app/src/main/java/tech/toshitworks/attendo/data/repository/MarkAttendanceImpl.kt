@@ -1,6 +1,7 @@
 package tech.toshitworks.attendo.data.repository
 
 import android.util.Log
+import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
@@ -39,7 +40,11 @@ class MarkAttendanceImpl @Inject constructor(
             .setInitialDelay(initialDelay,TimeUnit.MILLISECONDS)
             .build()
 
-        workManager.enqueue(markAttendanceWorkRequest)
+        workManager.enqueueUniquePeriodicWork(
+            "MarkAttendance",
+            ExistingPeriodicWorkPolicy.KEEP,
+            markAttendanceWorkRequest
+        )
         return markAttendanceWorkRequest.id
     }
 }

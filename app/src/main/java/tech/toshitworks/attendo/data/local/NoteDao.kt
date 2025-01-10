@@ -22,6 +22,10 @@ interface NoteDao {
     @Query("SELECT * FROM note")
     suspend fun getAllNotes(): List<NoteEntity>
 
+    @Query("SELECT * FROM note WHERE attendance_id = :attendanceId")
+    suspend fun getNoteByAttendanceId(attendanceId:  Long): NoteEntity?
+
+
     @Query("""
         SELECT n.* FROM note AS n
         INNER JOIN attendance AS a

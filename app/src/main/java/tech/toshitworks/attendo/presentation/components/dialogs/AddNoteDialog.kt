@@ -21,7 +21,6 @@ fun AddNoteDialog(
         },
         text = {
             Column {
-                Text(text = "Enter subject name:")
                 TextField(
                     value = contentFirst.value,
                     onValueChange = {

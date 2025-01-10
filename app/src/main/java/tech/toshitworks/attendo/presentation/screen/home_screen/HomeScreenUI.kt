@@ -55,6 +55,7 @@ fun HomeScreen(
             floatingActionButton = {
                 if (isEditAttendanceScreen)
                     FloatingButton{
+                        onEvent(HomeScreenEvents.OnEditAttendanceDateSelected(null))
                         onEvent(HomeScreenEvents.OnAddExtraAttendanceClick)
                     }
             },
