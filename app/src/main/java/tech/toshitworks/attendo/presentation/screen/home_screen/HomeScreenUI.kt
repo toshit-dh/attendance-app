@@ -32,7 +32,7 @@ fun HomeScreen(
     val snackBarHostState = remember {
         SnackbarHostState()
     }
-
+    if (homeStartDestination == ScreenRoutes.EditInfoScreen.route) onEvent(HomeScreenEvents.OnEditTypeChange(2))
     NavigationDrawer(
         modifier = Modifier,
         navController = navController,
