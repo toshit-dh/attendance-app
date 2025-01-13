@@ -93,7 +93,7 @@ interface AttendanceDao {
     fun getAttendancePercentageBySubject(): Flow<List<AttendanceBySubject>>
 
 
-    @Query("SELECT * FROM attendance WHERE date = :date AND deleted = false")
+    @Query("SELECT * FROM attendance WHERE date = :date")
     fun getAttendanceByDate(date: String): Flow<List<AttendanceEntity>>
 
     @Query("DELETE FROM attendance")
