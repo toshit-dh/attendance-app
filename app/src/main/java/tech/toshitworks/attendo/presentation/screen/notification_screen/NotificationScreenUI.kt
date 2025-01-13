@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,9 +23,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import tech.toshitworks.attendo.R
 import tech.toshitworks.attendo.presentation.components.indicators.LoadingIndicator
+import tech.toshitworks.attendo.utils.colors
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.util.Date
@@ -60,27 +63,51 @@ fun NotificationScreen(
                                         .fillMaxWidth(),
                                     horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
-                                    Text(
-                                        text = it.title,
-                                        style = MaterialTheme.typography.titleLarge.copy(
-                                            fontWeight = FontWeight.Bold
+                                    val color = colors().random()
+                                    Row (
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                    ){
+                                        Text(
+                                            text = it.title,
+                                            style = MaterialTheme.typography.titleLarge.copy(
+                                                fontWeight = FontWeight.Bold
+                                            ),
+                                            color = color
                                         )
-                                    )
+                                        Icon(
+                                            painter = when (it.title) {
+                                                "Attendance Marked" -> painterResource(R.drawable.percent)
+                                                "Event Reminder" -> painterResource(R.drawable.event)
+                                                else -> painterResource(R.drawable.img_notif)
+                                            },
+                                            contentDescription = "",
+                                            tint = color
+                                        )
+                                    }
                                     Text(
                                         text = it.subText,
                                         style = MaterialTheme.typography.titleMedium.copy(
                                             fontWeight = FontWeight.Bold
-                                        )
+                                        ),
+                                        color = color
                                     )
                                 }
                                 Text(
                                     text = it.message,
+                                    style = MaterialTheme.typography.titleLarge.copy(
+                                        fontWeight = FontWeight.SemiBold
+                                    )
                                 )
                                 val date = Date(it.timestamp)
                                 val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
                                 val formattedDate = formatter.format(date)
                                 Text(
-                                    text = "Date and Time: $formattedDate"
+                                    text = "Date and Time: $formattedDate",
+                                    style = MaterialTheme.typography.titleMedium.copy(
+                                        fontWeight = FontWeight.SemiBold,
+                                        fontSize = 20.sp
+                                    )
                                 )
                             }
                         }
