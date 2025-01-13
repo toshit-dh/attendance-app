@@ -3,8 +3,11 @@ package tech.toshitworks.attendo.ui.theme
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import com.example.ui.theme.AppTypography
 
 private val lightScheme = lightColorScheme(
@@ -93,6 +96,10 @@ fun AttendoTheme(
         0 -> if (darkTheme) darkScheme else lightScheme
         1 -> lightScheme
         2 -> darkScheme
+        3 -> {
+            val context = LocalContext.current
+            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+        }
         else -> darkScheme
     }
     MaterialTheme(

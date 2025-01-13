@@ -78,7 +78,6 @@ class SettingScreenViewModel @Inject constructor(
             is SettingsScreenEvents.OnThemeChange -> {
                 viewModelScope.launch {
                     dataStoreRepository.saveThemeState(event.themeState)
-                    println(dataStoreRepository.readThemeState().first())
                     _state.update {
                         it.copy(
                             themeState = event.themeState
