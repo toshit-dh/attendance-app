@@ -127,8 +127,6 @@ class TodayAttendanceScreenViewModel @Inject constructor(
                 viewModelScope.launch {
                     timetableRepository.deletePeriodForADate(event.timetableModel,state.value.date)
                     if (event.toInsert)
-                        attendanceRepository.insertAttendance(event.attendanceModel)
-                    else
                         attendanceRepository.updateAttendanceByDate(event.attendanceModel)
                 }
             }

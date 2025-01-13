@@ -26,28 +26,43 @@ class MarkAttendanceWorker(
     override suspend fun doWork(): Result {
         return withContext(Dispatchers.IO) {
             return@withContext try {
-                val repoEntryPoint = EntryPointAccessors.fromApplication(applicationContext, RepoEntryPoint::class.java)
+                val repoEntryPoint = EntryPointAccessors.fromApplication(
+                    applicationContext,
+                    RepoEntryPoint::class.java
+                )
                 val timetableRepository = repoEntryPoint.timetableRepository()
                 val attendanceRepository = repoEntryPoint.attendanceRepository()
+                val subjectRepository = repoEntryPoint.subjectRepository()
                 val notificationWorkRepository = repoEntryPoint.notificationWorkRepository()
                 val dayRepository = repoEntryPoint.dayRepository()
                 val channelData = inputData.getString("channelId")!!
                 val currentDate = LocalDate.now().toString()
-                val currentDay = LocalDate.now().dayOfWeek.getDisplayName(TextStyle.FULL, Locale.ENGLISH)
+                val currentDay =
+                    LocalDate.now().dayOfWeek.getDisplayName(TextStyle.FULL, Locale.ENGLISH)
                 val dayModel = dayRepository.getDayByName(currentDay)
                 val timetable = timetableRepository.getTimetableForDay(currentDay).first()
-                if (timetable.isEmpty()){
+                if (timetable.isEmpty()) {
                     return@withContext Result.success()
                 }
                 timetable.forEach {
                     try {
+                        val editedDate = it.editedForDates?.find {date->
+                            date.split(':')[0] == currentDate
+                        }
+                        val editedSubjectId = editedDate?.split(':')?.get(1)?.toLong() ?: -1
+                        val editedSubject = subjectRepository.getSubjectById(editedSubjectId)
+                        val deleted = it.deletedForDates?.contains(currentDate) == true
+                        Log.e(TAG,"$deleted deleted")
+                        Log.e(TAG,"$editedDate $editedSubjectId $editedSubject")
+                        Log.e(TAG,"edited datew is null ${editedDate == null}")
                         attendanceRepository.insertAttendance(
                             AttendanceModel(
                                 day = dayModel,
-                                subject = it.subject,
+                                subject = if (editedDate!= null) editedSubject else it.subject,
                                 period = it.period,
                                 date = currentDate,
-                                isPresent = false
+                                isPresent = false,
+                                deleted = deleted
                             )
                         )
                     } catch (e: Exception) {
@@ -63,7 +78,7 @@ class MarkAttendanceWorker(
                     screen = ScreenRoutes.TodayAttendance,
                     title = "Attendance Marked",
                     subText = "For $currentDay",
-                    content = "Today's attendance has been marked.",
+                    content = "Today's attendance has been marked as absent.",
                     channelId = channelData,
                     delay = 0
                 )

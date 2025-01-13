@@ -103,7 +103,7 @@ fun PeriodCard(
                                         isPresent = attendanceModel?.isPresent ?: false,
                                         deleted = true
                                     ),
-                                    toInsert = attendanceModel == null
+                                    toInsert = attendanceModel != null
                                 )
                             )
                     }
@@ -132,7 +132,7 @@ fun PeriodCard(
                                         isPresent = attendanceModel?.isPresent ?: false,
                                         deleted = false
                                     ),
-                                    toInsert = false
+                                    toInsert = attendanceModel != null
                                 )
                             )
                     },
