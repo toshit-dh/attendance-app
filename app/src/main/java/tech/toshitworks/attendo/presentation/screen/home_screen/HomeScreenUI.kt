@@ -26,13 +26,14 @@ fun HomeScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val onEvent = viewModel::onEvent
+    if (homeStartDestination == ScreenRoutes.EditInfoScreen.route) onEvent(HomeScreenEvents.OnEditTypeChange(2))
     val navController = rememberNavController()
     val screen = navController.currentBackStackEntryAsState().value?.destination?.route
     val isEditAttendanceScreen = screen == ScreenRoutes.EditAttendanceScreen.route
     val snackBarHostState = remember {
         SnackbarHostState()
     }
-    if (homeStartDestination == ScreenRoutes.EditInfoScreen.route) onEvent(HomeScreenEvents.OnEditTypeChange(2))
+
     NavigationDrawer(
         modifier = Modifier,
         navController = navController,
