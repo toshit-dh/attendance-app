@@ -10,6 +10,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -56,6 +57,9 @@ fun ChangeSubjectDialog(
 
                     },
                     label = { Text("Subject Name") },
+                    colors = TextFieldDefaults.colors().copy(
+                        disabledTextColor = MaterialTheme.colorScheme.primary
+                    ),
                     enabled = false
                 )
                 TextField(
@@ -63,6 +67,9 @@ fun ChangeSubjectDialog(
                     onValueChange = {
 
                     },
+                    colors = TextFieldDefaults.colors().copy(
+                        disabledTextColor = MaterialTheme.colorScheme.primary
+                    ),
                     label = { Text("Faculty Name") },
                     enabled = false
                 )

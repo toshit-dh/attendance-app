@@ -62,9 +62,13 @@ fun PeriodCard(
             .height(150.dp)
             .padding(4.dp),
         colors = if (deleted) CardColors(
-            containerColor = MaterialTheme.colorScheme.onError,
+            containerColor = MaterialTheme.colorScheme.primary.copy(
+                alpha = 0.4f,
+                blue = 0f,
+                green = 0f
+            ),
             contentColor = Color.Gray,
-            disabledContainerColor = MaterialTheme.colorScheme.onError,
+            disabledContainerColor = MaterialTheme.colorScheme.error,
             disabledContentColor = Color.Black
         ) else CardDefaults.cardColors()
     ) {
