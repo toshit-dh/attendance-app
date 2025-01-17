@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,8 +25,12 @@ import tech.toshitworks.attendo.utils.lightPages
 @Composable
 fun OnBoardingScreen(
     viewModel: OnBoardingScreenViewModel,
-    navHostController: NavHostController
+    navHostController: NavHostController,
+    onLoaded: () -> Unit
 ) {
+    LaunchedEffect(Unit) {
+        onLoaded()
+    }
     val onEvent = viewModel::onEvent
     val inDarkTheme = isSystemInDarkTheme()
     val pages: List<@Composable () -> Unit> = remember(inDarkTheme) {

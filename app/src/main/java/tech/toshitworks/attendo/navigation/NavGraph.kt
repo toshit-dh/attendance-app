@@ -19,7 +19,8 @@ import tech.toshitworks.attendo.presentation.screen.timetable_screen.TimetableSc
 fun NavGraph(
     navController: NavHostController,
     startDestination: String,
-    homeStartDestination: String?
+    homeStartDestination: String?,
+    onLoad: () -> Unit
 ){
     NavHost(
         navController = navController,
@@ -27,21 +28,33 @@ fun NavGraph(
     ){
         composable(route = ScreenRoutes.OnBoardingScreen.route){
             val viewModel: OnBoardingScreenViewModel = hiltViewModel()
-            OnBoardingScreen(viewModel,navController)
+            OnBoardingScreen(
+                viewModel,
+                navController,
+                onLoad
+            )
         }
         composable(route = ScreenRoutes.FormScreen.route){
             val viewModel: FormScreenViewModel = hiltViewModel()
-            FormScreen(viewModel,navController)
+            FormScreen(
+                viewModel,
+                navController,
+                onLoad)
         }
         composable(route = ScreenRoutes.TimetableScreen.route){
             val viewModel: TimeTableViewModel = hiltViewModel()
-            TimetableScreen(viewModel,navController)
+            TimetableScreen(viewModel,
+                navController,
+                onLoad
+            )
         }
         composable(route = ScreenRoutes.HomeScreen.route){
             val viewModel: HomeScreenViewModel = hiltViewModel()
             HomeScreen(
                 homeStartDestination,
-                viewModel
+                viewModel,
+                navController,
+                onLoad
             )
         }
 

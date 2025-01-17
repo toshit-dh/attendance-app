@@ -6,10 +6,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import tech.toshitworks.attendo.navigation.NavHomeGraph
@@ -22,8 +24,13 @@ import tech.toshitworks.attendo.presentation.components.bars.TopBar
 @Composable
 fun HomeScreen(
     homeStartDestination: String?,
-    viewModel: HomeScreenViewModel
+    viewModel: HomeScreenViewModel,
+    beforeNavController: NavHostController,
+    onLoaded: () -> Unit,
 ) {
+    LaunchedEffect(Unit) {
+        onLoaded()
+    }
     val state by viewModel.state.collectAsStateWithLifecycle()
     val onEvent = viewModel::onEvent
     if (homeStartDestination == ScreenRoutes.EditInfoScreen.route) onEvent(HomeScreenEvents.OnEditTypeChange(2))
@@ -33,7 +40,6 @@ fun HomeScreen(
     val snackBarHostState = remember {
         SnackbarHostState()
     }
-
     NavigationDrawer(
         modifier = Modifier,
         navController = navController,
@@ -68,6 +74,7 @@ fun HomeScreen(
             val modifier = Modifier.padding(it)
             NavHomeGraph(
                 modifier = modifier,
+                beforeNavController = beforeNavController,
                 navController = navController,
                 snackBarHostState = snackBarHostState,
                 startDestination = homeStartDestination?:ScreenRoutes.TodayAttendance.route,
