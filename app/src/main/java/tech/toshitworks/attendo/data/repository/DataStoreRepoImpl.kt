@@ -90,4 +90,12 @@ class DataStoreRepoImpl @Inject constructor(
             it[theme_state] ?: 0
         }
     }
+
+    override suspend fun onDelete() {
+        datastore.edit {
+            it.remove(screen_selection)
+            it.remove(notification_time_select)
+            it.remove(theme_state)
+        }
+    }
 }

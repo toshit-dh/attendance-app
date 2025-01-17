@@ -28,5 +28,7 @@ interface DataStoreRepository {
 
     fun readThemeState(): Flow<Int>
 
+    suspend fun onDelete()
+
 
 }
