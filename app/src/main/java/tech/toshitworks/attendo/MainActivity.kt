@@ -1,16 +1,13 @@
 package tech.toshitworks.attendo
 
-import android.content.Intent
-import android.content.pm.ShortcutInfo
-import android.content.pm.ShortcutManager
-import android.graphics.drawable.Icon
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
@@ -18,14 +15,18 @@ import dagger.hilt.android.EntryPointAccessors
 import tech.toshitworks.attendo.di.RepoEntryPoint
 import tech.toshitworks.attendo.navigation.NavGraph
 import tech.toshitworks.attendo.navigation.ScreenRoutes
-import tech.toshitworks.attendo.presentation.screen.splash_screen.SplashScreenViewModel
 import tech.toshitworks.attendo.ui.theme.AttendoTheme
+import tech.toshitworks.attendo.utils.updateShortcut
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val splashScreen = installSplashScreen()
+        var setKeepOnCondition = true
+        installSplashScreen()
+            .setKeepOnScreenCondition {
+                setKeepOnCondition
+            }
         setContent {
             val prefs =
                 EntryPointAccessors.fromApplication(applicationContext, RepoEntryPoint::class.java)
@@ -34,59 +35,34 @@ class MainActivity : ComponentActivity() {
             AttendoTheme(
                 themeState = themeState,
             ) {
+                val loading = remember { mutableStateOf(true) }
+                val screenRoute = remember {
+                    mutableStateOf(ScreenRoutes.OnBoardingScreen.route)
+                }
+                LaunchedEffect(Unit) {
+                    val screenSelection = prefs.readScreenSelection()
+                    screenRoute.value = when (screenSelection) {
+                        0 -> ScreenRoutes.OnBoardingScreen.route
+                        1 -> ScreenRoutes.FormScreen.route
+                        2 -> ScreenRoutes.TimetableScreen.route
+                        3 -> ScreenRoutes.HomeScreen.route
+                        else -> ScreenRoutes.OnBoardingScreen.route
+                    }
+                    loading.value = false
+                }
                 val screen = intent.getStringExtra("screen")
-                val splashScreenViewModel: SplashScreenViewModel = hiltViewModel()
-                val isLoading by splashScreenViewModel.isLoading.collectAsState()
-                val screenRoute by splashScreenViewModel.screenRoute.collectAsState()
-                updateShortcut(screenRoute == ScreenRoutes.HomeScreen.route)
-                splashScreen.setKeepOnScreenCondition { isLoading }
+                updateShortcut(this, screenRoute.value == ScreenRoutes.HomeScreen.route)
                 val navController = rememberNavController()
-                NavGraph(
-                    navController = navController,
-                    startDestination = screenRoute,
-                    homeStartDestination = screen
-                )
+                if (!loading.value)
+                    NavGraph(
+                        navController = navController,
+                        startDestination = screenRoute.value,
+                        homeStartDestination = screen
+                    ) {
+                        setKeepOnCondition = false
+                    }
             }
         }
     }
-    private fun updateShortcut(shouldBeEnabled: Boolean) {
-        val shortcutManager = getSystemService(ShortcutManager::class.java)
-        if (shouldBeEnabled) {
-            val timetableShortcut = ShortcutInfo.Builder(this, "view_timetable")
-                .setShortLabel("View Timetable")
-                .setLongLabel("View Timetable")
-                .setIcon(Icon.createWithResource(this, R.drawable.timetable))
-                .setIntent(Intent(this, MainActivity::class.java).apply {
-                    action = Intent.ACTION_VIEW
-                    putExtra("screen", ScreenRoutes.EditInfoScreen.route)
-                })
-                .build()
-            val notesShortcut = ShortcutInfo.Builder(this, "view_notes")
-                .setShortLabel("Notes")
-                .setLongLabel("View Notes")
-                .setIcon(Icon.createWithResource(this, R.drawable.notes))
-                .setIntent(Intent(this, MainActivity::class.java).apply {
-                    action = Intent.ACTION_VIEW
-                    putExtra("screen", ScreenRoutes.NotesScreen.route)
-                })
-                .build()
-            val eventsShortcut = ShortcutInfo.Builder(this, "view_events")
-                .setShortLabel("Events")
-                .setLongLabel("View Events")
-                .setIcon(Icon.createWithResource(this, R.drawable.event))
-                .setIntent(Intent(this, MainActivity::class.java).apply {
-                    action = Intent.ACTION_VIEW
-                    putExtra("screen", ScreenRoutes.EventsScreen.route)
-                })
-                .build()
 
-            shortcutManager.dynamicShortcuts = listOf(
-                timetableShortcut,
-                notesShortcut,
-                eventsShortcut
-            )
-        } else {
-            shortcutManager.removeAllDynamicShortcuts()
-        }
-    }
 }
