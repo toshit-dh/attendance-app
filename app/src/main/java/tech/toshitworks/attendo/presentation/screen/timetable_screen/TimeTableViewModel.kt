@@ -16,7 +16,7 @@ import tech.toshitworks.attendo.domain.repository.DayRepository
 import tech.toshitworks.attendo.domain.repository.PeriodRepository
 import tech.toshitworks.attendo.domain.repository.SubjectRepository
 import tech.toshitworks.attendo.domain.repository.TimetableRepository
-import tech.toshitworks.attendo.utils.SnackBarEvent
+import tech.toshitworks.attendo.utils.SnackBarAddEvent
 import javax.inject.Inject
 
 @HiltViewModel
@@ -32,7 +32,7 @@ class TimeTableViewModel @Inject constructor(
     private val _state = MutableStateFlow(TimeTableScreenStates())
     val state = _state.asStateFlow()
 
-    private val _event = MutableSharedFlow<SnackBarEvent>()
+    private val _event = MutableSharedFlow<SnackBarAddEvent>()
     val event = _event.asSharedFlow()
 
     init {
@@ -89,14 +89,17 @@ class TimeTableViewModel @Inject constructor(
                 viewModelScope.launch {
                     try {
                         _event.emit(
-                            SnackBarEvent.ShowSnackBarForAddingData()
+                            SnackBarAddEvent.ShowSnackBarForAddingData()
                         )
                         timetableRepository.insertTimetable(_state.value.listPeriods.filterNotNull())
                         dataStoreRepository.saveScreenSelection(3)
                         _event.emit(
-                            SnackBarEvent.ShowSnackBarForDataAdded()
+                            SnackBarAddEvent.ShowSnackBarForDataAdded()
                         )
                     } catch (e: Exception) {
+                        _event.emit(
+                            SnackBarAddEvent.ShowSnackBarForDataNotAdded()
+                        )
                         Log.e("exception: ", e.message ?: "null message")
                         e.printStackTrace()
 
