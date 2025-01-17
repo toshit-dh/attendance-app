@@ -15,7 +15,8 @@ import com.spr.jetpack_loading.components.indicators.BallTrianglePathIndicator
 
 @Composable
 fun LoadingIndicator(
-    modifier: Modifier
+    modifier: Modifier,
+    text: String = "Loading ..."
 ) {
     Column(
         modifier = modifier
@@ -31,7 +32,7 @@ fun LoadingIndicator(
             .height(40.dp)
         )
         Text(
-            text = "Loading ...",
+            text = text,
             style = MaterialTheme.typography.titleLarge
         )
     }
