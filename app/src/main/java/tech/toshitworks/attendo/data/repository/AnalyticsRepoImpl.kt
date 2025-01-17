@@ -1,5 +1,6 @@
 package tech.toshitworks.attendo.data.repository
 
+import android.util.Log
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -180,6 +181,7 @@ class AnalyticsRepoImpl @Inject constructor(
                 *subjectAnalysisList.toTypedArray()
             )
         } catch (e: Exception) {
+            Log.e("AnalyticsRepoImpl", "getAnalysis: ${e.message}")
             e.printStackTrace()
             listOf()
         }
