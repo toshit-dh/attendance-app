@@ -120,7 +120,9 @@ fun SubjectInfo(
                 onAddSubject = {
                     isAddSubjectDialogOpen.value = false
                 }
-            )
+            ){
+
+            }
         }
     }
 }

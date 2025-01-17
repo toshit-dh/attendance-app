@@ -1,17 +1,15 @@
 package tech.toshitworks.attendo.presentation.components.dialogs
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -22,7 +20,6 @@ import androidx.compose.ui.text.ParagraphStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.unit.dp
 import tech.toshitworks.attendo.domain.model.DayModel
 import tech.toshitworks.attendo.domain.model.PeriodModel
 import tech.toshitworks.attendo.domain.model.SubjectModel
@@ -53,7 +50,7 @@ fun SelectSubjectDialog(
                             textAlign = TextAlign.Center
                         )
                     ) {
-                        append("Add subject to period")
+                        append("Add Period Details")
                     }
                     withStyle(
                         style = ParagraphStyle(
@@ -61,21 +58,14 @@ fun SelectSubjectDialog(
                         )
                     )
                     {
-                        append(periodModel.startTime)
-                    }
-                    withStyle(
-                        style = ParagraphStyle(
-                            textAlign = TextAlign.Center
-                        )
-                    ) {
-                        append(dayModel.name)
+                        append("${dayModel.name} : ${periodModel.startTime}")
                     }
                 }
             )
         },
         text = {
             Column {
-                TextField(
+                OutlinedTextField(
                     value = subject.value?.name ?: "",
                     onValueChange = {},
                     label = {
@@ -83,12 +73,12 @@ fun SelectSubjectDialog(
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { isSubjectDropDownOpen.value = true }
-                        .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(8.dp)),
+                        .clickable { isSubjectDropDownOpen.value = true },
                     colors = TextFieldDefaults.colors().copy(
                         disabledTextColor = MaterialTheme.colorScheme.primary
                     ),
-                    enabled = false
+                    enabled = false,
+                    readOnly = true
                 )
                 DropdownMenu(
                     expanded = isSubjectDropDownOpen.value,

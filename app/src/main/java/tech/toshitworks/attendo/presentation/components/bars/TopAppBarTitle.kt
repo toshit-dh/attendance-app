@@ -168,5 +168,14 @@ fun TopAppBarTitle(
             )
         }
 
+        ScreenRoutes.DeleteScreen.route -> {
+            Text(
+                text = "Delete This Semester",
+                style = style,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center
+            )
+        }
+
     }
 }

@@ -52,15 +52,19 @@ import tech.toshitworks.attendo.domain.model.DayModel
 import tech.toshitworks.attendo.domain.model.PeriodModel
 import tech.toshitworks.attendo.navigation.ScreenRoutes
 import tech.toshitworks.attendo.presentation.components.dialogs.SelectSubjectDialog
-import tech.toshitworks.attendo.utils.SnackBarEvent
+import tech.toshitworks.attendo.utils.SnackBarAddEvent
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TimetableScreen(
     viewModel: TimeTableViewModel,
-    navController: NavHostController
+    navController: NavHostController,
+    onLoaded: () -> Unit
 ) {
+    LaunchedEffect(Unit) {
+        onLoaded()
+    }
     val state by viewModel.state.collectAsStateWithLifecycle()
     val onEvent = viewModel::onEvent
     val isUpdatePeriodDialogOpen = remember {
@@ -82,14 +86,14 @@ fun TimetableScreen(
         try {
             viewModel.event.collect { event ->
                 when (event) {
-                    is SnackBarEvent.ShowSnackBarForAddingData -> {
+                    is SnackBarAddEvent.ShowSnackBarForAddingData -> {
                         try {
                             snackBarHostState.showSnackbar(event.message)
                         }catch (e: Exception){
                             Log.e("SnackBarEvent", "Error handling ShowSnackBarForAddingData: ${e.message}", e)
                         }
                     }
-                    is SnackBarEvent.ShowSnackBarForDataAdded -> {
+                    is SnackBarAddEvent.ShowSnackBarForDataAdded -> {
                         try {
                             snackBarHostState.currentSnackbarData?.dismiss()
                             delay(500)
@@ -101,6 +105,13 @@ fun TimetableScreen(
                         } catch (e: Exception) {
                             Log.e("SnackBarEvent", "Error handling ShowSnackBarForDataAdded: ${e.message}", e)
                         }
+                    }
+
+                    is SnackBarAddEvent.ShowSnackBarForDataNotAdded -> {
+                        snackBarHostState.currentSnackbarData?.dismiss()
+                        delay(500)
+                        snackBarHostState.showSnackbar(event.message)
+                        delay(500)
                     }
                 }
             }
@@ -124,17 +135,16 @@ fun TimetableScreen(
                             style = MaterialTheme.typography.titleLarge.copy(
                                 fontSize = 24.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onPrimary
                             ),
                             modifier = Modifier.fillMaxWidth(),
                             textAlign = TextAlign.Center
                         )
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        titleContentColor = MaterialTheme.colorScheme.background,
-                        actionIconContentColor = MaterialTheme.colorScheme.background,
-                    )
+                        containerColor = MaterialTheme.colorScheme.background,
+                        titleContentColor = MaterialTheme.colorScheme.primary,
+                        actionIconContentColor = MaterialTheme.colorScheme.primary,
+                    ),
                 )
             }
         ) { pv ->

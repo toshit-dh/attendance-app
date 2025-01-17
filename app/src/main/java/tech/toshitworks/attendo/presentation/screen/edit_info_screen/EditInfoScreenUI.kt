@@ -134,6 +134,6 @@ fun EditInfoScreen(
             }
         }
     }
-    else
-        LoadingIndicator(modifier)
+//    else
+//        LoadingIndicator(modifier)
 }

@@ -13,8 +13,8 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -23,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import tech.toshitworks.attendo.domain.model.SubjectModel
 import java.time.LocalDate
@@ -58,22 +59,23 @@ fun AddExtraAttendanceDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
-            Text(text = "Add Extra Attendance")
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = "Add Extra Attendance",
+                textAlign = TextAlign.Center
+            )
         },
         text = {
             Column(
                 verticalArrangement = Arrangement.spacedBy(6.dp)
             ) {
-                Text(text = "Select Subject:")
-                TextField(
+                OutlinedTextField(
                     modifier = Modifier
                         .clickable {
                             isSubjectDropDownOpen.value = true
                         },
                     value = subject.value?.name?:"",
-                    onValueChange = {
-
-                    },
+                    onValueChange = {},
                     label = {
                         Text(
                             "Add Subject"
@@ -82,7 +84,8 @@ fun AddExtraAttendanceDialog(
                     colors = TextFieldDefaults.colors().copy(
                         disabledTextColor = MaterialTheme.colorScheme.primary
                     ),
-                    enabled = false
+                    enabled = false,
+                    readOnly = true
                 )
                 DropdownMenu(
                     expanded = isSubjectDropDownOpen.value,
@@ -102,7 +105,7 @@ fun AddExtraAttendanceDialog(
                         )
                     }
                 }
-                TextField(
+                OutlinedTextField(
                     modifier = Modifier
                         .clickable {
                             val datePicker = DatePickerDialog(
@@ -123,15 +126,16 @@ fun AddExtraAttendanceDialog(
                                 calendar.get(Calendar.DAY_OF_MONTH)
                             )
                             val today = calendar.timeInMillis
+                            println(today > endDate)
                             val maxDate = if (today > endDate) endDate else today
+                            println(startDate.toString())
+                            println(maxDate.toString())
                             datePicker.datePicker.minDate = startDate
                             datePicker.datePicker.maxDate = maxDate
                             datePicker.show()
                         },
                     value = date.value?:"",
-                    onValueChange = {
-
-                    },
+                    onValueChange = {},
                     label = {
                         Text(
                             "Add Date"
@@ -140,7 +144,8 @@ fun AddExtraAttendanceDialog(
                     colors = TextFieldDefaults.colors().copy(
                         disabledTextColor = MaterialTheme.colorScheme.primary
                     ),
-                    enabled = false
+                    enabled = false,
+                    readOnly = true
                 )
                 Row(
                     modifier = Modifier
