@@ -9,6 +9,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import tech.toshitworks.attendo.presentation.screen.analytics_screen.AnalyticsScreen
 import tech.toshitworks.attendo.presentation.screen.analytics_screen.AnalyticsScreenViewModel
+import tech.toshitworks.attendo.presentation.screen.delete_screen.DeleteScreen
+import tech.toshitworks.attendo.presentation.screen.delete_screen.DeleteScreenViewModel
 import tech.toshitworks.attendo.presentation.screen.edit_attendance_screen.EditAttendanceScreen
 import tech.toshitworks.attendo.presentation.screen.edit_attendance_screen.EditAttendanceScreenViewModel
 import tech.toshitworks.attendo.presentation.screen.edit_info_screen.EditInfoScreen
@@ -35,7 +37,8 @@ fun NavHomeGraph(
     snackBarHostState: SnackbarHostState,
     startDestination: String,
     homeScreenStates: HomeScreenStates,
-    homeScreenEvents: (HomeScreenEvents)->Unit
+    homeScreenEvents: (HomeScreenEvents) -> Unit,
+    beforeNavController: NavHostController
 ) {
         NavHost(
             navController = navController,
@@ -117,6 +120,16 @@ fun NavHomeGraph(
                 NotificationScreen(
                     modifier,
                     viewModel
+                )
+            }
+            composable(route = ScreenRoutes.DeleteScreen.route){
+                val viewModel: DeleteScreenViewModel = hiltViewModel()
+                DeleteScreen(
+                    modifier,
+                    viewModel,
+                    snackBarHostState,
+                    navController,
+                    beforeNavController
                 )
             }
         }
