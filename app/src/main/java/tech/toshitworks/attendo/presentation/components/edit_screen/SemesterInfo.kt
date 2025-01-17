@@ -31,13 +31,18 @@ fun SemesterInfo(
     semesterModel: SemesterModel,
 ) {
     val startDateLocal = LocalDate.parse(semesterModel.startDate)
-    val midTermDateLocal = LocalDate.parse(semesterModel.midTermDate)
-    val endDateLocal = LocalDate.parse(semesterModel.endDate)
+    val midTermDateLocal = try {
+        LocalDate.parse(semesterModel.midTermDate)
+    } catch (e: Exception){
+        LocalDate.now()
+    }
+    val endDateLocal = try {
+        LocalDate.parse(semesterModel.endDate)
+    }catch (e: Exception){
+        LocalDate.now()
+    }
     val semNumber = remember {
         mutableIntStateOf(semesterModel.semNumber)
-    }
-    val startDate = remember {
-        mutableStateOf(startDateLocal)
     }
     val midTermDate = remember {
         mutableStateOf(midTermDateLocal)
@@ -90,6 +95,7 @@ fun SemesterInfo(
                 color = MaterialTheme.colorScheme.onBackground
             )
             WheelDatePicker(
+                modifier = Modifier.weight(2f),
                 startDate = startDateLocal
             )
         }
@@ -97,12 +103,13 @@ fun SemesterInfo(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                modifier = Modifier.weight(1.5f),
-                text = "Mid Term Date",
+                modifier = Modifier.weight(1f),
+                text = if (semesterModel.midTermDate==null) "Add Mid Term Date" else "Mid Term Date",
                 fontSize = 18.sp,
                 color = MaterialTheme.colorScheme.onBackground
             )
             WheelDatePicker(
+                modifier = Modifier.weight(2f),
                 startDate = midTermDateLocal,
                 minDate = startDateLocal
             ){
@@ -114,11 +121,12 @@ fun SemesterInfo(
         ) {
             Text(
                 modifier = Modifier.weight(1f),
-                text = "End Date",
+                text = if (semesterModel.endDate==null) "Add Term End Date" else "Term End Date",
                 fontSize = 18.sp,
                 color = MaterialTheme.colorScheme.onBackground
             )
             WheelDatePicker(
+                modifier = Modifier.weight(2f),
                 startDate = endDateLocal,
                 minDate = midTermDateLocal
             ){
