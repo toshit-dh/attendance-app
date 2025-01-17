@@ -17,6 +17,7 @@ import tech.toshitworks.attendo.domain.repository.SemesterRepository
 import tech.toshitworks.attendo.domain.repository.SubjectRepository
 import tech.toshitworks.attendo.presentation.screen.today_attendance_screen.TodayAttendanceScreenEvents
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Locale
 import javax.inject.Inject
 
@@ -53,11 +54,12 @@ class EditAttendanceScreenViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
+            val millis = Calendar.getInstance().timeInMillis
             val semester = semesterRepository.getSemester()
             val minDateString = semester.startDate
             val maxDateString = semester.endDate
             val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-            val minDate = dateFormat.parse(minDateString)?.time ?: 0L
+            val minDate = dateFormat.parse(minDateString)?.time ?: millis
             val maxDate = maxDateString?.let {
                 try {
                     dateFormat.parse(it)?.time
@@ -65,7 +67,7 @@ class EditAttendanceScreenViewModel @Inject constructor(
                     e.printStackTrace()
                     null
                 }
-            } ?: 0L
+            } ?: millis
             val subjects = subjectRepository.getSubjects().filter {
                 it.name != "Lunch" && it.name != "No Period" && it.isAttendanceCounted
             }
