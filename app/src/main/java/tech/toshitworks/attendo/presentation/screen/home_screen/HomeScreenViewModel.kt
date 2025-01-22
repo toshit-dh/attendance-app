@@ -116,6 +116,12 @@ class HomeScreenViewModel @Inject constructor(
             }
 
             is HomeScreenEvents.OnEditTypeChange -> {
+                if (event.change == 2) {
+                    _state.update {
+                        it.copy(editInfo = 2)
+                    }
+                    return
+                }
                 _state.update {
                     val current = _state.value.editInfo
                     val ifNext = event.change == 1
