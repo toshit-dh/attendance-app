@@ -41,9 +41,11 @@ class MarkAttendanceWorker(
                     LocalDate.now().dayOfWeek.getDisplayName(TextStyle.FULL, Locale.ENGLISH)
                 val dayModel = dayRepository.getDayByName(currentDay)
                 val timetable = timetableRepository.getTimetableForDay(currentDay).first()
+                val output = workDataOf("success" to "no day success")
                 if (timetable.isEmpty()) {
-                    return@withContext Result.success()
+                    return@withContext Result.success(output)
                 }
+                var marked = false
                 timetable.forEach {
                     try {
                         val editedDate = it.editedForDates?.find {date->
@@ -54,7 +56,7 @@ class MarkAttendanceWorker(
                         val deleted = it.deletedForDates?.contains(currentDate) == true
                         Log.e(TAG,"$deleted deleted")
                         Log.e(TAG,"$editedDate $editedSubjectId $editedSubject")
-                        Log.e(TAG,"edited datew is null ${editedDate == null}")
+                        Log.e(TAG,"edited date is null ${editedDate == null}")
                         attendanceRepository.insertAttendance(
                             AttendanceModel(
                                 day = dayModel,
@@ -65,6 +67,7 @@ class MarkAttendanceWorker(
                                 deleted = deleted
                             )
                         )
+                        marked = true
                     } catch (e: Exception) {
                         Log.e(
                             TAG,
@@ -73,16 +76,17 @@ class MarkAttendanceWorker(
                         e.printStackTrace()
                     }
                 }
-                notificationWorkRepository.enqueueNotificationWorker(
-                    id = System.currentTimeMillis().toInt(),
-                    screen = ScreenRoutes.TodayAttendance,
-                    title = "Attendance Marked",
-                    subText = "For $currentDay",
-                    content = "Today's attendance has been marked as absent.",
-                    channelId = channelData,
-                    delay = 0
-                )
-                val outputData = workDataOf("success" to "success")
+                if (marked)
+                    notificationWorkRepository.enqueueNotificationWorker(
+                        id = System.currentTimeMillis().toInt(),
+                        screen = ScreenRoutes.TodayAttendance,
+                        title = "Attendance Marked",
+                        subText = "For $currentDay",
+                        content = "Today's attendance has been marked as absent.",
+                        channelId = channelData,
+                        delay = 0
+                    )
+                val outputData = workDataOf("success" to "success ${if (marked) "marked" else "not marked"}")
                 Result.success(outputData)
             } catch (e: Exception) {
                 e.printStackTrace()
