@@ -16,6 +16,7 @@ import tech.toshitworks.attendo.domain.repository.SemesterRepository
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.temporal.WeekFields
+import java.util.Calendar
 import java.util.Locale
 import javax.inject.Inject
 
@@ -40,11 +41,12 @@ class AnalyticsScreenViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
+            val millis = Calendar.getInstance().timeInMillis
             val semester = semesterRepository.getSemester()
             val minDateString = semester.startDate
             val maxDateString = semester.endDate
             val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-            val minDate = dateFormat.parse(minDateString)?.time ?: 0L
+            val minDate = dateFormat.parse(minDateString)?.time ?: millis
             val maxDate = maxDateString?.let {
                 try {
                     dateFormat.parse(it)?.time
@@ -52,7 +54,7 @@ class AnalyticsScreenViewModel @Inject constructor(
                     e.printStackTrace()
                     null
                 }
-            } ?: 0L
+            } ?: millis
             val analyticList = async {
                 analyticsRepository.getAnalysis(
                     semester.startDate,
