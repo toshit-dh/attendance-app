@@ -38,38 +38,6 @@ fun TrendAnalysis(
     analyticsByWeek: List<AnalyticsByWeek>,
     getWeek: KFunction2<Int, Int, Pair<LocalDate, LocalDate>>
 ) {
-    if (analyticsByWeek.isEmpty()){
-        Card  {
-            Column(
-                modifier = Modifier
-                    .padding(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    text = "Trend Analysis By Week",
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.titleLarge.copy(
-                        fontWeight = FontWeight.Bold
-                    )
-                )
-                Box {
-                    LineChart(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clip(RoundedCornerShape(16.dp)),
-                        lineChartData = LineChartData(
-                            linePlotData = LinePlotData(
-                                lines = listOf()
-                            )
-                        )
-                    )
-                }
-            }
-        }
-        return
-    }
     val maxLecturesPresent = analyticsByWeek.maxOf {
         it.lecturesPresent
     }

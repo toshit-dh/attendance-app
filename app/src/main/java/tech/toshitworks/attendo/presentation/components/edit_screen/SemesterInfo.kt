@@ -74,7 +74,7 @@ fun SemesterInfo(
                 .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(8.dp)),
             label = {
                 Text(
-                    text = "Add Semester Number",
+                    text = "Semester Number",
                     fontSize = 20.sp
                 )
             },
@@ -95,7 +95,7 @@ fun SemesterInfo(
                 color = MaterialTheme.colorScheme.onBackground
             )
             WheelDatePicker(
-                modifier = Modifier.weight(2f),
+                modifier = Modifier.weight(3f),
                 startDate = startDateLocal
             )
         }
@@ -109,7 +109,7 @@ fun SemesterInfo(
                 color = MaterialTheme.colorScheme.onBackground
             )
             WheelDatePicker(
-                modifier = Modifier.weight(2f),
+                modifier = Modifier.weight(3f),
                 startDate = midTermDateLocal,
                 minDate = startDateLocal
             ){
@@ -126,7 +126,7 @@ fun SemesterInfo(
                 color = MaterialTheme.colorScheme.onBackground
             )
             WheelDatePicker(
-                modifier = Modifier.weight(2f),
+                modifier = Modifier.weight(3f),
                 startDate = endDateLocal,
                 minDate = midTermDateLocal
             ){

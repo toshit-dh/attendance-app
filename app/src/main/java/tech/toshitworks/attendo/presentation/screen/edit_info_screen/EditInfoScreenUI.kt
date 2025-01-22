@@ -50,6 +50,7 @@ fun EditInfoScreen(
         }
     }
     if (!state.isLoading) {
+        println(editInfo)
         Column(
             modifier = modifier
                 .padding(18.dp),
@@ -92,48 +93,8 @@ fun EditInfoScreen(
                 }
             }
             Spacer(modifier = Modifier.weight(0.1f))
-            Button(
-                modifier = Modifier.weight(0.4f),
-                onClick = {
-                    when (editInfo) {
-                        0 -> {
-                            onEvent(EditInfoScreenEvents.OnSaveSemester)
-                        }
-                        1 -> {
-
-                        }
-                        2 -> {
-
-                        }
-                        else -> {
-
-                        }
-                    }
-                },
-                enabled = when (editInfo) {
-                    0 -> {
-                        state.semesterModel != null
-                    }
-                    1 -> {
-                        true
-                    }
-                    2 -> {
-                       true
-                    }
-                    else -> {
-                        false
-                    }
-                }
-            ) {
-                Text(
-                    text = "Edit Info",
-                    style = MaterialTheme.typography.titleLarge.copy(
-                        fontWeight = FontWeight.Bold
-                    )
-                )
-            }
         }
     }
-//    else
-//        LoadingIndicator(modifier)
+    else
+        LoadingIndicator(modifier)
 }

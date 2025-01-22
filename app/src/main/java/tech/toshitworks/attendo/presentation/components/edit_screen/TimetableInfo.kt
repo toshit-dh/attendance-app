@@ -67,14 +67,12 @@ fun TimetableInfo(
                 verticalAlignment = Alignment.Top
             ) {
                 Column(
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1.5f)
                 ) {
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(4.dp)
-                            .height(80.dp),
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
                     ) {
                         Row(
                             modifier = Modifier
@@ -109,7 +107,7 @@ fun TimetableInfo(
                             Icon(
                                 modifier = Modifier.rotate(90f),
                                 imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                                contentDescription = "arrow forward",
+                                contentDescription = "arrow down",
                                 tint = MaterialTheme.colorScheme.primary
                             )
                         }

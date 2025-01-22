@@ -141,28 +141,7 @@ fun AnalyticsScreen(
                         }
                     }
             }
-        } else
-            Column(
-                modifier = Modifier
-                    .fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.analysis),
-                    contentDescription = "no data"
-                )
-                Text(
-                    modifier = Modifier
-                        .padding(16.dp),
-                    text = "No data for analysis. Add some attendance first.",
-                    style = MaterialTheme.typography.titleLarge.copy(
-                        fontWeight = FontWeight.Bold
-                    ),
-                    textAlign = TextAlign.Justify
-                )
-            }
-
+        }
     } else
         LoadingIndicator(modifier)
 }

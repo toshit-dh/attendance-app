@@ -60,7 +60,11 @@ fun EventsScreen(
         }
         if (isAddEventDialogOpen.value) {
             val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-            val endDate = LocalDate.parse(state.endDate, dateFormatter)
+            val endDate = try {
+                LocalDate.parse(state.endDate, dateFormatter)
+            }catch (e: Exception){
+                LocalDate.now().plusMonths(1)
+            }
             AddEventDialog(
                 endDate = endDate,
                 eventEdit = event.value,

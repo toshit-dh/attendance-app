@@ -2,6 +2,7 @@ package tech.toshitworks.attendo.presentation.components.bars
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.SearchOff
 import androidx.compose.material.icons.filled.Visibility
@@ -58,6 +59,18 @@ fun TopAppBarActions(
                 Icon(
                     imageVector = if (state.isFilterRowVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
                     contentDescription = "filter visibility"
+                )
+            }
+        }
+        ScreenRoutes.EditInfoScreen.route -> {
+            IconButton(
+                onClick = {
+                    onEvent(HomeScreenEvents.OnNoteFilterRowVisibilityChange)
+                }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Edit,
+                    contentDescription = "edit info"
                 )
             }
         }

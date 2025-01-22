@@ -1,5 +1,6 @@
 package tech.toshitworks.attendo.presentation.components.analysis
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,10 +30,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
+import tech.toshitworks.attendo.R
 import tech.toshitworks.attendo.domain.model.AnalyticsModel
 import tech.toshitworks.attendo.domain.model.AttendanceModel
 import tech.toshitworks.attendo.domain.model.AttendanceStats
@@ -80,6 +83,29 @@ fun AnalysisForSubject(
     val attendanceStats: MutableState<AttendanceStats?> = remember {
         mutableStateOf(null)
     }
+    if (analyticsModel.lecturesConducted == 0) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Image(
+                painter = painterResource(R.drawable.analysis),
+                contentDescription = "no data"
+            )
+            Text(
+                modifier = Modifier
+                    .padding(16.dp),
+                text = "No data for analysis. Add some attendance first.",
+                style = MaterialTheme.typography.titleLarge.copy(
+                    fontWeight = FontWeight.Bold
+                ),
+                textAlign = TextAlign.Justify
+            )
+        }
+        return
+    }
     Column(
         modifier = Modifier
             .padding(8.dp)
@@ -101,12 +127,12 @@ fun AnalysisForSubject(
                 modifier = Modifier
                     .weight(5f)
             ) {
-                if (analyticsModel.subject?.isAttendanceCounted == true && analyticsModel.lecturesConducted!=0)
+                if (analyticsModel.subject?.isAttendanceCounted == true)
                     EligibilityAnalysis(
                         analyticsModel.eligibilityOfMidterm,
                         analyticsModel.eligibilityOfEndSem
                     )
-                else if (analyticsModel.lecturesConducted!=0)
+                else
                     Card(
                         modifier = Modifier
                             .fillMaxSize()
@@ -158,18 +184,6 @@ fun AnalysisForSubject(
                                 )
                             }
                         }
-                    }
-                else
-                    Card(
-                        modifier = Modifier
-                            .fillMaxSize()
-                    ){
-                        Text(
-                            modifier = Modifier.fillMaxWidth(),
-                            text = "Eligibility",
-                            fontWeight = FontWeight.Bold,
-                            textAlign = TextAlign.Center
-                        )
                     }
             }
         else

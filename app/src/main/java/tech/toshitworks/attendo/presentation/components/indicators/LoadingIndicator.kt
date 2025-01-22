@@ -29,7 +29,7 @@ fun LoadingIndicator(
             movingBalls = 5
         )
         Spacer(modifier = Modifier
-            .height(40.dp)
+            .height(60.dp)
         )
         Text(
             text = text,

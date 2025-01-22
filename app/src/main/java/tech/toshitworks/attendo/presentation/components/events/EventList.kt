@@ -72,7 +72,7 @@ fun EventList(
                 }
             ) {
                 Text(
-                    text = "${if (state.isUpcomingEvents) "All" else "${if (state.upcomingEvents.isEmpty()) "No " else ""}Future"} Events",
+                    text = if (state.isUpcomingEvents) "All" else "Future Events",
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight.Bold
                     ),
@@ -92,7 +92,10 @@ fun EventList(
                 Text(
                     text = buildAnnotatedString {
                         if (state.isUpcomingEvents) {
-                            append("Future Events")
+                            if (state.upcomingEvents.isEmpty())
+                                append("No Future Events")
+                            else
+                                append("Future Events")
                         } else {
                             append("All Events: ")
                             withStyle(style = SpanStyle(color = Color.Green.copy(alpha = 0.4f))) {

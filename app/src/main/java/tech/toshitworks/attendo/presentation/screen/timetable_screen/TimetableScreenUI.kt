@@ -291,7 +291,7 @@ fun TimetableScreen(
                                                     onClick = {
                                                         periodModel.value = pm
                                                         dayModel.value = day
-                                                        index.value = (indexD * 7) + indexP
+                                                        index.value = (indexD * state.periodList.size) + indexP
                                                         isUpdatePeriodDialogOpen.value = true
                                                     }
                                                 ) {
@@ -307,10 +307,10 @@ fun TimetableScreen(
                                                         .clickable {
                                                             periodModel.value = pm
                                                             dayModel.value = day
-                                                            index.value = (indexD * 7) + indexP
+                                                            index.value = (indexD * state.periodList.size) + indexP
                                                             isUpdatePeriodDialogOpen.value = true
                                                         },
-                                                    text = state.listPeriods[(indexD * 7) + indexP]!!.subject.name,
+                                                    text = state.listPeriods[(indexD * state.periodList.size) + indexP]!!.subject.name,
                                                 )
                                         }
                                     }
