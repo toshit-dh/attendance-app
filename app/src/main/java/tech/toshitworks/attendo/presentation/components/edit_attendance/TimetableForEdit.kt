@@ -103,11 +103,8 @@ fun TimetableForEdit(
         if (addNoteDialogOpen.value) {
             onEditEvent(EditAttendanceScreenEvents.OnNoteClick(attendanceIdOfNote.longValue))
             val note = state.note
-            val content = remember {
-                mutableStateOf(note?.content ?: "")
-            }
             AddNoteDialog(
-                contentFirst = content,
+                note = note,
                 onDismiss = {
                     addNoteDialogOpen.value = false
                 }

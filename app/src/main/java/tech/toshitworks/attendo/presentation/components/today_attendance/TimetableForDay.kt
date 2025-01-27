@@ -128,11 +128,8 @@ fun TimetableForDay(
             val note = state.notes.find { nm ->
                 nm.attendanceId == attendanceIdOfNote.longValue
             }
-            val content = remember {
-                mutableStateOf(note?.content ?: "")
-            }
             AddNoteDialog(
-                contentFirst = content,
+                note = note,
                 onDismiss = {
                     addNoteDialogOpen.value = false
                 }

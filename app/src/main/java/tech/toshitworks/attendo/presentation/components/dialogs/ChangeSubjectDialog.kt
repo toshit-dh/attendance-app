@@ -8,6 +8,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -47,7 +48,7 @@ fun ChangeSubjectDialog(
                         fontWeight = FontWeight.Bold
                     )
                 )
-                TextField(
+                OutlinedTextField(
                     modifier = Modifier
                         .clickable {
                             isDropDownOpen.value = true
@@ -62,7 +63,7 @@ fun ChangeSubjectDialog(
                     ),
                     enabled = false
                 )
-                TextField(
+                OutlinedTextField(
                     value = subject?.facultyName?:"",
                     onValueChange = {
 

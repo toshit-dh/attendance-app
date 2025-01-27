@@ -46,10 +46,16 @@ fun TrendAnalysis(
             (idx).toFloat(),
             it.lecturesPresent.toFloat()
         )
-    }
+    } + Point(
+        (analyticsByWeek.size).toFloat(),
+        0f
+    )
+    var endDate = ""
     val xLabel = List(points.size){ idx->
+        if(idx == points.size-1) return@List endDate.substring(5)
         val yearWeek = analyticsByWeek[idx].yearWeek.split('-')
-        val (start, _) = getWeek(yearWeek[0].toInt(),yearWeek[1].toInt())
+        val (start, end) = getWeek(yearWeek[0].toInt(),yearWeek[1].toInt())
+        endDate = end.toString()
         start.toString().substring(5)
     }
     val xAxisData = AxisData.Builder()
@@ -63,11 +69,11 @@ fun TrendAnalysis(
         .build()
 
     val yAxisData = AxisData.Builder()
-        .steps(6)
+        .steps(maxLecturesPresent)
         .backgroundColor(Color.White)
         .labelAndAxisLinePadding(20.dp)
         .labelData { i ->
-            (maxLecturesPresent*i/6).toString()
+            i.toString()
         }.build()
 
     val lineChartData = LineChartData(

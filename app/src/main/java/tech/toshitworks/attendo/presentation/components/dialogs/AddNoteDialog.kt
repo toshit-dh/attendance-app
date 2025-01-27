@@ -3,41 +3,59 @@ package tech.toshitworks.attendo.presentation.components.dialogs
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.text.font.FontWeight
+import tech.toshitworks.attendo.domain.model.NoteModel
 
 @Composable
 fun AddNoteDialog(
-    contentFirst: MutableState<String>,
+    note: NoteModel?,
     onDismiss: () -> Unit,
     onAddNote: (String) -> Unit,
 ) {
+    val content = remember {
+        mutableStateOf(note?.content?:"")
+    }
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
-            Text(text = "Add Note")
+            Text(
+                text = if (note != null) "Edit Note" else "Add Note",
+                style = MaterialTheme.typography.titleLarge.copy(
+                    fontWeight = FontWeight.Bold
+                )
+            )
         },
         text = {
             Column {
-                TextField(
-                    value = contentFirst.value,
+                OutlinedTextField(
+                    value = content.value,
                     onValueChange = {
-                        contentFirst.value = it
+                        content.value = it
                     },
-                    label = { Text("Content") }
+                    label = {
+                        Text(
+                            text = "Content"
+                        )
+                    }
                 )
             }
         },
         confirmButton = {
             Button(
                 onClick = {
-                    onAddNote(contentFirst.value)
+                    onAddNote(content.value.trimEnd())
                 },
-                enabled = contentFirst.value.isNotBlank()
+                enabled = content.value.isNotBlank() && content.value.trimEnd() != note?.content
             ) {
-                Text("Add")
+                Text(
+                    text = if (note != null) "Edit" else "Add"
+                )
             }
         },
         dismissButton = {

@@ -2,12 +2,14 @@ package tech.toshitworks.attendo.presentation.components.bars
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,15 +34,41 @@ fun BottomBar(
                     bottomEnd = 0.dp
                 )
             )
-            .border(2.dp, MaterialTheme.colorScheme.primary, CutCornerShape(16.dp)),
-
+            .border(
+                2.dp,
+                MaterialTheme.colorScheme.primary,
+                CutCornerShape(16.dp)
+            ),
         containerColor = MaterialTheme.colorScheme.background,
     ) {
         BottomScreens.entries.forEach {
             NavigationBarItem(
                 selected = screen == it.route && isScreenABottomScreen,
+                enabled = screen != it.route,
                 onClick = {
                     navController.navigate(it.route)
+                },
+                label = {
+                    when (it) {
+                        BottomScreens.TodayAttendance -> {
+                            if (screen != it.route)
+                                Text(
+                                    text = it.name
+                                )
+                        }
+                        BottomScreens.AttendanceAnalysis -> {
+                            if (screen != it.route)
+                                Text(
+                                    text = it.name
+                                )
+                        }
+                        BottomScreens.EditAttendance -> {
+                            if (screen != it.route)
+                                Text(
+                                    text = it.name
+                                )
+                        }
+                    }
                 },
                 icon = {
                     Icon(

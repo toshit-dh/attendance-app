@@ -57,7 +57,8 @@ fun HomeScreen(
             bottomBar = {
                 BottomBar(
                     screen = screen,
-                    navController = navController)
+                    navController = navController
+                )
             },
             floatingActionButton = {
                 if (isEditAttendanceScreen)

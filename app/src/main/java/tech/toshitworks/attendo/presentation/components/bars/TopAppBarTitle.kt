@@ -79,7 +79,7 @@ fun TopAppBarTitle(
 
         ScreenRoutes.EditAttendanceScreen.route -> {
             Text(
-                text = "Edit Attendance: ${state.editAttendanceDate ?: ""}",
+                text = "Edit Attendance ${state.editAttendanceDate ?: ""}",
                 style = style,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center

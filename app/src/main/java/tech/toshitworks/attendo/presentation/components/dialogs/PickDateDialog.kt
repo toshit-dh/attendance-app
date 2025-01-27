@@ -3,14 +3,12 @@ package tech.toshitworks.attendo.presentation.components.dialogs
 import android.app.DatePickerDialog
 import android.widget.DatePicker
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import java.util.Calendar
 import java.util.Locale
 
 @Composable
 fun PickDateDialog(
-    modifier: Modifier = Modifier,
     minDate: Long,
     maxDate: Long,
     onDateSelected: (String) -> Unit
