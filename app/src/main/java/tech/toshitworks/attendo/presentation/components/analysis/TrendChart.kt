@@ -59,13 +59,14 @@ fun TrendAnalysis(
         start.toString().substring(5)
     }
     val xAxisData = AxisData.Builder()
+        .startDrawPadding(15.dp)
         .axisStepSize(45.dp)
         .backgroundColor(Color.White)
         .steps(points.size-1)
+        .labelAndAxisLinePadding(15.dp)
         .labelData { i ->
             xLabel[i]
         }
-        .labelAndAxisLinePadding(15.dp)
         .build()
 
     val yAxisData = AxisData.Builder()
@@ -92,6 +93,7 @@ fun TrendAnalysis(
         xAxisData = xAxisData,
         yAxisData = yAxisData,
         gridLines = GridLines(),
+        containerPaddingEnd = 0.dp,
         backgroundColor = Color.White
     )
     Card  {
@@ -105,7 +107,7 @@ fun TrendAnalysis(
                     .fillMaxWidth(),
                 text = "Trend Analysis By Week",
                 textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.titleLarge.copy(
+                style = MaterialTheme.typography.titleMedium.copy(
                     fontWeight = FontWeight.Bold
                 )
             )

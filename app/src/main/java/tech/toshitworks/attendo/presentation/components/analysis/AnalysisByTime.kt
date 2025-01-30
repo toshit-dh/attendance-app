@@ -26,6 +26,7 @@ import tech.toshitworks.attendo.utils.colors
 
 @Composable
 fun AnalysisByTime(
+    modifier: Modifier,
     analyticsByDay: List<AnalyticsByDay>,
     analyticsByWeek: List<AnalyticsByWeek>,
     analyticsByMonth: List<AnalyticsByMonth>
@@ -34,6 +35,7 @@ fun AnalysisByTime(
         3
     }
     HorizontalPager(
+        modifier = modifier,
         state = pagerState
     ) {
         Card {

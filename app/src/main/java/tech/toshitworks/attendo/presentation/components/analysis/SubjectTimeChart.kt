@@ -11,13 +11,20 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.RemoveRedEye
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,6 +47,7 @@ fun SubjectTimeChart(
     isOverall: Boolean,
    analyticsModel: AnalyticsModel,
    subjectAnalyticsModel: List<AnalyticsModel>,
+    onViewListClick: () -> Unit,
 ){
     val streakQuotes = listOf(
         "Rock bottom. Start climbing.",
@@ -92,10 +100,44 @@ fun SubjectTimeChart(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 AnalysisByTime(
+                    modifier = Modifier.weight(9f),
                     analyticsByDay = analyticsModel.analyticsByDay,
                     analyticsByWeek = analyticsModel.analysisByWeek,
                     analyticsByMonth = analyticsModel.analysisByMonth
                 )
+                Spacer(
+                    modifier = Modifier
+                        .height(4.dp)
+                )
+                Card(
+                    modifier = Modifier
+                        .weight(2f)
+                        .fillMaxWidth()
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .fillMaxWidth()
+                    ) {
+                        Text(
+                            text = "View List",
+                            style = MaterialTheme.typography.titleMedium.copy(
+                                fontWeight = FontWeight.Bold,
+                                color = LocalContentColor.current
+                            )
+                        )
+                        IconButton(
+                            onClick = onViewListClick
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.RemoveRedEye,
+                                contentDescription = "view sheet"
+                            )
+                        }
+                    }
+                }
             }
 
             Column(

@@ -20,7 +20,7 @@ fun PeriodAnalysis(
     periodAnalysis: List<PeriodAnalysis>,
 ) {
     Column (
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(6.dp)
     ){
         Text(
             modifier = Modifier.fillMaxWidth(),

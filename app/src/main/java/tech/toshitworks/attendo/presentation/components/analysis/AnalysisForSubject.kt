@@ -11,13 +11,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.RemoveRedEye
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -114,13 +112,23 @@ fun AnalysisForSubject(
     ) {
         Box(
             modifier = Modifier
-                .weight(if (isOverall) 6f else 4f)
+                .weight(6f)
         ) {
             SubjectTimeChart(
                 isOverall = isOverall,
                 analyticsModel = analyticsModel,
-                subjectAnalyticsModel = subjectAnalysis
-            )
+                subjectAnalyticsModel = subjectAnalysis,
+            ){
+                scope.launch {
+                    if (!isSheetOpen) {
+                        isSheetOpen = true
+                        sheetState.show()
+                    } else {
+                        isSheetOpen = false
+                        sheetState.hide()
+                    }
+                }
+            }
         }
         if (!isOverall)
             Box(
@@ -203,7 +211,7 @@ fun AnalysisForSubject(
             }
         Box(
             modifier = Modifier
-                .weight(9f)
+                .weight(if (isOverall) 10.2f else 9f)
         ) {
                 TrendAnalysis(
                     getWeek = getWeek,
@@ -241,7 +249,7 @@ fun AnalysisForSubject(
                     ) {
                         Icon(
                             imageVector = Icons.Default.CalendarMonth,
-                            contentDescription = "view sheet"
+                            contentDescription = "from date"
                         )
                     }
                 }
@@ -267,7 +275,7 @@ fun AnalysisForSubject(
                     ) {
                         Icon(
                             imageVector = Icons.Default.CalendarMonth,
-                            contentDescription = "view sheet"
+                            contentDescription = "to date"
                         )
                     }
                 }
@@ -276,7 +284,9 @@ fun AnalysisForSubject(
                 val totalLectures =
                     if (aS) "?" else attendanceStats.value!!.totalLectures.toString()
                 val percentage = if (totalPresent == "?") "?"
-                else String.format(Locale.US, "%.2f", attendanceStats.value!!.attendancePercentage)
+                else String.format(Locale.US, "%.2f",
+                    attendanceStats.value!!.totalPresent.toFloat()*100/attendanceStats.value!!.totalLectures.toFloat()
+                )
                 Text(
                     modifier = Modifier
                         .weight(1f)
@@ -289,45 +299,7 @@ fun AnalysisForSubject(
                 )
             }
         }
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1.2f)
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .padding(8.dp)
-                    .fillMaxWidth()
-            ) {
-                Text(
-                    text = "View List",
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        fontWeight = FontWeight.Bold,
-                        color = LocalContentColor.current
-                    )
-                )
-                IconButton(
-                    onClick = {
-                        scope.launch {
-                            if (!isSheetOpen) {
-                                isSheetOpen = true
-                                sheetState.show()
-                            } else {
-                                isSheetOpen = false
-                                sheetState.hide()
-                            }
-                        }
-                    }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.RemoveRedEye,
-                        contentDescription = "view sheet"
-                    )
-                }
-            }
-        }
+
         AttendanceList(
             isSheetOpen = isSheetOpen,
             subject = analyticsModel.subject,
