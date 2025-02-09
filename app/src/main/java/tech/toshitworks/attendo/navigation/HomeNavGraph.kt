@@ -5,8 +5,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import tech.toshitworks.attendo.presentation.screen.analytics_screen.AnalyticsScreen
 import tech.toshitworks.attendo.presentation.screen.analytics_screen.AnalyticsScreenViewModel
 import tech.toshitworks.attendo.presentation.screen.delete_screen.DeleteScreen
@@ -40,97 +42,111 @@ fun NavHomeGraph(
     homeScreenEvents: (HomeScreenEvents) -> Unit,
     beforeNavController: NavHostController
 ) {
-        NavHost(
-            navController = navController,
-            startDestination = startDestination
+    NavHost(
+        navController = navController,
+        startDestination = startDestination
+    ) {
+        composable(route = ScreenRoutes.TodayAttendance.route) {
+            val viewModel: TodayAttendanceScreenViewModel = hiltViewModel()
+            TodayAttendanceScreen(
+                modifier,
+                viewModel,
+                navController
+            )
+        }
+        composable(
+            route = ScreenRoutes.AnalyticsScreen.route + RoutesArgs.SubjectIdArg.arg,
+            arguments = listOf(navArgument("subjectId") { type = NavType.StringType })
         ) {
-            composable(route = ScreenRoutes.TodayAttendance.route){
-                val viewModel: TodayAttendanceScreenViewModel = hiltViewModel()
-                TodayAttendanceScreen(
-                    modifier,
-                    viewModel,
-                    navController
+            val subjectId = it.arguments?.getString("subjectId")?.toLongOrNull()
+            subjectId?.let {
+                homeScreenEvents(
+                    HomeScreenEvents.OnSubjectSelectForAnalysis(
+                        homeScreenStates.subjectList.find { sm ->
+                            sm.id == subjectId
+                        }
+                    )
                 )
             }
-            composable(route = ScreenRoutes.AnalyticsScreen.route) {
-                val viewModel: AnalyticsScreenViewModel = hiltViewModel()
-                AnalyticsScreen(
-                    modifier,
-                    navController,
-                    viewModel,
-                    homeScreenStates.subjectList,
-                    homeScreenStates.isSubjectSearchOpen,
-                    homeScreenStates.analysisSubject,
-                    homeScreenEvents
-                )
-            }
-            composable(route = ScreenRoutes.EditInfoScreen.route){
-                val viewModel: EditScreenViewModel = hiltViewModel()
-                EditInfoScreen(
-                    modifier,
-                    viewModel,
-                    snackBarHostState,
-                    homeScreenStates.editInfo
-                )
-            }
-            composable(route = ScreenRoutes.NotesScreen.route){
-                val viewModel: NotesScreenViewModel = hiltViewModel()
-                NotesScreen(
-                    modifier,
-                    viewModel,
-                    homeScreenStates.isFilterRowVisible,
-                    navController
-                )
-            }
-            composable(route = ScreenRoutes.EventsScreen.route){
-                val viewModel: EventsScreenViewModel = hiltViewModel()
-                EventsScreen(
-                    modifier,
-                    viewModel
-                )
-            }
-            composable(route = ScreenRoutes.ExportScreen.route){
-                val viewModel: ExportScreenViewModel = hiltViewModel()
-                ExportScreen(
-                    modifier,
-                    snackBarHostState,
-                    viewModel
-                )
-            }
-            composable(route = ScreenRoutes.SettingsScreen.route){
-                val viewModel: SettingScreenViewModel = hiltViewModel()
-                SettingsScreen(
-                    modifier,
-                    viewModel
-                )
-            }
-            composable(route = ScreenRoutes.EditAttendanceScreen.route){
-                val viewModel: EditAttendanceScreenViewModel = hiltViewModel()
-                EditAttendanceScreen(
-                    modifier,
-                    viewModel,
-                    homeScreenStates.isAddExtraAttendanceDialogOpen,
-                    homeScreenStates.isEditAttendanceDatePickerOpen,
-                    homeScreenStates.editAttendanceDate,
-                    homeScreenEvents
-                )
-            }
-            composable(route = ScreenRoutes.NotificationScreen.route){
-                val viewModel: NotificationScreenViewModel = hiltViewModel()
-                NotificationScreen(
-                    modifier,
-                    viewModel
-                )
-            }
-            composable(route = ScreenRoutes.DeleteScreen.route){
-                val viewModel: DeleteScreenViewModel = hiltViewModel()
-                DeleteScreen(
-                    modifier,
-                    viewModel,
-                    snackBarHostState,
-                    navController,
-                    beforeNavController
-                )
-            }
+            val viewModel: AnalyticsScreenViewModel = hiltViewModel()
+            AnalyticsScreen(
+                modifier,
+                navController,
+                viewModel,
+                homeScreenStates.subjectList,
+                homeScreenStates.isSubjectSearchOpen,
+                homeScreenStates.analysisSubject,
+                homeScreenEvents
+            )
+        }
+        composable(route = ScreenRoutes.EditInfoScreen.route) {
+            val viewModel: EditScreenViewModel = hiltViewModel()
+            EditInfoScreen(
+                modifier,
+                viewModel,
+                snackBarHostState,
+                homeScreenStates.editInfo
+            )
+        }
+        composable(route = ScreenRoutes.NotesScreen.route) {
+            val viewModel: NotesScreenViewModel = hiltViewModel()
+            NotesScreen(
+                modifier,
+                viewModel,
+                homeScreenStates.isFilterRowVisible,
+                navController
+            )
+        }
+        composable(route = ScreenRoutes.EventsScreen.route) {
+            val viewModel: EventsScreenViewModel = hiltViewModel()
+            EventsScreen(
+                modifier,
+                viewModel
+            )
+        }
+        composable(route = ScreenRoutes.ExportScreen.route) {
+            val viewModel: ExportScreenViewModel = hiltViewModel()
+            ExportScreen(
+                modifier,
+                snackBarHostState,
+                viewModel
+            )
+        }
+        composable(route = ScreenRoutes.SettingsScreen.route) {
+            val viewModel: SettingScreenViewModel = hiltViewModel()
+            SettingsScreen(
+                modifier,
+                viewModel
+            )
+        }
+        composable(route = ScreenRoutes.EditAttendanceScreen.route) {
+            val viewModel: EditAttendanceScreenViewModel = hiltViewModel()
+            EditAttendanceScreen(
+                modifier,
+                viewModel,
+                homeScreenStates.isAddExtraAttendanceDialogOpen,
+                homeScreenStates.isEditAttendanceDatePickerOpen,
+                homeScreenStates.editAttendanceDate,
+                homeScreenEvents,
+                navController
+            )
+        }
+        composable(route = ScreenRoutes.NotificationScreen.route) {
+            val viewModel: NotificationScreenViewModel = hiltViewModel()
+            NotificationScreen(
+                modifier,
+                viewModel
+            )
+        }
+        composable(route = ScreenRoutes.DeleteScreen.route) {
+            val viewModel: DeleteScreenViewModel = hiltViewModel()
+            DeleteScreen(
+                modifier,
+                viewModel,
+                snackBarHostState,
+                navController,
+                beforeNavController
+            )
         }
     }
+}

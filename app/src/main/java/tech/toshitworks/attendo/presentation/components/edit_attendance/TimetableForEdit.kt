@@ -34,7 +34,8 @@ fun TimetableForEdit(
     onEditEvent: (EditAttendanceScreenEvents) -> Unit,
     onEvent: (TodayAttendanceScreenEvents) -> Unit,
     date: String,
-    day: DayModel
+    day: DayModel,
+    onSubjectClick: (Long) -> Unit
 ) {
     val addNoteDialogOpen = remember {
         mutableStateOf(false)
@@ -60,43 +61,37 @@ fun TimetableForEdit(
                 val attendanceBySubject = state.attendanceBySubject.find { abs ->
                     abs.subjectModel == it.subject
                 }
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(145.dp)
-                        .padding(4.dp),
-                ) {
-                    PeriodCard(
-                        tt = TimetableModel(
-                            subject = it.subject!!,
-                            day = it.day!!,
-                            period = it.period
-                        ),
-                        attendanceBySubject,
-                        it,
-                        onEvent,
-                        date,
-                        day,
-                        addNoteDialogOpen,
-                        attendanceIdOfNote,
-                        it.deleted,
-                        {
-                            Details(
-                                TimetableModel(
-                                    subject = it.subject,
-                                    day = it.day,
-                                    period = it.period
-                                ),
-                                it,
-                                null
-                            )
-                        }
-                    ) {
-                        subject.value = it.subject
-                        period.value = it.period
-                        attendanceModelOuter.value = it
-                        isSubjectChangedDialogOpen.value = true
+                PeriodCard(
+                    tt = TimetableModel(
+                        subject = it.subject!!,
+                        day = it.day!!,
+                        period = it.period
+                    ),
+                    attendanceBySubject,
+                    it,
+                    onEvent,
+                    date,
+                    day,
+                    addNoteDialogOpen,
+                    attendanceIdOfNote,
+                    it.deleted,
+                    {
+                        Details(
+                            TimetableModel(
+                                subject = it.subject,
+                                day = it.day,
+                                period = it.period
+                            ),
+                            it,
+                            null,
+                            onSubjectClick = onSubjectClick
+                        )
                     }
+                ) {
+                    subject.value = it.subject
+                    period.value = it.period
+                    attendanceModelOuter.value = it
+                    isSubjectChangedDialogOpen.value = true
                 }
             }
         }

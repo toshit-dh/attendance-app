@@ -35,6 +35,7 @@ import kotlin.reflect.KFunction2
 
 @Composable
 fun TrendAnalysis(
+    modifier: Modifier,
     analyticsByWeek: List<AnalyticsByWeek>,
     getWeek: KFunction2<Int, Int, Pair<LocalDate, LocalDate>>
 ) {
@@ -96,7 +97,9 @@ fun TrendAnalysis(
         containerPaddingEnd = 0.dp,
         backgroundColor = Color.White
     )
-    Card  {
+    Card(
+        modifier = modifier
+    )  {
         Column(
             modifier = Modifier
                 .padding(8.dp),

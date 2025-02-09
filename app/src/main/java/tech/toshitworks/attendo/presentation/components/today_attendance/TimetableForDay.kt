@@ -26,7 +26,8 @@ fun TimetableForDay(
     state: TodayAttendanceScreenStates,
     onEvent: (TodayAttendanceScreenEvents) -> Unit,
     date: String,
-    day: DayModel
+    day: DayModel,
+    onSubjectClick: (Long) -> Unit
 ) {
     val addNoteDialogOpen = remember {
         mutableStateOf(false)
@@ -89,7 +90,7 @@ fun TimetableForDay(
                     attendanceIdOfNote,
                     deleted,
                     {
-                        Details(tm,attendanceModel, editedSubject)
+                        Details(tm,attendanceModel, editedSubject, onSubjectClick)
                     }
                 ) {
                     if (editedSubject != null) editedSubjectOuter.value = editedSubject

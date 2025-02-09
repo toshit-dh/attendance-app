@@ -60,7 +60,9 @@ fun TodayAttendanceScreen(
                     onEvent = onEvent,
                     date = state.date,
                     day = state.day!!
-                )
+                ){
+                    navController.navigate(ScreenRoutes.AnalyticsScreen.route + "/$it")
+                }
             }else {
                 Column(
                     modifier = Modifier

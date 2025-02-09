@@ -20,9 +20,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import tech.toshitworks.attendo.R
 import tech.toshitworks.attendo.domain.model.AttendanceModel
 import tech.toshitworks.attendo.domain.model.DayModel
+import tech.toshitworks.attendo.navigation.ScreenRoutes
 import tech.toshitworks.attendo.presentation.components.dialogs.AddExtraAttendanceDialog
 import tech.toshitworks.attendo.presentation.components.edit_attendance.TimetableForEdit
 import tech.toshitworks.attendo.presentation.components.indicators.LoadingIndicator
@@ -39,7 +41,8 @@ fun EditAttendanceScreen(
     isAddExtraAttendanceDialogOpen: Boolean,
     isEditAttendanceDatePickerOpen: Boolean,
     editAttendanceDate: String?,
-    homeScreenEvents: (HomeScreenEvents)->Unit
+    homeScreenEvents: (HomeScreenEvents)->Unit,
+    navController: NavHostController
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val onEvent = viewModel::onEvent
@@ -72,7 +75,9 @@ fun EditAttendanceScreen(
                         onEvent = attendanceOnEvent,
                         date = editAttendanceDate,
                         day = DayModel(name = day)
-                    )
+                    ){
+                        navController.navigate(ScreenRoutes.AnalyticsScreen.route + "/$it")
+                    }
                 }else{
                     Column(
                         modifier = Modifier

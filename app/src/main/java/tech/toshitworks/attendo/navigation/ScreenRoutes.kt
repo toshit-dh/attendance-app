@@ -32,6 +32,9 @@ sealed class ScreenRoutes(val route: String)  {
     data object NotificationScreen : ScreenRoutes("notification_screen")
 
 }
+sealed class RoutesArgs(val arg: String){
+    data object SubjectIdArg: RoutesArgs("/{subjectId}")
+}
 enum class DrawerScreens(
     val route: String,
     val description: String,
@@ -51,6 +54,6 @@ enum class BottomScreens(
     val iconFilled: ImageVector
 ) {
     TodayAttendance(ScreenRoutes.TodayAttendance.route,"today-attendance",Icons.Outlined.Today,Icons.Filled.Today),
-    AttendanceAnalysis(ScreenRoutes.AnalyticsScreen.route,"attendance-analysis",Icons.Outlined.Analytics,Icons.Filled.Analytics),
+    AttendanceAnalysis(ScreenRoutes.AnalyticsScreen.route+RoutesArgs.SubjectIdArg.arg,"attendance-analysis",Icons.Outlined.Analytics,Icons.Filled.Analytics),
     EditAttendance(ScreenRoutes.EditAttendanceScreen.route,"edit-attendance",Icons.Outlined.EditNote,Icons.Filled.EditNote)
 }

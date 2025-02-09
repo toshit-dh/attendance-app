@@ -44,11 +44,12 @@ import tech.toshitworks.attendo.utils.colors
 
 @Composable
 fun SubjectTimeChart(
+    modifier: Modifier,
     isOverall: Boolean,
-   analyticsModel: AnalyticsModel,
-   subjectAnalyticsModel: List<AnalyticsModel>,
+    analyticsModel: AnalyticsModel,
+    subjectAnalyticsModel: List<AnalyticsModel>,
     onViewListClick: () -> Unit,
-){
+) {
     val streakQuotes = listOf(
         "Rock bottom. Start climbing.",
         "Every streak starts with one.",
@@ -63,7 +64,7 @@ fun SubjectTimeChart(
         "Perfect 10—unstoppable! Don't let this fall"
     )
 
-    val slices = subjectAnalyticsModel.mapIndexed {idx,it->
+    val slices = subjectAnalyticsModel.mapIndexed { idx, it ->
         PieChartData.Slice(
             it.subject!!.name,
             it.lecturesPresent.toFloat(),
@@ -83,7 +84,7 @@ fun SubjectTimeChart(
         plotType = PlotType.Pie,
     )
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxHeight(),
         verticalArrangement = Arrangement.Center
     ) {
@@ -92,7 +93,7 @@ fun SubjectTimeChart(
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(6.dp)
         ) {
-            Column (
+            Column(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxHeight(),
@@ -149,12 +150,12 @@ fun SubjectTimeChart(
             ) {
                 if (isOverall)
                     Card {
-                        Column (
+                        Column(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .padding(8.dp),
                             verticalArrangement = Arrangement.Center
-                        ){
+                        ) {
                             PieChart(
                                 modifier = Modifier
                                     .fillMaxWidth(),
@@ -164,7 +165,7 @@ fun SubjectTimeChart(
                         }
                     }
                 else {
-                    Card  {
+                    Card {
                         Column(
                             modifier = Modifier
                                 .fillMaxSize()
@@ -180,7 +181,7 @@ fun SubjectTimeChart(
                                     fontWeight = FontWeight.Bold
                                 )
                             )
-                            if (analyticsModel.lecturesConducted!=0) {
+                            if (analyticsModel.lecturesConducted != 0) {
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth(),

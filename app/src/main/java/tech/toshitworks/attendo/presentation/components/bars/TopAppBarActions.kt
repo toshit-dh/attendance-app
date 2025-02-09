@@ -14,6 +14,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import tech.toshitworks.attendo.navigation.RoutesArgs
 import tech.toshitworks.attendo.navigation.ScreenRoutes
 import tech.toshitworks.attendo.presentation.screen.home_screen.HomeScreenEvents
 import tech.toshitworks.attendo.presentation.screen.home_screen.HomeScreenStates
@@ -38,7 +39,7 @@ fun TopAppBarActions(
                 )
             }
         }
-        ScreenRoutes.AnalyticsScreen.route -> {
+        ScreenRoutes.AnalyticsScreen.route + RoutesArgs.SubjectIdArg.arg -> {
             IconButton(
                 onClick = {
                     onEvent(HomeScreenEvents.OnSearchSubject)

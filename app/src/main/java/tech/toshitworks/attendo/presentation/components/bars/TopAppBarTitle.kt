@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import tech.toshitworks.attendo.navigation.RoutesArgs
 import tech.toshitworks.attendo.navigation.ScreenRoutes
 import tech.toshitworks.attendo.presentation.screen.home_screen.HomeScreenEvents
 import tech.toshitworks.attendo.presentation.screen.home_screen.HomeScreenStates
@@ -27,6 +28,7 @@ fun TopAppBarTitle(
     onEvent: (HomeScreenEvents) -> Unit,
     screen: String?
 ) {
+    println(screen)
     val style = MaterialTheme.typography.titleLarge.copy(
         fontSize = 20.sp,
         fontWeight = FontWeight.Bold,
@@ -45,7 +47,7 @@ fun TopAppBarTitle(
             )
         }
 
-        ScreenRoutes.AnalyticsScreen.route -> {
+        ScreenRoutes.AnalyticsScreen.route + RoutesArgs.SubjectIdArg.arg -> {
             if (!state.isLoading) {
                 val subject = state.analysisSubject
                 val sAttendance = state.attendanceBySubject.find {

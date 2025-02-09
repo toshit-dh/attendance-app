@@ -2,20 +2,12 @@ package tech.toshitworks.attendo.presentation.components.analysis
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -110,30 +102,28 @@ fun AnalysisForSubject(
             .fillMaxHeight(),
         verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
-        Box(
+        SubjectTimeChart(
             modifier = Modifier
-                .weight(6f)
+                .weight(6f),
+            isOverall = isOverall,
+            analyticsModel = analyticsModel,
+            subjectAnalyticsModel = subjectAnalysis,
         ) {
-            SubjectTimeChart(
-                isOverall = isOverall,
-                analyticsModel = analyticsModel,
-                subjectAnalyticsModel = subjectAnalysis,
-            ){
-                scope.launch {
-                    if (!isSheetOpen) {
-                        isSheetOpen = true
-                        sheetState.show()
-                    } else {
-                        isSheetOpen = false
-                        sheetState.hide()
-                    }
+            scope.launch {
+                if (!isSheetOpen) {
+                    isSheetOpen = true
+                    sheetState.show()
+                } else {
+                    isSheetOpen = false
+                    sheetState.hide()
                 }
             }
         }
         if (!isOverall)
-            Box(
+            Card(
                 modifier = Modifier
                     .weight(5f)
+                    .fillMaxSize()
             ) {
                 if (analyticsModel.subject?.isAttendanceCounted == true)
                     EligibilityAnalysis(
@@ -141,58 +131,7 @@ fun AnalysisForSubject(
                         analyticsModel.eligibilityOfEndSem
                     )
                 else
-                    Card(
-                        modifier = Modifier
-                            .fillMaxSize()
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(8.dp),
-                            verticalArrangement = Arrangement.SpaceBetween,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(
-                                modifier = Modifier
-                                    .fillMaxWidth(),
-                                text = "Attendance is not counted for this subject",
-                                style = MaterialTheme.typography.titleMedium.copy(
-                                    fontWeight = FontWeight.Bold
-                                ),
-                                textAlign = TextAlign.Center
-                            )
-                            Text(
-                                modifier = Modifier
-                                    .fillMaxWidth(),
-                                text = "No attendance worries! Enjoy your studies!",
-                                style = MaterialTheme.typography.bodyLarge,
-                                textAlign = TextAlign.Center,
-                            )
-                            Text(
-                                modifier = Modifier
-                                    .fillMaxWidth(),
-                                text = "Explore other subjects or activities to stay engaged!",
-                                style = MaterialTheme.typography.bodyLarge,
-                                textAlign = TextAlign.Center,
-                            )
-                                Text(
-                                    text = "Edit the subject to include attendance",
-                                    textAlign = TextAlign.Justify
-                                )
-                            Button(
-                                onClick = {
-                                    homeScreenEvents(
-                                        HomeScreenEvents.OnEditTypeChange(1)
-                                    )
-                                    onNavigation()
-                                }
-                            ) {
-                                Text(
-                                    text = "Click Here To Edit"
-                                )
-                            }
-                        }
-                    }
+                    NoAttendanceSubject(homeScreenEvents, onNavigation)
             }
         else
             Card(
@@ -200,106 +139,22 @@ fun AnalysisForSubject(
                     .weight(3f)
                     .fillMaxSize()
             ) {
-                Column (
-                    modifier = Modifier
-                        .padding(8.dp)
-                ) {
-                    PeriodAnalysis(
-                        analyticsModel.periodAnalysis!!
-                    )
-                }
-            }
-        Box(
-            modifier = Modifier
-                .weight(if (isOverall) 10.2f else 9f)
-        ) {
-                TrendAnalysis(
-                    getWeek = getWeek,
-                    analyticsByWeek = analyticsModel.analysisByWeek
+                PeriodAnalysis(
+                    analyticsModel.periodAnalysis!!
                 )
-        }
+            }
+        TrendAnalysis(
+            modifier = Modifier
+                .weight(if (!isOverall) 7.5f else 9.5f),
+            getWeek = getWeek,
+            analyticsByWeek = analyticsModel.analysisByWeek
+        )
         Card(
             modifier = Modifier
-                .weight(1.2f)
+                .weight(1.5f)
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Row(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxSize(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = if (fromDate.value != null) fromDate.value!! else "From Date: ?",
-                        style = MaterialTheme.typography.bodyLarge.copy(
-                            fontWeight = FontWeight.Bold
-                        )
-                    )
-                    IconButton(
-                        onClick = {
-                            isDatePickerOpen.value = Pair(true, "from")
-
-                        }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.CalendarMonth,
-                            contentDescription = "from date"
-                        )
-                    }
-                }
-                Row(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxSize(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = if (toDate.value != null) toDate.value!! else "To Date: ?",
-                        style = MaterialTheme.typography.bodyLarge.copy(
-                            fontWeight = FontWeight.Bold
-                        )
-                    )
-                    IconButton(
-                        onClick = {
-                            isDatePickerOpen.value = Pair(true, "to")
-
-                        },
-                        enabled = fromDate.value != null
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.CalendarMonth,
-                            contentDescription = "to date"
-                        )
-                    }
-                }
-                val aS = attendanceStats.value == null
-                val totalPresent = if (aS) "?" else attendanceStats.value!!.totalPresent.toString()
-                val totalLectures =
-                    if (aS) "?" else attendanceStats.value!!.totalLectures.toString()
-                val percentage = if (totalPresent == "?") "?"
-                else String.format(Locale.US, "%.2f",
-                    attendanceStats.value!!.totalPresent.toFloat()*100/attendanceStats.value!!.totalLectures.toFloat()
-                )
-                Text(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxWidth(),
-                    text = "$totalPresent/$totalLectures - $percentage%",
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.bodyLarge.copy(
-                        fontWeight = FontWeight.Bold
-                    )
-                )
-            }
+            AttendanceByDateRange(fromDate, isDatePickerOpen, toDate, attendanceStats)
         }
-
         AttendanceList(
             isSheetOpen = isSheetOpen,
             subject = analyticsModel.subject,

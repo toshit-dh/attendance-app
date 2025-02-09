@@ -1,5 +1,6 @@
 package tech.toshitworks.attendo.presentation.components.today_attendance
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,16 +19,19 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import tech.toshitworks.attendo.domain.model.AttendanceModel
 import tech.toshitworks.attendo.domain.model.SubjectModel
 import tech.toshitworks.attendo.domain.model.TimetableModel
+import tech.toshitworks.attendo.navigation.ScreenRoutes
 import tech.toshitworks.attendo.utils.colors
 
 @Composable
 fun Details(
     tm: TimetableModel,
     am: AttendanceModel?,
-    editedSubject: SubjectModel?
+    editedSubject: SubjectModel?,
+    onSubjectClick: (Long) -> Unit
 ) {
     val random = colors().random()
     val initials = tm.subject.facultyName.split(" ")
@@ -47,6 +51,10 @@ fun Details(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
+            modifier = Modifier
+                .clickable {
+                    onSubjectClick(tm.subject.id)
+                },
             text = tm.subject.name,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1,
@@ -55,7 +63,7 @@ fun Details(
                 letterSpacing = 2.sp
             ),
             color = random,
-            textDecoration = if (editedSubject != null) TextDecoration.LineThrough else TextDecoration.None
+            textDecoration = if (editedSubject != null) TextDecoration.LineThrough else TextDecoration.Underline
         )
         if (editedSubject != null)
             Text(
