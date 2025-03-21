@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -23,86 +24,91 @@ import java.util.Locale
 
 @Composable
 fun AttendanceByDateRange(
+    modifier: Modifier,
     fromDate: MutableState<String?>,
     isDatePickerOpen: MutableState<Pair<Boolean, String>>,
     toDate: MutableState<String?>,
     attendanceStats: MutableState<AttendanceStats?>
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp),
-        verticalAlignment = Alignment.CenterVertically
+    Card (
+        modifier = modifier
     ) {
         Row(
             modifier = Modifier
-                .weight(1f)
-                .fillMaxSize(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
+                .fillMaxWidth()
+                .padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = if (fromDate.value != null) fromDate.value!! else "From Date: ?",
-                style = MaterialTheme.typography.bodyLarge.copy(
-                    fontWeight = FontWeight.Bold
+            Row(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxSize(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = if (fromDate.value != null) fromDate.value!! else "From Date: ?",
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        fontWeight = FontWeight.Bold
+                    )
                 )
-            )
-            IconButton(
-                onClick = {
-                    isDatePickerOpen.value = Pair(true, "from")
+                IconButton(
+                    onClick = {
+                        isDatePickerOpen.value = Pair(true, "from")
 
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.CalendarMonth,
+                        contentDescription = "from date"
+                    )
                 }
-            ) {
-                Icon(
-                    imageVector = Icons.Default.CalendarMonth,
-                    contentDescription = "from date"
-                )
             }
-        }
-        Row(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxSize(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
+            Row(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxSize(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = if (toDate.value != null) toDate.value!! else "To Date: ?",
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        fontWeight = FontWeight.Bold
+                    )
+                )
+                IconButton(
+                    onClick = {
+                        isDatePickerOpen.value = Pair(true, "to")
+
+                    },
+                    enabled = fromDate.value != null
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.CalendarMonth,
+                        contentDescription = "to date"
+                    )
+                }
+            }
+            val aS = attendanceStats.value == null
+            val totalPresent = if (aS) "?" else attendanceStats.value!!.totalPresent.toString()
+            val totalLectures =
+                if (aS) "?" else attendanceStats.value!!.totalLectures.toString()
+            val percentage = if (totalPresent == "?") "?"
+            else String.format(
+                Locale.US, "%.2f",
+                attendanceStats.value!!.totalPresent.toFloat() * 100 / attendanceStats.value!!.totalLectures.toFloat()
+            )
             Text(
-                text = if (toDate.value != null) toDate.value!! else "To Date: ?",
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
+                text = "$totalPresent/$totalLectures - $percentage%",
+                textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.bodyLarge.copy(
                     fontWeight = FontWeight.Bold
                 )
             )
-            IconButton(
-                onClick = {
-                    isDatePickerOpen.value = Pair(true, "to")
-
-                },
-                enabled = fromDate.value != null
-            ) {
-                Icon(
-                    imageVector = Icons.Default.CalendarMonth,
-                    contentDescription = "to date"
-                )
-            }
         }
-        val aS = attendanceStats.value == null
-        val totalPresent = if (aS) "?" else attendanceStats.value!!.totalPresent.toString()
-        val totalLectures =
-            if (aS) "?" else attendanceStats.value!!.totalLectures.toString()
-        val percentage = if (totalPresent == "?") "?"
-        else String.format(
-            Locale.US, "%.2f",
-            attendanceStats.value!!.totalPresent.toFloat() * 100 / attendanceStats.value!!.totalLectures.toFloat()
-        )
-        Text(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth(),
-            text = "$totalPresent/$totalLectures - $percentage%",
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.bodyLarge.copy(
-                fontWeight = FontWeight.Bold
-            )
-        )
     }
 }

@@ -134,27 +134,25 @@ fun AnalysisForSubject(
                     NoAttendanceSubject(homeScreenEvents, onNavigation)
             }
         else
-            Card(
+            PeriodAnalysis(
                 modifier = Modifier
-                    .weight(3f)
-                    .fillMaxSize()
-            ) {
-                PeriodAnalysis(
-                    analyticsModel.periodAnalysis!!
-                )
-            }
+                    .weight(3f),
+                analyticsModel.periodAnalysis!!
+            )
+        AttendanceByDateRange(
+            modifier = Modifier
+                .weight(1.5f),
+            fromDate,
+            isDatePickerOpen,
+            toDate,
+            attendanceStats
+        )
         TrendAnalysis(
             modifier = Modifier
                 .weight(if (!isOverall) 7.5f else 9.5f),
             getWeek = getWeek,
             analyticsByWeek = analyticsModel.analysisByWeek
         )
-        Card(
-            modifier = Modifier
-                .weight(1.5f)
-        ) {
-            AttendanceByDateRange(fromDate, isDatePickerOpen, toDate, attendanceStats)
-        }
         AttendanceList(
             isSheetOpen = isSheetOpen,
             subject = analyticsModel.subject,
