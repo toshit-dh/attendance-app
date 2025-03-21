@@ -39,8 +39,8 @@ fun TrendAnalysis(
     analyticsByWeek: List<AnalyticsByWeek>,
     getWeek: KFunction2<Int, Int, Pair<LocalDate, LocalDate>>
 ) {
-    val maxLecturesPresent = analyticsByWeek.maxOf {
-        it.lecturesPresent
+    val maxLectures = analyticsByWeek.maxOf {
+        it.lecturesConducted
     }
     val points = analyticsByWeek.mapIndexed { idx, it ->
         Point(
@@ -51,11 +51,20 @@ fun TrendAnalysis(
         (analyticsByWeek.size).toFloat(),
         0f
     )
+    val maxPoints = analyticsByWeek.mapIndexed { idx, it ->
+        Point(
+            (idx).toFloat(),
+            it.lecturesConducted.toFloat()
+        )
+    } + Point(
+        (analyticsByWeek.size).toFloat(),
+        0f
+    )
     var endDate = ""
-    val xLabel = List(points.size){ idx->
-        if(idx == points.size-1) return@List endDate.substring(5)
+    val xLabel = List(points.size) { idx ->
+        if (idx == points.size - 1) return@List endDate.substring(5)
         val yearWeek = analyticsByWeek[idx].yearWeek.split('-')
-        val (start, end) = getWeek(yearWeek[0].toInt(),yearWeek[1].toInt())
+        val (start, end) = getWeek(yearWeek[0].toInt(), yearWeek[1].toInt())
         endDate = end.toString()
         start.toString().substring(5)
     }
@@ -63,7 +72,7 @@ fun TrendAnalysis(
         .startDrawPadding(15.dp)
         .axisStepSize(45.dp)
         .backgroundColor(Color.White)
-        .steps(points.size-1)
+        .steps(points.size - 1)
         .labelAndAxisLinePadding(15.dp)
         .labelData { i ->
             xLabel[i]
@@ -71,7 +80,7 @@ fun TrendAnalysis(
         .build()
 
     val yAxisData = AxisData.Builder()
-        .steps(maxLecturesPresent)
+        .steps(maxLectures)
         .backgroundColor(Color.White)
         .labelAndAxisLinePadding(20.dp)
         .labelData { i ->
@@ -82,12 +91,29 @@ fun TrendAnalysis(
         linePlotData = LinePlotData(
             lines = listOf(
                 Line(
-                    dataPoints = points,
-                    LineStyle(),
+                    dataPoints = maxPoints,
+                    LineStyle(
+                        width = 8f,
+                        color = Color.Green
+                    ),
                     IntersectionPoint(),
                     SelectionHighlightPoint(),
                     ShadowUnderLine(),
-                    SelectionHighlightPopUp()
+                    SelectionHighlightPopUp(
+                        popUpLabel = {x,y ->
+                            "Week ${xLabel[x.toInt()]}: ${y.toInt()} / ${maxPoints[x.toInt()].y.toInt()}"
+                        }
+                    )
+                ),
+                Line(
+                    dataPoints = points,
+                    LineStyle(
+                        width = 6f
+                    ),
+                    IntersectionPoint(),
+                    SelectionHighlightPoint(),
+                    ShadowUnderLine(),
+
                 )
             ),
         ),
@@ -99,7 +125,7 @@ fun TrendAnalysis(
     )
     Card(
         modifier = modifier
-    )  {
+    ) {
         Column(
             modifier = Modifier
                 .padding(8.dp),
