@@ -1,12 +1,15 @@
 package tech.toshitworks.attendo
 
+import android.animation.ObjectAnimator
 import android.os.Bundle
+import android.view.animation.OvershootInterpolator
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
@@ -24,10 +27,29 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         var setKeepOnCondition = true
-        installSplashScreen()
-            .setKeepOnScreenCondition {
+        installSplashScreen().apply {
+            setOnExitAnimationListener { viewProvider ->
+                ObjectAnimator.ofFloat(
+                    viewProvider.view, "scaleX", 0.5f, 0f
+                ).apply {
+                    interpolator = OvershootInterpolator()
+                    duration = 300
+                    doOnEnd { viewProvider.remove() }
+                    start()
+                }
+                ObjectAnimator.ofFloat(
+                    viewProvider.view, "scaleY", 0.5f, 0f
+                ).apply {
+                    interpolator = OvershootInterpolator()
+                    duration = 300
+                    doOnEnd { viewProvider.remove() }
+                    start()
+                }
+            }
+            setKeepOnScreenCondition {
                 setKeepOnCondition
             }
+        }
         setContent {
             val prefs =
                 EntryPointAccessors.fromApplication(applicationContext, RepoEntryPoint::class.java)
@@ -54,16 +76,14 @@ class MainActivity : ComponentActivity() {
                 val screen = intent.getStringExtra("screen")
                 updateShortcut(this, screenRoute.value == ScreenRoutes.HomeScreen.route)
                 val navController = rememberNavController()
-                if (!loading.value)
-                    NavGraph(
-                        navController = navController,
-                        startDestination = screenRoute.value,
-                        homeStartDestination = screen
-                    ) {
-                        setKeepOnCondition = false
-                    }
+                if (!loading.value) NavGraph(
+                    navController = navController,
+                    startDestination = screenRoute.value,
+                    homeStartDestination = screen
+                ) {
+                    setKeepOnCondition = false
+                }
             }
         }
     }
-
 }
